@@ -1,0 +1,59 @@
+name: 安装与升级问题
+description: 反馈安装、升级、恢复或服务启动问题
+title: "[Install] "
+labels: [installation]
+body:
+  - type: markdown
+    attributes:
+      value: 请不要上传安装密码、License、密钥、数据库或未脱敏的完整诊断包。
+  - type: input
+    id: version
+    attributes:
+      label: 安装包版本与完整文件名
+    validations:
+      required: true
+  - type: input
+    id: checksum
+    attributes:
+      label: SHA-256 校验结果
+      placeholder: 通过，或填写实际摘要
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 操作系统与 CPU 架构
+      placeholder: 例如 Ubuntu 20.04 x86-64
+    validations:
+      required: true
+  - type: dropdown
+    id: action
+    attributes:
+      label: 操作类型
+      options:
+        - 首次安装
+        - 升级
+        - 卸载后恢复
+        - 独立 Runner 安装
+        - 许可证导入
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: 执行的命令与步骤
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: 错误编号与已脱敏输出
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: 敏感信息确认
+      options:
+        - label: 我已移除密码、Key、License、Cookie、数据库内容和其他敏感信息
+          required: true
