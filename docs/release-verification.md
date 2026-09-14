@@ -1,21 +1,35 @@
-# 发行文件校验
+# Verify a release package
 
-每个 Aster Team Release 应同时提供安装包和 `SHA256SUMS`。首次信任摘要时，应从独立可信渠道核对发行页公布的 SHA-256，不能只信任与安装包来自同一下载位置的校验文件。
+[简体中文](zh-CN/release-verification.md) · [Documentation](README.md)
 
-Linux 示例：
+An Aster Team Release should contain the platform packages and `SHA256SUMS`. Obtain the expected SHA-256 from a trusted channel independent of the downloaded package. A checksum file beside the package detects accidental corruption, but cannot establish initial trust by itself.
+
+## Linux
+
+Verify all files listed in the checksum manifest:
 
 ```bash
 sha256sum --check --strict SHA256SUMS
 ```
 
-Windows PowerShell 校验 Windows 实验包的示例：
+Or verify one package against an independently obtained digest:
 
-```powershell
-(Get-FileHash -Algorithm SHA256 .\aster-team-<版本>-windows-amd64.tar.gz).Hash.ToLowerInvariant()
+```bash
+archive=aster-team-<version>-linux-amd64.tar.gz
+printf '%s  %s\n' '<trusted-sha-256>' "$archive" | sha256sum --check --strict -
 ```
 
-输出必须与 Release 中对应文件的 64 位小写十六进制摘要完全一致。文件名、大小或摘要不一致时不要运行安装程序，并通过 Issue 说明下载来源、文件名和实际摘要；不要上传 License、凭据或其他敏感文件。
+## Windows PowerShell
 
-如果在 Windows 上为 Linux 服务器下载文件，请将上述文件名替换为实际的 `linux-amd64.tar.gz` 文件名；两种平台的压缩包不能混用。
+```powershell
+$archive = 'aster-team-<version>-windows-amd64.tar.gz'
+(Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+```
 
-解压后，Linux 的 `init.sh` 或 Windows 的 `init.ps1` 还会验证包内签名发行树。外层文件摘要和包内签名分别解决下载完整性与发行内容验证，两项都应保留。
+The output must exactly match the 64-character lowercase digest published for that filename. Do not run the installer if the name, size, or digest differs.
+
+Linux and Windows archives are not interchangeable. It is fine to download a Linux archive on Windows, but verify the actual Linux filename and transfer it without modification.
+
+After extraction, `init.sh` on Linux or `init.ps1` on Windows also verifies the signed release tree. The outer checksum protects the downloaded archive; the inner signature validates the release contents. Keep both checks.
+
+Report mismatches through an [installation issue](https://github.com/huzz-open/aster-team/issues/new?template=installation.yml), including the download source, exact filename, expected digest, and actual digest. Do not upload a license, key, database, or other sensitive file.
