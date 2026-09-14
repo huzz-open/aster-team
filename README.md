@@ -1,2 +1,13 @@
-# aster-team
-Aster Team downloads, documentation, and issue tracking
+# Aster Team
+
+Aster Team 是面向团队的 AI 使用管理软件，以私有化部署包和离线 License 交付。
+
+## 获取软件
+
+免费版与付费版使用同一个安装包。首次全新安装会自动验签并导入包内置的免费 License，无需联网激活；付费后在原安装中导入交付的 License 即可升级权益，无需重新下载安装。
+
+首个包含内置免费 License 的公开安装包正在准备中。通过完整发行验证后，安装包和 `SHA256SUMS` 将只发布在本仓库的 GitHub Releases；在此之前请勿从第三方地址下载安装包。
+
+## 获取帮助
+
+本仓库用于发布安装包、用户文档和受理问题，不包含 Aster Team 产品源代码。可以使用 Issues 反馈可稳定复现的软件问题以及安装、升级问题。提交问题时不要附带密码、API Key、License 文件、私钥、Cookie、完整数据库或未经处理的日志。
