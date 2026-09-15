@@ -4,6 +4,8 @@
 
 以下示例使用 Linux 命令入口。Windows 应使用 `init.ps1` 打印的已安装 `aster-team-cli.exe` 绝对路径，去掉 `sudo`，其余子命令保持一致。
 
+按任务执行维护见[备份、恢复和升级 Aster Team](guides/backup-restore-upgrade.md)；独立执行主机见[部署独立 Runner](guides/deploy-dedicated-runner.md)。
+
 ## 日常检查
 
 ```bash

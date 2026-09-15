@@ -4,6 +4,8 @@
 
 Examples below use the Linux command entry point. On Windows, use the installed absolute `aster-team-cli.exe` path printed by `init.ps1`, omit `sudo`, and keep the same subcommands.
 
+For a task-oriented maintenance procedure, see [Back up, restore, and upgrade Aster Team](guides/backup-restore-upgrade.md). For a separate execution host, see [Deploy a dedicated Runner](guides/deploy-dedicated-runner.md).
+
 ## Routine checks
 
 ```bash

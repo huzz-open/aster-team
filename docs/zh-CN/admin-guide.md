@@ -2,6 +2,8 @@
 
 [English](../admin-guide.md) · [中文文档](README.md)
 
+任务指南：[连接已授权账号](guides/connect-ai-account-and-sync-models.md)、[管理 Aster License](guides/aster-team-license-guide.md)、[部署 Runner](guides/deploy-dedicated-runner.md)以及[理解额度结算](guides/quota-reservation-and-usage-accounting.md)。
+
 ## 推荐配置顺序
 
 1. **产品授权**：确认包内免费 License，或导入签名 License；免费和付费权益使用同一套产品。

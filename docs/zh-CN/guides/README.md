@@ -1,8 +1,23 @@
-# Aster Team Codex 与 Claude Code 开发者指南
+# Aster Team 部署、API、Codex 与 Claude Code 指南
 
 [English](../../guides/README.md) · [中文文档](../README.md)
 
-这些任务型文章集中回答 Codex API Key、自定义 API Base URL、生图、图片编辑、多个独立客户端、Claude Code 和开发者访问隔离等常见问题。
+这些任务型指南用于安装和运维 Aster Team 私有化 AI 网关、连接已授权 AI 账号、管理 License 与额度、接入 Codex 或 Claude Code，并根据稳定错误码排查问题。
+
+## 安装与运维 Aster Team
+
+- [如何在 Linux 上安装 Aster Team](install-aster-team-linux.md)
+- [如何在 Windows 上安装 Aster Team](install-aster-team-windows.md)
+- [如何部署独立 Aster Team Runner](deploy-dedicated-runner.md)
+- [如何备份、恢复和升级 Aster Team](backup-restore-upgrade.md)
+
+## 账号、授权、额度与安全
+
+- [如何连接已授权 AI 账号并同步模型](connect-ai-account-and-sync-models.md)
+- [Aster Team 免费 License、付费 License 与离线激活指南](aster-team-license-guide.md)
+- [成员额度与用量结算如何工作](quota-reservation-and-usage-accounting.md)
+- [Aster Team API Key 安全最佳实践](api-key-security.md)
+- [Aster Team 错误码与故障排查参考](aster-error-codes.md)
 
 ## Codex
 

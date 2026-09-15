@@ -41,6 +41,17 @@ Aster 不会创建额外的服务商账号，而是基于客户已有并获授�
 - [使用 Aster API Key 配置 Claude Code](docs/zh-CN/guides/configure-claude-code-api-key.md)
 - [了解开发者访问与数据隔离](docs/zh-CN/guides/developer-access-isolation.md)
 
+部署与运维指南：
+
+- [在 Linux 上安装 Aster Team](docs/zh-CN/guides/install-aster-team-linux.md)
+- [在 Windows 上安装 Aster Team](docs/zh-CN/guides/install-aster-team-windows.md)
+- [部署独立 Runner](docs/zh-CN/guides/deploy-dedicated-runner.md)
+- [连接已授权 AI 账号并同步模型](docs/zh-CN/guides/connect-ai-account-and-sync-models.md)
+- [了解免费、付费与离线 License](docs/zh-CN/guides/aster-team-license-guide.md)
+- [备份、恢复和升级 Aster Team](docs/zh-CN/guides/backup-restore-upgrade.md)
+- [理解成员额度与用量结算](docs/zh-CN/guides/quota-reservation-and-usage-accounting.md)
+- [查询 Aster Team 错误码](docs/zh-CN/guides/aster-error-codes.md)
+
 ## Aster 不提供什么
 
 Aster 不提供或转售第三方账号、订阅、API 额度或模型权益，也不是通用 VPN、互联网接入、网络出口或地域限制规避工具。客户需要自行准备有权使用的账号、获准访问服务商的网络条件，并承担相应的上游订阅或用量费用。完整说明见[服务边界与客户责任](docs/zh-CN/service-boundaries.md)。
@@ -67,15 +78,13 @@ Aster 不提供或转售第三方账号、订阅、API 额度或模型权益，�
 | [API 参考](docs/zh-CN/api-reference.md) | 兼容接口、鉴权、模型变体、错误和调用示例 |
 | [Codex 接入](docs/zh-CN/codex.md) | 让 ChatGPT 桌面应用中的 Codex 或 Codex CLI 通过 Aster 请求 |
 | [Claude Code 接入](docs/zh-CN/claude-code.md) | 使用 Anthropic 兼容接口配置 Claude Code |
-| [开发者实用指南](docs/zh-CN/guides/README.md) | Codex、图片、多客户端、鉴权和隔离的任务型文章 |
+| [任务型指南](docs/zh-CN/guides/README.md) | Linux、Windows、Runner、授权、账号、API Key、Codex、Claude Code 与故障排查 |
 | [运行维护](docs/zh-CN/operations.md) | 健康检查、日志、备份、升级和恢复 |
 | [故障排查](docs/zh-CN/troubleshooting.md) | 排查常见安装、路由和客户端问题 |
 
 完整入口见[中文文档索引](docs/zh-CN/README.md)。
 
-## 仓库边界
-
-本公开仓库只提供发行包、校验值、开发者与用户文档以及公开问题跟踪，不包含 Aster Team 产品源码、签名材料、客户数据、许可证或内部运营文档。
+## 支持与 Issue 安全
 
 提交 Issue 时，请勿附带密码、API Key、License 文件、私钥、Cookie、数据库、完整诊断包或未脱敏日志。
 

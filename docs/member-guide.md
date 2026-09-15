@@ -4,6 +4,8 @@
 
 The Member UI is the self-service entry point for developers. It shows the platform endpoint, enabled models, quota and usage, API key management, and client-specific setup commands.
 
+See [API key security best practices](guides/api-key-security.md) for storage, rotation, CI identities, and incident response. See [quota and usage accounting](guides/quota-reservation-and-usage-accounting.md) for granted, reserved, consumed, and available values.
+
 An Aster member API key grants access only through the policy configured by the administrator. It is not a third-party provider account, subscription, or credit. Availability still depends on the customer-connected account, Runner connectivity, and provider service. See [Service boundaries](service-boundaries.md).
 
 ## First sign-in

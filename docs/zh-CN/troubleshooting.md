@@ -11,6 +11,8 @@ sudo aster-team-cli doctor --verbose
 
 Windows 使用已安装 `aster-team-cli.exe` 的绝对路径，并去掉 `sudo`。
 
+响应包含五位数字码时，先查询 [Aster Team 错误码参考](guides/aster-error-codes.md)，再收集 Trace。
+
 ## 服务运行但页面打不开
 
 确认 `status` 显示的是真实服务器地址而不是 `127.0.0.1`，再检查监听端口、主机防火墙、云安全组、路由和 DNS：

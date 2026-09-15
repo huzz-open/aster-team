@@ -11,6 +11,8 @@ sudo aster-team-cli doctor --verbose
 
 On Windows, use the installed `aster-team-cli.exe` absolute path and omit `sudo`.
 
+If the response includes a five-digit number, use the [Aster Team error-code reference](guides/aster-error-codes.md) before collecting a trace.
+
 ## The UI does not open although the service is running
 
 Confirm that `status` reports the real server address rather than `127.0.0.1`, then check listeners, host firewall, cloud security groups, routing, and DNS:

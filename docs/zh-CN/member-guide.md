@@ -4,6 +4,8 @@
 
 Member UI 是开发者的自助入口，提供平台地址、已开放模型、额度和用量、API Key 管理以及不同客户端的接入命令。
 
+Key 保存、轮换、CI 身份与泄露处理见 [API Key 安全最佳实践](guides/api-key-security.md)；已发放、预占、已消耗和可用额度见[额度与用量结算](guides/quota-reservation-and-usage-accounting.md)。
+
 Aster 成员 API Key 只获得管理员策略允许的网关访问权，不是第三方服务商账号、订阅或额度。实际可用性仍取决于客户接入的账号、Runner 网络以及服务商状态，详见[服务边界](service-boundaries.md)。
 
 ## 首次登录
