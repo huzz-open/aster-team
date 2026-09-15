@@ -41,6 +41,17 @@ Popular developer guides:
 - [Configure Claude Code with an Aster API key](docs/guides/configure-claude-code-api-key.md)
 - [Understand developer access and data isolation](docs/guides/developer-access-isolation.md)
 
+Deployment and operations guides:
+
+- [Install Aster Team on Linux](docs/guides/install-aster-team-linux.md)
+- [Install Aster Team on Windows](docs/guides/install-aster-team-windows.md)
+- [Deploy a dedicated Runner](docs/guides/deploy-dedicated-runner.md)
+- [Connect an authorized AI account and synchronize models](docs/guides/connect-ai-account-and-sync-models.md)
+- [Understand free, paid, and offline licenses](docs/guides/aster-team-license-guide.md)
+- [Back up, restore, and upgrade Aster Team](docs/guides/backup-restore-upgrade.md)
+- [Understand member quota and usage accounting](docs/guides/quota-reservation-and-usage-accounting.md)
+- [Find an Aster Team error code](docs/guides/aster-error-codes.md)
+
 ## What Aster is not
 
 Aster does not provide or resell third-party accounts, subscriptions, API credits, or model entitlements. It is not a general-purpose VPN, Internet access service, network egress service, or geographic-restriction bypass tool. Customers must supply accounts they are authorized to use, permitted connectivity to each provider, and any upstream subscription or usage fees. Read the complete [service boundaries and customer responsibilities](docs/service-boundaries.md).
@@ -67,15 +78,13 @@ Aster does not provide or resell third-party accounts, subscriptions, API credit
 | [API reference](docs/api-reference.md) | Compatible endpoints, authentication, model variants, errors, and examples |
 | [Codex](docs/codex.md) | Route Codex in the ChatGPT desktop app or Codex CLI through Aster |
 | [Claude Code](docs/claude-code.md) | Configure Claude Code against the Anthropic-compatible endpoint |
-| [Developer guides](docs/guides/README.md) | Task-focused Codex, image, multi-client, authentication, and isolation guides |
+| [Task-focused guides](docs/guides/README.md) | Linux, Windows, Runner, licensing, accounts, API keys, Codex, Claude Code, and troubleshooting |
 | [Operations](docs/operations.md) | Health checks, logs, backup, upgrade, and recovery |
 | [Troubleshooting](docs/troubleshooting.md) | Diagnose common installation, routing, and client problems |
 
 The [documentation index](docs/README.md) links every English and Chinese page.
 
-## Repository scope
-
-This public repository contains release packages, checksums, developer and user documentation, and public issue tracking. It does **not** contain the Aster Team product source code, signing material, customer data, licenses, or internal operations documentation.
+## Support and issue safety
 
 When opening an issue, never attach passwords, API keys, license files, private keys, cookies, databases, complete diagnostic bundles, or unredacted logs.
 

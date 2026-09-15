@@ -4,6 +4,8 @@
 
 This guide takes an administrator from a verified release package to the first successful model request.
 
+For platform-specific steps, use [Install Aster Team on Linux](guides/install-aster-team-linux.md) or [Install Aster Team on Windows](guides/install-aster-team-windows.md).
+
 ## 1. Prerequisites
 
 Prepare:

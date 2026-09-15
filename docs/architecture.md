@@ -20,6 +20,8 @@ Control ── signed one-use task / WSS ──► Runner ── HTTPS ──►
 - **Admin UI** manages licenses, subscriptions and accounts, models, Runners, members, quota, and audit records.
 - **Member UI** lets each member manage their password and API keys, view quota and usage, and obtain client-specific integration instructions.
 
+See [Deploy a dedicated Runner](guides/deploy-dedicated-runner.md) for installation, enrollment, trust, and routing checks.
+
 ## Credential boundary
 
 Members receive only Aster API keys. They do not receive upstream access tokens, refresh tokens, or upstream account identifiers. Control stores upstream credential instances encrypted at rest and authorizes them to a Runner for an individual task.

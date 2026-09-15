@@ -4,6 +4,8 @@
 
 本指南帮助管理员从校验安装包开始，完成首个模型请求。
 
+平台专属步骤见[在 Linux 上安装 Aster Team](guides/install-aster-team-linux.md)或[在 Windows 上安装 Aster Team](guides/install-aster-team-windows.md)。
+
 ## 1. 安装前准备
 
 准备以下内容：

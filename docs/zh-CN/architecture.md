@@ -20,6 +20,8 @@ Control ── 签名单次任务 / WSS ──► Runner ── HTTPS ──► 
 - **Admin UI** 用于管理许可证、订阅/账号、模型、Runner、成员、额度和审计记录。
 - **Member UI** 供成员管理密码与 API Key、查看额度和用量，并取得不同客户端的接入说明。
 
+独立节点的安装、注册、信任与路由检查见[部署独立 Runner](guides/deploy-dedicated-runner.md)。
+
 ## 凭据边界
 
 成员只获得 Aster API Key，不会获得上游 Access Token、Refresh Token 或上游账号 ID。Control 在本地加密保存上游凭据实例，并按单次任务临时授权给 Runner。

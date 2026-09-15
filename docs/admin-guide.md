@@ -2,6 +2,8 @@
 
 [简体中文](zh-CN/admin-guide.md) · [Documentation](README.md)
 
+Task guides: [connect an authorized account](guides/connect-ai-account-and-sync-models.md), [manage Aster licenses](guides/aster-team-license-guide.md), [deploy a Runner](guides/deploy-dedicated-runner.md), and [understand quota accounting](guides/quota-reservation-and-usage-accounting.md).
+
 ## Recommended setup order
 
 1. **Product license** — confirm the bundled free license or import a signed license. Free and paid entitlements use the same installed product.
