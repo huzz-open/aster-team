@@ -8,6 +8,14 @@ ChatGPT 桌面应用与 Codex 仍是 OpenAI 提供的第三方软件。Aster 只
 
 Codex 官方支持定义包含 `base_url`、`env_key`、静态请求头和 `responses` 协议的自定义模型 Provider，详见 OpenAI [Codex 配置参考](https://developers.openai.com/codex/config-reference/)。
 
+## 任务型指南
+
+- [使用 Aster API Key 配置 Codex](guides/configure-codex-api-key.md)
+- [通过 Aster 在 Codex 中生图和编辑图片](guides/codex-image-generation-editing.md)
+- [运行多个独立 Codex 客户端](guides/multiple-independent-codex-clients.md)
+- [对比 ChatGPT 登录、OpenAI API Key 与 Aster 成员 Key](guides/codex-authentication-comparison.md)
+- [理解开发者访问隔离](guides/developer-access-isolation.md)
+
 ## 配置前准备
 
 1. 根据使用环境安装官方 ChatGPT 桌面应用或 Codex CLI。

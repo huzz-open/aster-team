@@ -88,6 +88,33 @@ curl --fail-with-body -sS 'https://aster.example.com/v1/messages' \
   --data-binary '{"model":"<enabled-model-id>","max_tokens":512,"messages":[{"role":"user","content":"Hello"}]}'
 ```
 
+## Image generation example
+
+Use an image-capable model currently enabled by the administrator:
+
+```bash
+curl --fail-with-body -sS 'https://aster.example.com/v1/images/generations' \
+  -H 'Authorization: Bearer <member-api-key>' \
+  -H 'Content-Type: application/json' \
+  --data-binary '{"model":"<enabled-image-model-id>","prompt":"A clean technical illustration of a private AI gateway","size":"1024x1024","response_format":"b64_json"}'
+```
+
+The response contains base64-encoded image data when `response_format` is `b64_json`.
+
+## Image editing example
+
+Image editing uses multipart form data. The `image[]` field can be repeated when the selected model supports multiple inputs:
+
+```bash
+curl --fail-with-body -sS 'https://aster.example.com/v1/images/edits' \
+  -H 'Authorization: Bearer <member-api-key>' \
+  -F 'model=<enabled-image-model-id>' \
+  -F 'prompt=Replace only the background with a soft blue gradient' \
+  -F 'image[]=@input.png'
+```
+
+Availability depends on the installed Aster version, administrator-enabled capability, selected model, connected account entitlement, Runner readiness, and provider availability. See the [Codex image generation and editing guide](guides/codex-image-generation-editing.md).
+
 ## Model variants
 
 `/v1/models` lists base models. Clients that cannot send native speed or reasoning fields may append a strict variant suffix:

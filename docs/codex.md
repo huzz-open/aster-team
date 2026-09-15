@@ -8,6 +8,14 @@ The ChatGPT desktop app and Codex remain third-party software supplied by OpenAI
 
 Codex officially supports custom model-provider definitions with a provider `base_url`, an `env_key`, static headers, and the `responses` wire API. See OpenAI's [Codex configuration reference](https://developers.openai.com/codex/config-reference/).
 
+## Task-focused guides
+
+- [Configure Codex with an Aster API key](guides/configure-codex-api-key.md)
+- [Use image generation and image editing in Codex](guides/codex-image-generation-editing.md)
+- [Run multiple independent Codex clients](guides/multiple-independent-codex-clients.md)
+- [Compare ChatGPT sign-in, OpenAI API keys, and Aster member keys](guides/codex-authentication-comparison.md)
+- [Understand developer access isolation](guides/developer-access-isolation.md)
+
 ## Before setup
 
 1. Install the official ChatGPT desktop app or Codex CLI appropriate for your environment.
