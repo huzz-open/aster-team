@@ -17,18 +17,7 @@ Aster Team is a privately deployed AI gateway for teams. It gives administrators
 
 ## Independent developer access
 
-```text
-Customer-authorized AI account or subscription
-                       │
-                       ▼
-                  Aster Team
-              ┌────────┼────────┐
-              ▼        ▼        ▼
-        Developer A  Developer B  CI agent
-         Member key   Member key   Member key
-         Own quota    Own quota    Own quota
-         Own usage    Own usage    Own usage
-```
+![Aster Team independent developer access architecture](docs/assets/independent-developer-access.png)
 
 Aster does not create additional provider accounts. It creates independent, governed member access paths backed by capacity the customer is authorized to use. Upstream credentials remain under administrator control; each developer uses a separate Aster API key.
 

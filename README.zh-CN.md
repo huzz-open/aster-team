@@ -17,18 +17,7 @@ Aster Team 是面向团队的私有化 AI 网关。管理员可以集中接入�
 
 ## 独立的开发者访问
 
-```text
-客户已有并获授权的 AI 账号或订阅
-                 │
-                 ▼
-             Aster Team
-          ┌──────┼──────┐
-          ▼      ▼      ▼
-       开发者 A  开发者 B  CI 任务
-       成员 Key  成员 Key  成员 Key
-       独立额度  独立额度  独立额度
-       独立用量  独立用量  独立用量
-```
+![Aster Team 独立开发者访问架构](docs/assets/independent-developer-access.png)
 
 Aster 不会创建额外的服务商账号，而是基于客户已有并获授权的能力，为成员建立独立、可控制、可审计的访问路径。上游凭据仍由管理员控制，每位开发者只使用自己的 Aster API Key。
 
