@@ -4,6 +4,8 @@
 
 Aster can act as a custom Responses API provider for Codex in the ChatGPT desktop app and for Codex CLI. This does **not** redirect ordinary ChatGPT web conversations: the regular ChatGPT chat interface does not expose an arbitrary API base URL.
 
+The ChatGPT desktop app and Codex remain third-party software supplied by OpenAI. Aster provides the configured gateway path but does not include a ChatGPT/OpenAI account, subscription, client license, network access, or upstream entitlement. See [Service boundaries](service-boundaries.md).
+
 Codex officially supports custom model-provider definitions with a provider `base_url`, an `env_key`, static headers, and the `responses` wire API. See OpenAI's [Codex configuration reference](https://developers.openai.com/codex/config-reference/).
 
 ## Before setup

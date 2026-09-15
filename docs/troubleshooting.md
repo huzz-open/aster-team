@@ -34,6 +34,8 @@ sudo aster-team-cli logs control
 
 Also verify Runner DNS, TLS, proxy, firewall, and outbound access to the configured provider domains. A `33003` request is not charged.
 
+Aster does not provide network egress or make an unavailable provider reachable. Use only organization-approved connectivity and confirm the account and service are available for the deployment environment. See [Service boundaries](service-boundaries.md).
+
 ## Missing `GLIBC_2.xx`
 
 The package is an obsolete dynamically linked build. Current Linux release packages are expected to be static builds. Download the latest signed package from Releases, verify it again, and do not continue from the old extracted directory.

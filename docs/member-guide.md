@@ -4,6 +4,8 @@
 
 The Member UI is the self-service entry point for developers. It shows the platform endpoint, enabled models, quota and usage, API key management, and client-specific setup commands.
 
+An Aster member API key grants access only through the policy configured by the administrator. It is not a third-party provider account, subscription, or credit. Availability still depends on the customer-connected account, Runner connectivity, and provider service. See [Service boundaries](service-boundaries.md).
+
 ## First sign-in
 
 Sign in with the temporary password delivered by your administrator and change it immediately. Passwords and full API keys are not recoverable. If a key is lost, revoke it and create another one.

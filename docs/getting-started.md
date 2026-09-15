@@ -11,8 +11,11 @@ Prepare:
 - a package matching the target platform and architecture;
 - the package SHA-256 obtained from a trusted channel;
 - `sudo` access on Linux or an Administrator PowerShell on Windows;
+- a third-party AI account or subscription the organization is authorized to use;
 - network access to the Model API, Member UI, and Admin UI;
-- outbound HTTPS access to `auth.openai.com` and `chatgpt.com` when connecting a ChatGPT subscription account.
+- lawful, organization-approved outbound HTTPS access to the required provider endpoints, including `auth.openai.com` and `chatgpt.com` when connecting a ChatGPT subscription account.
+
+Aster does not supply the third-party account, subscription, provider credits, VPN, or network egress. Review [Service boundaries and customer responsibilities](service-boundaries.md) before deployment.
 
 Package names use `aster-team-<version>-<platform>-<arch>.tar.gz`. Supported packages are listed on each [Release](https://github.com/huzz-open/aster-team/releases); do not infer platform support from files outside Releases.
 
@@ -79,7 +82,7 @@ The installer prints the initial owner credentials and stores a copy at `<instal
 
 1. In **Product license**, confirm that the bundled free license or an imported signed license is valid. Current limits are displayed in that page.
 2. In **Runners**, confirm at least one Runner is online. A same-host Runner can be selected during interactive installation.
-3. In **Subscriptions & accounts**, start the ChatGPT OAuth flow and save the authorized account.
+3. In **Subscriptions & accounts**, start the ChatGPT OAuth flow for an account your organization is authorized to use, then save it.
 4. Synchronize models and enable the models members may use.
 5. Create a member, grant quota, and let that member create an API key in the Member UI.
 

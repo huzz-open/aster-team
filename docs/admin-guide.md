@@ -7,7 +7,7 @@
 1. **Product license** — confirm the bundled free license or import a signed license. Free and paid entitlements use the same installed product.
 2. **Platform settings** — set the public Model API address and verify TLS before sharing it with members.
 3. **Runners** — keep at least one compatible Runner online; add capacity or fault domains when needed.
-4. **Subscriptions & accounts** — authorize a ChatGPT subscription account, then synchronize models.
+4. **Subscriptions & accounts** — authorize a customer-controlled ChatGPT subscription account, then synchronize models.
 5. **Models** — enable only the models the team should consume.
 6. **Members & quota** — create individual member identities and grant quota according to team policy.
 7. **Audit and usage** — review consumption, account health, Runner availability, and security-relevant changes.
@@ -21,7 +21,7 @@ sudo aster-team-cli license install --source ./license.json
 sudo aster-team-cli license status
 ```
 
-The license is verified locally. Importing another valid license changes entitlements without reinstalling Aster. Always use **Product license** as the source of truth for current limits.
+The license is verified locally. Importing another valid license changes Aster entitlements without reinstalling the product. It does not include or expand a third-party account, subscription, API credit, or model entitlement. Always use **Product license** as the source of truth for Aster limits and the provider account as the source of truth for upstream limits and charges.
 
 ## Members and credentials
 
@@ -37,9 +37,11 @@ An email can be selected non-interactively with `--email admin@example.com`; the
 
 ## Accounts and models
 
-Before starting ChatGPT OAuth, ensure the host can reach `auth.openai.com` and `chatgpt.com` over HTTPS and a Runner is online. After authorization, synchronize the account's models, then explicitly enable the ones exposed to members.
+Before starting ChatGPT OAuth, confirm that the organization is authorized to use the account, the host can reach `auth.openai.com` and `chatgpt.com` over HTTPS, and a Runner is online. After authorization, synchronize the account's models, then explicitly enable the ones exposed to members.
 
 Account credentials are administrator-managed. Members consume enabled models through Aster API keys and never need the upstream credentials.
+
+The page connects an existing customer-controlled account. Aster does not register, sell, transfer, or bundle provider accounts and does not supply a VPN or network egress. Review [Service boundaries and customer responsibilities](service-boundaries.md) before onboarding an account.
 
 ## Quota and usage
 

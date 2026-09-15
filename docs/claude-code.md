@@ -4,6 +4,8 @@
 
 Aster exposes an Anthropic Messages-compatible endpoint for Claude Code. The base URL is the service root and must not include `/v1`; Claude Code appends `/v1/messages` itself.
 
+Claude Code and the upstream model service remain third-party products. Aster provides a compatible gateway path but does not include a provider account, subscription, client license, network access, or upstream entitlement. See [Service boundaries](service-boundaries.md).
+
 ## Recommended setup
 
 Install `asterctl` from **Member UI → API documentation → asterctl tool**, then run:

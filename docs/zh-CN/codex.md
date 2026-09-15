@@ -4,6 +4,8 @@
 
 Aster 可以作为 ChatGPT 桌面应用中 Codex 和 Codex CLI 的自定义 Responses API Provider。它**不会**把普通 ChatGPT 网页对话转发到 Aster：常规 ChatGPT 聊天界面不提供任意 API Base URL 配置。
 
+ChatGPT 桌面应用与 Codex 仍是 OpenAI 提供的第三方软件。Aster 只提供已经配置的网关链路，不包含 ChatGPT/OpenAI 账号、订阅、客户端授权、网络接入或上游权益，详见[服务边界](service-boundaries.md)。
+
 Codex 官方支持定义包含 `base_url`、`env_key`、静态请求头和 `responses` 协议的自定义模型 Provider，详见 OpenAI [Codex 配置参考](https://developers.openai.com/codex/config-reference/)。
 
 ## 配置前准备

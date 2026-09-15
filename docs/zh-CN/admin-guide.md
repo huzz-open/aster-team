@@ -7,7 +7,7 @@
 1. **产品授权**：确认包内免费 License，或导入签名 License；免费和付费权益使用同一套产品。
 2. **平台设置**：配置对外 Model API 地址，向成员提供前确认 TLS 正常。
 3. **Runner 节点**：至少保持一个兼容 Runner 在线；需要时增加容量或故障域。
-4. **订阅/账号**：授权 ChatGPT 订阅账号并同步模型。
+4. **订阅/账号**：授权客户控制的 ChatGPT 订阅账号并同步模型。
 5. **模型管理**：只开放团队允许使用的模型。
 6. **成员与额度**：为每个成员建立独立身份，并按团队策略发放额度。
 7. **审计与用量**：持续查看消费、账号健康、Runner 可用性和安全相关变更。
@@ -21,7 +21,7 @@ sudo aster-team-cli license install --source ./license.json
 sudo aster-team-cli license status
 ```
 
-许可证完全在本地验证。导入另一份有效 License 可以直接变更权益，不必重新安装。当前限制始终以“产品授权”页面显示为准。
+许可证完全在本地验证。导入另一份有效 License 可以直接变更 Aster 权益，不必重新安装。它不包含或扩大第三方账号、订阅、API 额度或模型权益。Aster 限制以“产品授权”页面为准，上游限制与费用以服务商账号为准。
 
 ## 成员与凭据
 
@@ -37,9 +37,11 @@ sudo aster-team-cli password reset-admin
 
 ## 账号与模型
 
-发起 ChatGPT OAuth 前，确认主机能通过 HTTPS 访问 `auth.openai.com` 与 `chatgpt.com`，并且至少有一个 Runner 在线。授权成功后同步账号模型，再明确开放允许成员使用的模型。
+发起 ChatGPT OAuth 前，确认组织有权使用该账号、主机能通过 HTTPS 访问 `auth.openai.com` 与 `chatgpt.com`，并且至少有一个 Runner 在线。授权成功后同步账号模型，再明确开放允许成员使用的模型。
 
 上游账号凭据只由管理员管理。成员通过 Aster API Key 使用已开放模型，不需要接触上游凭据。
+
+该页面只连接客户已经控制的账号。Aster 不注册、销售、转移或捆绑服务商账号，也不提供 VPN 或网络出口。接入账号前请阅读[服务边界与客户责任](service-boundaries.md)。
 
 ## 额度与用量
 
