@@ -7,6 +7,7 @@
 ## 部署与管理
 
 - [架构与信任模型](architecture.md)
+- [服务边界与客户责任](service-boundaries.md)
 - [安装与首次使用](getting-started.md)
 - [管理员指南](admin-guide.md)
 - [运行、备份与升级](operations.md)

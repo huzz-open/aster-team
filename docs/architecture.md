@@ -44,3 +44,6 @@ Aster records the metadata needed for authentication, routing, quota accounting,
 - Runners reach Control over WSS and providers over HTTPS.
 - A custom CA can be added for the Runner-to-Control connection without changing the provider trust store.
 - Provider allowlists limit outbound destinations; they do not inspect or filter prompt content.
+- The customer supplies permitted provider connectivity. Runner is not a general-purpose VPN, Internet gateway, or restriction-bypass relay.
+
+See [Service boundaries and customer responsibilities](service-boundaries.md) for the account, billing, network, and availability boundary.

@@ -4,6 +4,8 @@
 
 Aster exposes OpenAI- and Anthropic-compatible model endpoints behind one member identity, quota, routing, and audit layer. Compatibility is endpoint-specific; it does not imply that every provider feature is available.
 
+The API uses customer-connected provider accounts. An Aster API key does not include a provider subscription or credit, and the endpoint does not bypass provider availability, entitlement, policy, or network requirements. See [Service boundaries](service-boundaries.md).
+
 ## Base URLs and authentication
 
 | Protocol | Base URL | Authentication |

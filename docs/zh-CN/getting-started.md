@@ -11,8 +11,11 @@
 - 与目标平台和架构匹配的安装包；
 - 通过可信渠道取得的安装包 SHA-256；
 - Linux 上的 `sudo` 权限，或 Windows 管理员 PowerShell；
+- 组织有权使用的第三方 AI 账号或订阅；
 - 能访问 Model API、Member UI 和 Admin UI 的网络；
-- 接入 ChatGPT 订阅账号时，服务器能够通过 HTTPS 访问 `auth.openai.com` 和 `chatgpt.com`。
+- 合法且经过组织批准的上游 HTTPS 出站访问；接入 ChatGPT 订阅账号时包括 `auth.openai.com` 和 `chatgpt.com`。
+
+Aster 不提供第三方账号、订阅、上游额度、VPN 或网络出口。部署前请阅读[服务边界与客户责任](service-boundaries.md)。
 
 安装包名称为 `aster-team-<版本>-<平台>-<架构>.tar.gz`。实际支持的平台以每个 [Release](https://github.com/huzz-open/aster-team/releases) 列出的文件为准，不要根据第三方文件推断支持范围。
 
@@ -79,7 +82,7 @@ Set-Location 'aster-team-<version>-windows-amd64'
 
 1. 在“产品授权”确认包内免费 License 或导入的签名 License 有效；当前权益以页面显示为准。
 2. 在“Runner 节点”确认至少一个 Runner 在线；交互安装时可选择同机 Runner。
-3. 在“订阅/账号”发起 ChatGPT OAuth 并保存授权账号。
+3. 在“订阅/账号”为组织有权使用的账号发起 ChatGPT OAuth 并保存授权结果。
 4. 同步模型，并开放允许成员使用的模型。
 5. 创建成员、发放额度，再由成员在 Member UI 创建 API Key。
 

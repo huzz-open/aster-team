@@ -2,7 +2,7 @@
 
 [English](README.md) · [中文文档](docs/zh-CN/README.md) · [下载](https://github.com/huzz-open/aster-team/releases) · [问题反馈](https://github.com/huzz-open/aster-team/issues)
 
-Aster Team 是面向团队的私有化 AI 网关。管理员可以集中接入 AI 订阅账号，为成员签发独立 API Key、分配额度，通过客户控制的 Runner 转发请求并审计用量，同时不把上游凭据分发给成员。
+Aster Team 是面向团队的私有化 AI 网关。管理员可以集中接入客户有权使用的 AI 账号或订阅，为成员签发独立 API Key、分配额度，通过客户控制的 Runner 转发请求并审计用量，同时不把上游凭据分发给成员。
 
 ## 核心能力
 
@@ -13,12 +13,16 @@ Aster Team 是面向团队的私有化 AI 网关。管理员可以集中接入 A
 - **灵活执行**：Runner 主动通过 WSS 连接 Control，无需开放入站端口。
 - **统一安装包**：免费版和付费版使用同一安装包。全新安装可以自动激活包内免费 License；导入付费签名 License 即可变更权益，无需重装。
 
+## Aster 不提供什么
+
+Aster 不提供或转售第三方账号、订阅、API 额度或模型权益，也不是通用 VPN、互联网接入、网络出口或地域限制规避工具。客户需要自行准备有权使用的账号、获准访问服务商的网络条件，并承担相应的上游订阅或用量费用。完整说明见[服务边界与客户责任](docs/zh-CN/service-boundaries.md)。
+
 ## 开始使用
 
 1. 阅读[架构与信任模型](docs/zh-CN/architecture.md)。
 2. 从 [GitHub Releases](https://github.com/huzz-open/aster-team/releases) 下载安装包并完成[发行文件校验](docs/zh-CN/release-verification.md)。
 3. 按照[安装与首次使用](docs/zh-CN/getting-started.md)部署 Control。
-4. 接入订阅账号并创建成员 API Key。
+4. 接入组织有权使用的账号或订阅，并创建成员 API Key。
 5. 使用[兼容模型 API](docs/zh-CN/api-reference.md)、[Codex](docs/zh-CN/codex.md)或 [Claude Code](docs/zh-CN/claude-code.md)。
 
 > 只有出现在本仓库 Releases 页面的文件才是公开安装包。在首个 Release 发布前，请勿从第三方镜像下载 Aster Team。
@@ -29,6 +33,7 @@ Aster Team 是面向团队的私有化 AI 网关。管理员可以集中接入 A
 | --- | --- |
 | [安装与首次使用](docs/zh-CN/getting-started.md) | 安装 Control、登录、接入账号并发起首个请求 |
 | [架构与信任模型](docs/zh-CN/architecture.md) | 了解 Control、Runner、信任边界、存储和请求链路 |
+| [服务边界](docs/zh-CN/service-boundaries.md) | 了解第三方账号、网络、费用与可用性责任 |
 | [管理员指南](docs/zh-CN/admin-guide.md) | 管理许可证、账号、模型、成员、Key 和额度 |
 | [成员指南](docs/zh-CN/member-guide.md) | 创建 Key、查找接口地址并使用接入页面 |
 | [API 参考](docs/zh-CN/api-reference.md) | 兼容接口、鉴权、模型变体、错误和调用示例 |

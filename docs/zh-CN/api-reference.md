@@ -4,6 +4,8 @@
 
 Aster 在统一的成员身份、额度、路由与审计层之后提供兼容 OpenAI 和 Anthropic 的模型接口。兼容范围以具体接口为准，并不表示支持上游的所有功能。
 
+接口使用客户接入的服务商账号。Aster API Key 不包含上游订阅或额度，接口也不会绕过服务商可用性、权益、策略或网络要求，详见[服务边界](service-boundaries.md)。
+
 ## Base URL 与鉴权
 
 | 协议 | Base URL | 鉴权 |

@@ -7,6 +7,7 @@ These guides are written for developers and administrators deploying or consumin
 ## Deploy and administer
 
 - [Architecture and trust model](architecture.md)
+- [Service boundaries and customer responsibilities](service-boundaries.md)
 - [Installation and first run](getting-started.md)
 - [Administrator guide](admin-guide.md)
 - [Operations, backup, and upgrades](operations.md)
