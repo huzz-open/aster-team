@@ -21,6 +21,16 @@
 - [Codex 接入](codex.md)
 - [Claude Code 接入](claude-code.md)
 
+## 常用开发者指南
+
+- [使用 Aster API Key 配置 Codex](guides/configure-codex-api-key.md)
+- [通过 Aster 在 Codex 中生图和编辑图片](guides/codex-image-generation-editing.md)
+- [运行多个独立 Codex 客户端](guides/multiple-independent-codex-clients.md)
+- [比较 Codex 鉴权方式](guides/codex-authentication-comparison.md)
+- [使用 Aster API Key 配置 Claude Code](guides/configure-claude-code-api-key.md)
+- [了解开发者访问与数据隔离](guides/developer-access-isolation.md)
+- [浏览全部任务型指南](guides/README.md)
+
 ## 内容边界
 
 这些文档只描述公开的安装、配置、接口与运行行为，不公开产品源码、内部交付系统、签名密钥、客户专属配置或尚未发布的实现细节。

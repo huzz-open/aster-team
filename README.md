@@ -4,6 +4,8 @@
 
 Aster Team is a privately deployed AI gateway for teams. It gives administrators one place to connect customer-authorized AI accounts or subscriptions, issue independent member API keys, allocate quotas, route requests through customer-controlled runners, and audit usage without distributing upstream credentials.
 
+**Turn customer-authorized AI capacity into independent, governed access for every developer.**
+
 ## What it provides
 
 - **Private deployment** — Control, member access, local data, and optional runners stay in infrastructure you operate.
@@ -12,6 +14,32 @@ Aster Team is a privately deployed AI gateway for teams. It gives administrators
 - **Auditable usage** — Requests are accounted for with stable request and error semantics. Prompt and response bodies are not stored in the business database.
 - **Flexible execution** — Runners connect outbound to Control over WSS, so they do not require inbound ports.
 - **One package** — Free and paid deployments use the same installer. A new installation can activate the bundled free license; a signed paid license changes entitlements without reinstalling the product.
+
+## Independent developer access
+
+```text
+Customer-authorized AI account or subscription
+                       │
+                       ▼
+                  Aster Team
+              ┌────────┼────────┐
+              ▼        ▼        ▼
+        Developer A  Developer B  CI agent
+         Member key   Member key   Member key
+         Own quota    Own quota    Own quota
+         Own usage    Own usage    Own usage
+```
+
+Aster does not create additional provider accounts. It creates independent, governed member access paths backed by capacity the customer is authorized to use. Upstream credentials remain under administrator control; each developer uses a separate Aster API key.
+
+Popular developer guides:
+
+- [Configure Codex with an Aster API key](docs/guides/configure-codex-api-key.md)
+- [Use image generation and image editing in Codex with Aster](docs/guides/codex-image-generation-editing.md)
+- [Run multiple independent Codex clients with one authorized AI subscription](docs/guides/multiple-independent-codex-clients.md)
+- [Compare ChatGPT sign-in, OpenAI API keys, and Aster member keys](docs/guides/codex-authentication-comparison.md)
+- [Configure Claude Code with an Aster API key](docs/guides/configure-claude-code-api-key.md)
+- [Understand developer access and data isolation](docs/guides/developer-access-isolation.md)
 
 ## What Aster is not
 
@@ -39,6 +67,7 @@ Aster does not provide or resell third-party accounts, subscriptions, API credit
 | [API reference](docs/api-reference.md) | Compatible endpoints, authentication, model variants, errors, and examples |
 | [Codex](docs/codex.md) | Route Codex in the ChatGPT desktop app or Codex CLI through Aster |
 | [Claude Code](docs/claude-code.md) | Configure Claude Code against the Anthropic-compatible endpoint |
+| [Developer guides](docs/guides/README.md) | Task-focused Codex, image, multi-client, authentication, and isolation guides |
 | [Operations](docs/operations.md) | Health checks, logs, backup, upgrade, and recovery |
 | [Troubleshooting](docs/troubleshooting.md) | Diagnose common installation, routing, and client problems |
 

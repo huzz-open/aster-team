@@ -88,6 +88,33 @@ curl --fail-with-body -sS 'https://aster.example.com/v1/messages' \
   --data-binary '{"model":"<已开放模型ID>","max_tokens":512,"messages":[{"role":"user","content":"你好"}]}'
 ```
 
+## 图片生成示例
+
+使用管理员当前启用且支持图片的模型：
+
+```bash
+curl --fail-with-body -sS 'https://aster.example.com/v1/images/generations' \
+  -H 'Authorization: Bearer <member-api-key>' \
+  -H 'Content-Type: application/json' \
+  --data-binary '{"model":"<enabled-image-model-id>","prompt":"A clean technical illustration of a private AI gateway","size":"1024x1024","response_format":"b64_json"}'
+```
+
+当 `response_format` 为 `b64_json` 时，响应包含 Base64 编码的图片数据。
+
+## 图片编辑示例
+
+图片编辑使用 multipart 表单。所选模型支持多张输入图片时，可以重复 `image[]` 字段：
+
+```bash
+curl --fail-with-body -sS 'https://aster.example.com/v1/images/edits' \
+  -H 'Authorization: Bearer <member-api-key>' \
+  -F 'model=<enabled-image-model-id>' \
+  -F 'prompt=Replace only the background with a soft blue gradient' \
+  -F 'image[]=@input.png'
+```
+
+实际可用性取决于已安装的 Aster 版本、管理员启用能力、所选模型、已连接账号权益、Runner 就绪状态和上游可用性。参见 [Codex 生图与图片编辑指南](guides/codex-image-generation-editing.md)。
+
 ## 模型变体
 
 `/v1/models` 只列出基础模型。不支持原生速度或推理字段的客户端，可以追加严格的模型变体后缀：

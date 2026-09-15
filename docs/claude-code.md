@@ -6,6 +6,8 @@ Aster exposes an Anthropic Messages-compatible endpoint for Claude Code. The bas
 
 Claude Code and the upstream model service remain third-party products. Aster provides a compatible gateway path but does not include a provider account, subscription, client license, network access, or upstream entitlement. See [Service boundaries](service-boundaries.md).
 
+For a concise, task-focused walkthrough, see [Configure Claude Code with an Aster API key](guides/configure-claude-code-api-key.md). For identity and quota boundaries, see [Developer access isolation](guides/developer-access-isolation.md).
+
 ## Recommended setup
 
 Install `asterctl` from **Member UI → API documentation → asterctl tool**, then run:

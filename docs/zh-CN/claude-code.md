@@ -6,6 +6,8 @@ Aster 为 Claude Code 提供 Anthropic Messages 兼容接口。Base URL 必须�
 
 Claude Code 与上游模型服务仍是第三方产品。Aster 只提供兼容网关链路，不包含服务商账号、订阅、客户端授权、网络接入或上游权益，详见[服务边界](service-boundaries.md)。
 
+简明接入步骤见[使用 Aster API Key 配置 Claude Code](guides/configure-claude-code-api-key.md)，身份与额度边界见[开发者访问隔离](guides/developer-access-isolation.md)。
+
 ## 推荐配置方式
 
 从“Member UI → API 文档 → asterctl 工具”安装 `asterctl`，然后运行：

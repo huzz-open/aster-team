@@ -21,6 +21,16 @@ These guides are written for developers and administrators deploying or consumin
 - [Codex integration](codex.md)
 - [Claude Code integration](claude-code.md)
 
+## Popular developer guides
+
+- [Configure Codex with an Aster API key](guides/configure-codex-api-key.md)
+- [Use image generation and image editing in Codex](guides/codex-image-generation-editing.md)
+- [Run multiple independent Codex clients](guides/multiple-independent-codex-clients.md)
+- [Compare Codex authentication options](guides/codex-authentication-comparison.md)
+- [Configure Claude Code with an Aster API key](guides/configure-claude-code-api-key.md)
+- [Understand developer access and data isolation](guides/developer-access-isolation.md)
+- [Browse all task-focused guides](guides/README.md)
+
 ## Product boundary
 
 This documentation describes public installation, configuration, interfaces, and operating behavior. It intentionally excludes product source code, internal deployment systems, signing keys, customer-specific configuration, and unreleased implementation details.
