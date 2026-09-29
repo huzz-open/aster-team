@@ -15,6 +15,28 @@ Aster Team is a privately deployed AI gateway for teams. It gives administrators
 - **Flexible execution** — Runners connect outbound to Control over WSS, so they do not require inbound ports.
 - **One package** — Free and paid deployments use the same installer. A new installation can activate the bundled free license; a signed paid license changes entitlements without reinstalling the product.
 
+## Product screenshots
+
+These screenshots come from compiled admin and member demo builds with fictional accounts and usage data. Actual data and available features depend on deployment and license configuration.
+
+### Administrator: operations overview
+
+See team requests, token usage, member activity, and runner status.
+
+![Aster Team administrator operations overview](website/public/product-media/en/admin-overview.png)
+
+### Member: dashboard
+
+See personal quota, request trends, available models, and recent requests.
+
+![Aster Team member dashboard](website/public/product-media/en/member-home.png)
+
+### Member: usage analytics
+
+Explore token consumption, cache composition, and request statistics by time and model.
+
+![Aster Team member usage analytics](website/public/product-media/en/member-usage.png)
+
 ## Independent developer access
 
 ![Aster Team independent developer access architecture](docs/assets/independent-developer-access.png)
