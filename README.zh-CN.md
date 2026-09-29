@@ -15,6 +15,28 @@ Aster Team 是面向团队的私有化 AI 网关。管理员可以集中接入�
 - **灵活执行**：Runner 主动通过 WSS 连接 Control，无需开放入站端口。
 - **统一安装包**：免费版和付费版使用同一安装包。全新安装可以自动激活包内免费 License；导入付费签名 License 即可变更权益，无需重装。
 
+## 产品界面
+
+以下截图来自管理端与成员端的产品演示构建，使用虚构账号和演示用量。实际数据和可用功能取决于部署与授权配置。
+
+### 管理端：运行概览
+
+查看团队请求、Token 用量、成员活跃度和 Runner 状态。
+
+![Aster Team 管理端运行概览](website/public/product-media/zh/admin-overview.png)
+
+### 成员端：控制台概览
+
+查看个人额度、请求趋势、可用模型和最近请求。
+
+![Aster Team 成员端控制台概览](website/public/product-media/zh/member-home.png)
+
+### 成员端：用量分析
+
+按时间和模型查看 Token 消耗、缓存构成及请求统计。
+
+![Aster Team 成员端用量分析](website/public/product-media/zh/member-usage.png)
+
 ## 独立的开发者访问
 
 ![Aster Team 独立开发者访问架构](docs/assets/independent-developer-access.png)
