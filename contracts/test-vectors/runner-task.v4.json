@@ -1,0 +1,248 @@
+{
+  "schema": "aster.runner-task.test-vector.v4",
+  "public_key_spki": "MCowBQYDK2VwAyEAl9HSs5QYUFddYYdqHLaD51frq1tPz6020LGCs8H6I_o",
+  "private_key_pkcs8": "MC4CAQAwBQYDK2VwBCIEIBwH__73TYC7JLeV5rpWEHw4B3x7TTXd1p8L65kQI_LX",
+  "payload_json": "{\"model\":\"gpt-test\",\"input\":\"hello\"}",
+  "canonical_claims": "{\"authorization\":{\"kind\":\"model\",\"license\":{\"expiry\":{\"kind\":\"never\"},\"license_id\":\"license-vector-123\",\"license_sha256\":\"abababababababababababababababababababababababababababababababab\"},\"resource\":{\"account_id\":\"account-vector-123\",\"public_model\":\"gpt-test\",\"upstream_model\":\"gpt-test\"},\"subject\":{\"api_key_id\":\"api-key-vector-123\",\"identity_id\":\"identity-vector-123\",\"request_id\":\"request-vector-123\",\"reservation_expires_at\":1787565720,\"reservation_id\":\"reservation-vector-123\",\"reserved_tokens\":100}},\"command\":\"execute\",\"credential_instance_id\":\"credential_00000000000000000000000000000001\",\"credential_revision\":7,\"execution_deadline_ms\":1787566200000,\"expires_at\":1787565720,\"issued_at\":1787565600,\"key_id\":\"runner-task-vector-v4\",\"nonce\":\"vector-nonce-1234567890\",\"payload_sha256\":\"oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU\",\"provider_id\":\"openai\",\"runner_id\":\"runner-vector-123\",\"schema\":\"aster.runner-task.v4\",\"task_id\":\"task-vector-123\",\"upstream_host\":\"api.openai.com\"}",
+  "ticket": {
+    "schema": "aster.runner-task.v4",
+    "key_id": "runner-task-vector-v4",
+    "task_id": "task-vector-123",
+    "runner_id": "runner-vector-123",
+    "provider_id": "openai",
+    "credential_instance_id": "credential_00000000000000000000000000000001",
+    "credential_revision": 7,
+    "upstream_host": "api.openai.com",
+    "command": "execute",
+    "payload_sha256": "oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU",
+    "issued_at": 1787565600,
+    "expires_at": 1787565720,
+    "nonce": "vector-nonce-1234567890",
+    "execution_deadline_ms": 1787566200000,
+    "authorization": {
+      "kind": "model",
+      "subject": {
+        "identity_id": "identity-vector-123",
+        "api_key_id": "api-key-vector-123",
+        "request_id": "request-vector-123",
+        "reservation_id": "reservation-vector-123",
+        "reserved_tokens": 100,
+        "reservation_expires_at": 1787565720
+      },
+      "resource": {
+        "account_id": "account-vector-123",
+        "public_model": "gpt-test",
+        "upstream_model": "gpt-test"
+      },
+      "license": {
+        "license_id": "license-vector-123",
+        "license_sha256": "abababababababababababababababababababababababababababababababab",
+        "expiry": {
+          "kind": "never"
+        }
+      }
+    },
+    "signature": "sJmD_19F1iOSTizrJI0GBjbYqiHRHAKsrz0-6EgNkLVyEbeFCUjMRGzXSa12PpsdovJFWSosr5gwBrDNPrucCA"
+  },
+  "cases": [
+    {
+      "name": "discover_models",
+      "canonical_claims": "{\"authorization\":{\"account_id\":\"account-vector-123\",\"actor\":{\"identity_id\":\"admin-vector-123\",\"kind\":\"admin\"},\"kind\":\"discover_models\",\"license\":{\"expiry\":{\"expires_at\":1787565690,\"kind\":\"fixed\"},\"license_id\":\"license-vector-123\",\"license_sha256\":\"abababababababababababababababababababababababababababababababab\"}},\"command\":\"discover_models\",\"credential_instance_id\":\"credential_00000000000000000000000000000001\",\"credential_revision\":7,\"execution_deadline_ms\":1787566200000,\"expires_at\":1787565690,\"issued_at\":1787565600,\"key_id\":\"runner-task-vector-v4\",\"nonce\":\"nonce-vector-discover_models\",\"payload_sha256\":\"oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU\",\"provider_id\":\"openai\",\"runner_id\":\"runner-vector-123\",\"schema\":\"aster.runner-task.v4\",\"task_id\":\"task-vector-discover_models\",\"upstream_host\":\"api.openai.com\"}",
+      "ticket": {
+        "schema": "aster.runner-task.v4",
+        "key_id": "runner-task-vector-v4",
+        "task_id": "task-vector-discover_models",
+        "runner_id": "runner-vector-123",
+        "provider_id": "openai",
+        "credential_instance_id": "credential_00000000000000000000000000000001",
+        "credential_revision": 7,
+        "upstream_host": "api.openai.com",
+        "command": "discover_models",
+        "payload_sha256": "oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU",
+        "issued_at": 1787565600,
+        "expires_at": 1787565690,
+        "nonce": "nonce-vector-discover_models",
+        "execution_deadline_ms": 1787566200000,
+        "authorization": {
+          "kind": "discover_models",
+          "actor": {
+            "kind": "admin",
+            "identity_id": "admin-vector-123"
+          },
+          "account_id": "account-vector-123",
+          "license": {
+            "license_id": "license-vector-123",
+            "license_sha256": "abababababababababababababababababababababababababababababababab",
+            "expiry": {
+              "kind": "fixed",
+              "expires_at": 1787565690
+            }
+          }
+        },
+        "signature": "Xld1BrZfxdGX3C---xI5OPm2x-RPPFzQwoTMvZo9uB7eR8NyaKsoVRx37JyDxpfunKkz9JBdgjK-dhcCh1ddBw"
+      }
+    },
+    {
+      "name": "refresh_credential",
+      "canonical_claims": "{\"authorization\":{\"account_id\":\"account-vector-123\",\"actor\":{\"kind\":\"service\",\"service\":\"credential_broker\"},\"kind\":\"refresh_credential\",\"lease_expires_at\":1787565645,\"lease_sha256\":\"cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd\",\"license\":{\"expiry\":{\"kind\":\"never\"},\"license_id\":\"license-vector-123\",\"license_sha256\":\"abababababababababababababababababababababababababababababababab\"}},\"command\":\"refresh_credential\",\"credential_instance_id\":\"credential_00000000000000000000000000000001\",\"credential_revision\":7,\"execution_deadline_ms\":1787566200000,\"expires_at\":1787565645,\"issued_at\":1787565600,\"key_id\":\"runner-task-vector-v4\",\"nonce\":\"nonce-vector-refresh_credential\",\"payload_sha256\":\"oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU\",\"provider_id\":\"openai\",\"runner_id\":\"runner-vector-123\",\"schema\":\"aster.runner-task.v4\",\"task_id\":\"task-vector-refresh_credential\",\"upstream_host\":\"api.openai.com\"}",
+      "ticket": {
+        "schema": "aster.runner-task.v4",
+        "key_id": "runner-task-vector-v4",
+        "task_id": "task-vector-refresh_credential",
+        "runner_id": "runner-vector-123",
+        "provider_id": "openai",
+        "credential_instance_id": "credential_00000000000000000000000000000001",
+        "credential_revision": 7,
+        "upstream_host": "api.openai.com",
+        "command": "refresh_credential",
+        "payload_sha256": "oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU",
+        "issued_at": 1787565600,
+        "expires_at": 1787565645,
+        "nonce": "nonce-vector-refresh_credential",
+        "execution_deadline_ms": 1787566200000,
+        "authorization": {
+          "kind": "refresh_credential",
+          "actor": {
+            "kind": "service",
+            "service": "credential_broker"
+          },
+          "account_id": "account-vector-123",
+          "lease_sha256": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+          "lease_expires_at": 1787565645,
+          "license": {
+            "license_id": "license-vector-123",
+            "license_sha256": "abababababababababababababababababababababababababababababababab",
+            "expiry": {
+              "kind": "never"
+            }
+          }
+        },
+        "signature": "R5Zt8p77nKd_iDCEvRfMgqbA5BoiPvCwz8JnFdEGLz2uZSEWi94b7dx-aVsnmZ9B8rIueq2g4OOjIMqByvRhDg"
+      }
+    },
+    {
+      "name": "authorize_credential",
+      "canonical_claims": "{\"authorization\":{\"actor\":{\"identity_id\":\"admin-vector-123\"},\"enrollment_id\":\"enrollment-vector-123\",\"kind\":\"authorize_credential\",\"license\":{\"expiry\":{\"kind\":\"never\"},\"license_id\":\"license-vector-123\",\"license_sha256\":\"abababababababababababababababababababababababababababababababab\"},\"session_expires_at\":1787565630},\"command\":\"authorize_credential\",\"credential_instance_id\":null,\"credential_revision\":null,\"execution_deadline_ms\":1787566200000,\"expires_at\":1787565630,\"issued_at\":1787565600,\"key_id\":\"runner-task-vector-v4\",\"nonce\":\"nonce-vector-authorize_credential\",\"payload_sha256\":\"oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU\",\"provider_id\":\"openai\",\"runner_id\":\"runner-vector-123\",\"schema\":\"aster.runner-task.v4\",\"task_id\":\"task-vector-authorize_credential\",\"upstream_host\":\"api.openai.com\"}",
+      "ticket": {
+        "schema": "aster.runner-task.v4",
+        "key_id": "runner-task-vector-v4",
+        "task_id": "task-vector-authorize_credential",
+        "runner_id": "runner-vector-123",
+        "provider_id": "openai",
+        "credential_instance_id": null,
+        "credential_revision": null,
+        "upstream_host": "api.openai.com",
+        "command": "authorize_credential",
+        "payload_sha256": "oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU",
+        "issued_at": 1787565600,
+        "expires_at": 1787565630,
+        "nonce": "nonce-vector-authorize_credential",
+        "execution_deadline_ms": 1787566200000,
+        "authorization": {
+          "kind": "authorize_credential",
+          "actor": {
+            "identity_id": "admin-vector-123"
+          },
+          "enrollment_id": "enrollment-vector-123",
+          "session_expires_at": 1787565630,
+          "license": {
+            "license_id": "license-vector-123",
+            "license_sha256": "abababababababababababababababababababababababababababababababab",
+            "expiry": {
+              "kind": "never"
+            }
+          }
+        },
+        "signature": "l2ux5bDspiYhnSK5JI5CQeqJD2hR8JMfYvKptJPyfiiHOGxc7tC46X_xI01GrLQzdgY35B-_sj4BOOGLyV4hBA"
+      }
+    },
+    {
+      "name": "fetch_asset",
+      "ticket": {
+        "schema": "aster.runner-task.v4",
+        "key_id": "runner-task-vector-v4",
+        "task_id": "task-vector-fetch_asset",
+        "runner_id": "runner-vector-123",
+        "provider_id": "glm",
+        "credential_instance_id": "credential_00000000000000000000000000000001",
+        "credential_revision": 7,
+        "upstream_host": "cdn.example.test",
+        "command": "fetch_asset",
+        "payload_sha256": "oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU",
+        "issued_at": 1787565600,
+        "expires_at": 1787565720,
+        "nonce": "nonce-vector-fetch_asset",
+        "execution_deadline_ms": 1787566200000,
+        "authorization": {
+          "kind": "fetch_asset",
+          "subject": {
+            "identity_id": "identity-vector-123",
+            "api_key_id": "api-key-vector-123",
+            "request_id": "request-vector-123",
+            "reservation_id": "reservation-vector-123",
+            "reserved_images": 1,
+            "reservation_expires_at": 1787565720
+          },
+          "resource": {
+            "account_id": "account-vector-123",
+            "public_model": "glm-image",
+            "upstream_model": "glm-image"
+          },
+          "license": {
+            "license_id": "license-vector-123",
+            "license_sha256": "abababababababababababababababababababababababababababababababab",
+            "expiry": {
+              "kind": "never"
+            }
+          }
+        },
+        "signature": "ESGoayFtHFC7hzKVvqoAzJMeIzuIuCOcYcZgmjVdaHOhgFVdK35FwaBlOF69JpNZE6tskLctVV9VJKoiKVDdBg"
+      },
+      "canonical_claims": "{\"authorization\":{\"kind\":\"fetch_asset\",\"license\":{\"expiry\":{\"kind\":\"never\"},\"license_id\":\"license-vector-123\",\"license_sha256\":\"abababababababababababababababababababababababababababababababab\"},\"resource\":{\"account_id\":\"account-vector-123\",\"public_model\":\"glm-image\",\"upstream_model\":\"glm-image\"},\"subject\":{\"api_key_id\":\"api-key-vector-123\",\"identity_id\":\"identity-vector-123\",\"request_id\":\"request-vector-123\",\"reservation_expires_at\":1787565720,\"reservation_id\":\"reservation-vector-123\",\"reserved_images\":1}},\"command\":\"fetch_asset\",\"credential_instance_id\":\"credential_00000000000000000000000000000001\",\"credential_revision\":7,\"execution_deadline_ms\":1787566200000,\"expires_at\":1787565720,\"issued_at\":1787565600,\"key_id\":\"runner-task-vector-v4\",\"nonce\":\"nonce-vector-fetch_asset\",\"payload_sha256\":\"oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU\",\"provider_id\":\"glm\",\"runner_id\":\"runner-vector-123\",\"schema\":\"aster.runner-task.v4\",\"task_id\":\"task-vector-fetch_asset\",\"upstream_host\":\"cdn.example.test\"}"
+    },
+    {
+      "name": "image_model",
+      "ticket": {
+        "schema": "aster.runner-task.v4",
+        "key_id": "runner-task-vector-v4",
+        "task_id": "task-vector-image_model",
+        "runner_id": "runner-vector-123",
+        "provider_id": "glm",
+        "credential_instance_id": "credential_00000000000000000000000000000001",
+        "credential_revision": 7,
+        "upstream_host": "api.z.ai",
+        "command": "execute",
+        "payload_sha256": "oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU",
+        "issued_at": 1787565600,
+        "expires_at": 1787565720,
+        "nonce": "nonce-vector-image_model",
+        "execution_deadline_ms": 1787566200000,
+        "authorization": {
+          "kind": "image_model",
+          "subject": {
+            "identity_id": "identity-vector-123",
+            "api_key_id": "api-key-vector-123",
+            "request_id": "request-vector-123",
+            "reservation_id": "reservation-vector-123",
+            "reserved_images": 1,
+            "reservation_expires_at": 1787565720
+          },
+          "resource": {
+            "account_id": "account-vector-123",
+            "public_model": "glm-image",
+            "upstream_model": "glm-image"
+          },
+          "license": {
+            "license_id": "license-vector-123",
+            "license_sha256": "abababababababababababababababababababababababababababababababab",
+            "expiry": {
+              "kind": "never"
+            }
+          }
+        },
+        "signature": "XrhJ9vs_YM52kZsX0Nj2qDZlSXxRnHegolaPDVs8GXSzQBewedooHF_7_NmEa9GF1yMZeG74xPeaBBpCQUAZAg"
+      },
+      "canonical_claims": "{\"authorization\":{\"kind\":\"image_model\",\"license\":{\"expiry\":{\"kind\":\"never\"},\"license_id\":\"license-vector-123\",\"license_sha256\":\"abababababababababababababababababababababababababababababababab\"},\"resource\":{\"account_id\":\"account-vector-123\",\"public_model\":\"glm-image\",\"upstream_model\":\"glm-image\"},\"subject\":{\"api_key_id\":\"api-key-vector-123\",\"identity_id\":\"identity-vector-123\",\"request_id\":\"request-vector-123\",\"reservation_expires_at\":1787565720,\"reservation_id\":\"reservation-vector-123\",\"reserved_images\":1}},\"command\":\"execute\",\"credential_instance_id\":\"credential_00000000000000000000000000000001\",\"credential_revision\":7,\"execution_deadline_ms\":1787566200000,\"expires_at\":1787565720,\"issued_at\":1787565600,\"key_id\":\"runner-task-vector-v4\",\"nonce\":\"nonce-vector-image_model\",\"payload_sha256\":\"oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU\",\"provider_id\":\"glm\",\"runner_id\":\"runner-vector-123\",\"schema\":\"aster.runner-task.v4\",\"task_id\":\"task-vector-image_model\",\"upstream_host\":\"api.z.ai\"}"
+    }
+  ]
+}

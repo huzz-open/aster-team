@@ -1,0 +1,15 @@
+# Licensing and trust boundaries
+
+Read when changing Customer authorization, quotas, credential storage, Runner trust or signing.
+
+- Customer license decisions remain local and offline. Operations is a separate trust/data domain; do not introduce a vendor heartbeat, remote entitlement dependency or authorization bypass.
+- Use the current `verify_product_license` entry point and shared schemas/catalogs. The Customer product baseline accepts signed v2 licenses; historical v1 objects/vectors are not permission to reopen legacy product inputs.
+- Free and paid installations use the same signed product package. Free distribution has explicit signed capabilities; standard subscription feature sets remain bounded by the issuer's ceiling, and optional extensions require their own grants. Public catalog/plan/UI data cannot grant runtime permissions.
+- Check signature, issuer scope, binding, version, time and protected history before using an entitlement snapshot. An unbound license skips only license-to-machine matching, not local installation-identity validation. Failures retain authorized recovery paths without granting business access.
+- Coordinate license transitions with database mutations. Enforce entity quotas inside the database transaction, including concurrent create/enable operations and success audit. Disabled/offline Runners and upstream accounts still count; deletion releases their capacity. Active consuming identities count as seats regardless of role; active member keys count until revoked.
+- Expiry does not automatically switch to free or delete data. Preserve the existing access classes for retained reads/recovery and reject consuming operations as required. Do not add special expiry keepalive or timed termination behavior for existing requests.
+- Explicit free switching must validate the bundled signed license and capacity, preserve paid history and pending renewal, and recover atomically after interruption. Ordinary import/startup/upgrade must not silently replace paid authorization with free or clear rollback history.
+- Keep exact verified license bytes and protected history in the existing locked, journaled transaction. Recovery of an accepted transaction does not authorize a different document or extend its lifetime.
+- License private keys, Release private keys, installation/database keys and Runner identities have separate purposes. Never reuse signing keys across License/Release, ship private keys, or permit production runtime trust-root overrides. Rotation and compromise handling are documented in [architecture](../../../docs/architecture.md).
+- Credentials belong to logical accounts, not permanent Runner placements. Refresh leases and CAS revisions are per credential instance; duplicate refresh-token copies are not independent capacity. Runner tasks must retain signature, audience, payload, nonce, expiry and execution-deadline checks; use the current protocol constants and schemas.
+- Test fixtures and local successful runs do not establish formal signing inputs or published security guarantees. Do not claim resistance to a host owner's full snapshot rollback without separate evidence.

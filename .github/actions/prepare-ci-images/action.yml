@@ -1,0 +1,8 @@
+name: Prepare immutable CI images
+description: Validate the public immutable CI image lock; never build images
+runs:
+  using: composite
+  steps:
+    - name: Check the complete published image lock
+      shell: bash
+      run: npm run ci:images:check

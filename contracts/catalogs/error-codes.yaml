@@ -1,0 +1,1163 @@
+version: 1
+errors:
+  - target: customer
+    module: member
+    constant: SEAT_LIMIT_REACHED
+    code: MEMBER_SEAT_LIMIT_REACHED
+    number: 12010
+    message: 成员席位已达到许可证上限
+  - target: customer
+    module: member
+    constant: INVALID
+    code: MEMBER_INVALID
+    number: 12001
+    message: 成员信息无效
+  - target: customer
+    module: member
+    constant: EMAIL_EXISTS
+    code: MEMBER_EMAIL_EXISTS
+    number: 12002
+    message: 该邮箱已经存在
+  - target: customer
+    module: member
+    constant: NOT_FOUND
+    code: MEMBER_NOT_FOUND
+    number: 12003
+    message: 成员不存在
+  - target: customer
+    module: member
+    constant: QUOTA_UPDATE_CONFLICT
+    code: MEMBER_QUOTA_UPDATE_CONFLICT
+    number: 12011
+    message: 成员额度已被其他操作更新
+  - target: customer
+    module: member
+    constant: QUOTA_GRANT_DUPLICATE
+    code: MEMBER_QUOTA_GRANT_DUPLICATE
+    number: 12012
+    message: 该额度发放凭据已经使用
+  - target: customer
+    module: member
+    constant: STATUS_UPDATE_CONFLICT
+    code: MEMBER_STATUS_UPDATE_CONFLICT
+    number: 12013
+    message: 成员状态已被并发更新
+  - target: customer
+    module: member
+    constant: CONSUMPTION_QUERY_INVALID
+    code: ADMIN_CONSUMPTION_QUERY_INVALID
+    number: 12014
+    message: 团队消费日志查询参数无效
+  - target: customer
+    module: member
+    constant: MODEL_ACCESS_CONFLICT
+    code: MEMBER_MODEL_ACCESS_CONFLICT
+    number: 12015
+    message: 成员模型权限已被其他操作更新
+  - target: customer
+    module: member
+    constant: QUOTA_ADJUSTMENT_INVALID
+    code: MEMBER_QUOTA_ADJUSTMENT_INVALID
+    number: 12016
+    message: 额度变更内容无效，请检查 Token、图片张数和原因
+  - target: customer
+    module: member
+    constant: MONEY_ADJUSTMENT_INVALID
+    code: MEMBER_MONEY_ADJUSTMENT_INVALID
+    number: 12017
+    message: 金额或调整原因无效
+  - target: customer
+    module: admin_auth
+    constant: INVALID_CREDENTIALS
+    code: ADMIN_INVALID_CREDENTIALS
+    number: 11001
+    message: 邮箱或密码不正确
+  - target: customer
+    module: admin_auth
+    constant: UNAUTHENTICATED
+    code: ADMIN_UNAUTHENTICATED
+    number: 11002
+    message: 管理员登录状态已经失效
+  - target: customer
+    module: admin_auth
+    constant: PASSWORD_CHANGE_REQUIRED
+    code: ADMIN_PASSWORD_CHANGE_REQUIRED
+    number: 11003
+    message: 首次登录必须修改安装器生成的初始密码
+  - target: customer
+    module: admin_auth
+    constant: CURRENT_PASSWORD_INVALID
+    code: ADMIN_CURRENT_PASSWORD_INVALID
+    number: 11004
+    message: 当前管理员密码不正确
+  - target: customer
+    module: admin_auth
+    constant: NEW_PASSWORD_INVALID
+    code: ADMIN_NEW_PASSWORD_INVALID
+    number: 11005
+    message: 新管理员密码不符合安全要求
+  - target: customer
+    module: admin_auth
+    constant: PASSWORD_UPDATE_CONFLICT
+    code: ADMIN_PASSWORD_UPDATE_CONFLICT
+    number: 11006
+    message: 管理员密码已被其他操作更新，请重新登录
+  - target: customer
+    module: member_auth
+    constant: INVALID_CREDENTIALS
+    code: MEMBER_INVALID_CREDENTIALS
+    number: 21001
+    message: 邮箱或密码不正确
+  - target: customer
+    module: member_auth
+    constant: UNAUTHENTICATED
+    code: MEMBER_UNAUTHENTICATED
+    number: 21002
+    message: 成员登录状态已经失效
+  - target: customer
+    module: member_auth
+    constant: PASSWORD_CHANGE_REQUIRED
+    code: MEMBER_PASSWORD_CHANGE_REQUIRED
+    number: 21003
+    message: 首次登录必须修改管理员设置的初始密码
+  - target: customer
+    module: member_auth
+    constant: CURRENT_PASSWORD_INVALID
+    code: MEMBER_CURRENT_PASSWORD_INVALID
+    number: 21004
+    message: 当前成员密码不正确
+  - target: customer
+    module: member_auth
+    constant: NEW_PASSWORD_INVALID
+    code: MEMBER_NEW_PASSWORD_INVALID
+    number: 21005
+    message: 新成员密码不符合安全要求
+  - target: customer
+    module: member_auth
+    constant: PASSWORD_UPDATE_CONFLICT
+    code: MEMBER_PASSWORD_UPDATE_CONFLICT
+    number: 21006
+    message: 成员密码已被其他操作更新，请重新登录
+  - target: customer
+    module: member_api_key
+    constant: INVALID
+    code: API_KEY_INVALID
+    number: 22001
+    message: API Key 信息无效
+  - target: customer
+    module: member_api_key
+    constant: NOT_FOUND
+    code: API_KEY_NOT_FOUND
+    number: 22002
+    message: API Key 不存在或已经撤销
+  - target: customer
+    module: member_api_key
+    constant: UPDATE_CONFLICT
+    code: API_KEY_UPDATE_CONFLICT
+    number: 22003
+    message: API Key 已被其他操作更新
+  - target: customer
+    module: member_api_key
+    constant: LIMIT_REACHED
+    code: API_KEY_LIMIT_REACHED
+    number: 22004
+    message: API Key 已达到许可证对每位成员的上限
+  - target: customer
+    module: member_usage
+    constant: INVALID
+    code: MEMBER_USAGE_QUERY_INVALID
+    number: 24001
+    message: 用量查询参数无效
+  - target: customer
+    module: member_quota
+    constant: INVALID
+    code: MEMBER_QUOTA_REQUEST_INVALID
+    number: 23001
+    message: 额度申请参数无效
+  - target: customer
+    module: member_quota
+    constant: PENDING_EXISTS
+    code: MEMBER_QUOTA_REQUEST_PENDING_EXISTS
+    number: 23002
+    message: 当前已有一条待审批额度申请
+  - target: customer
+    module: member_quota
+    constant: NOT_FOUND
+    code: MEMBER_QUOTA_REQUEST_NOT_FOUND
+    number: 23003
+    message: 额度申请不存在
+  - target: customer
+    module: member_quota
+    constant: REVIEW_CONFLICT
+    code: MEMBER_QUOTA_REQUEST_REVIEW_CONFLICT
+    number: 23004
+    message: 额度申请已被审批或相关额度状态已变化
+  - target: customer
+    module: member_quota
+    constant: VOUCHER_INVALID
+    code: VOUCHER_INVALID
+    number: 23005
+    message: 兑换券参数或券码无效
+  - target: customer
+    module: member_quota
+    constant: VOUCHER_NOT_FOUND
+    code: VOUCHER_NOT_FOUND
+    number: 23006
+    message: 兑换券不存在
+  - target: customer
+    module: member_quota
+    constant: VOUCHER_UNAVAILABLE
+    code: VOUCHER_UNAVAILABLE
+    number: 23007
+    message: 兑换券不可用、已过期或不属于当前成员
+  - target: customer
+    module: member_quota
+    constant: VOUCHER_ALREADY_REDEEMED
+    code: VOUCHER_ALREADY_REDEEMED
+    number: 23008
+    message: 当前成员已经兑换过该兑换券
+  - target: customer
+    module: member_quota
+    constant: VOUCHER_REDEEM_CONFLICT
+    code: VOUCHER_REDEEM_CONFLICT
+    number: 23009
+    message: 兑换券或成员额度已被其他操作更新
+  - target: customer
+    module: member_quota
+    constant: VOUCHER_DELETE_CONFLICT
+    code: VOUCHER_DELETE_CONFLICT
+    number: 23010
+    message: 兑换券已有兑换记录，必须保留审计链路
+  - target: customer
+    module: gateway_auth
+    constant: INVALID_API_KEY
+    code: INVALID_API_KEY
+    number: 31001
+    message: 缺少有效的 API Key 或 API Key 已失效
+  - target: customer
+    module: gateway_request
+    constant: INVALID
+    code: INVALID_REQUEST
+    number: 32001
+    message: 请求参数无效
+  - target: customer
+    module: gateway_request
+    constant: INVALID_COMPATIBILITY_MODE
+    code: INVALID_COMPATIBILITY_MODE
+    number: 32002
+    message: 兼容模式请求头无效
+  - target: customer
+    module: gateway_routing
+    constant: MODEL_NOT_FOUND
+    code: MODEL_NOT_FOUND
+    number: 33001
+    message: 模型不存在或未开放
+  - target: customer
+    module: gateway_routing
+    constant: MODEL_ACCOUNT_NOT_READY
+    code: MODEL_ACCOUNT_NOT_READY
+    number: 33002
+    message: 当前没有可执行该模型的有效上游凭据
+  - target: customer
+    module: gateway_routing
+    constant: MODEL_ACCESS_DENIED
+    code: MODEL_ACCESS_DENIED
+    number: 33005
+    message: 该模型未授权给当前用户
+  - target: customer
+    module: gateway_settlement
+    constant: INSUFFICIENT_QUOTA
+    code: INSUFFICIENT_QUOTA
+    number: 34001
+    message: 可用额度不足
+  - target: customer
+    module: gateway_settlement
+    constant: RESERVATION_CONFLICT
+    code: QUOTA_RESERVATION_CONFLICT
+    number: 34002
+    message: 额度预留状态已变化，请重新发起请求
+  - target: customer
+    module: gateway_settlement
+    constant: USAGE_INVALID
+    code: USAGE_SETTLEMENT_INVALID
+    number: 34003
+    message: 上游返回的用量信息无效
+  - target: customer
+    module: gateway_settlement
+    constant: SETTLEMENT_CONFLICT
+    code: USAGE_SETTLEMENT_CONFLICT
+    number: 34004
+    message: 额度结算状态已变化
+  - target: customer
+    module: gateway_settlement
+    constant: DUPLICATE_REQUEST
+    code: DUPLICATE_REQUEST
+    number: 34005
+    message: 请求标识已经使用
+  - target: customer
+    module: gateway_settlement
+    constant: BILLING_PRICE_UNAVAILABLE
+    code: BILLING_PRICE_UNAVAILABLE
+    number: 34006
+    message: 该模型尚未配置有效价格
+  - target: customer
+    module: gateway_settlement
+    constant: BILLING_CALCULATION_INVALID
+    code: BILLING_CALCULATION_INVALID
+    number: 34007
+    message: 用量无法按已配置价格计算
+  - target: customer
+    module: gateway_upstream
+    constant: INVALID_RESPONSE
+    code: INVALID_UPSTREAM_RESPONSE
+    number: 35001
+    message: 上游返回了无法验证的响应
+  - target: customer
+    module: gateway_upstream
+    constant: REQUEST_FAILED
+    code: UPSTREAM_REQUEST_FAILED
+    number: 35002
+    message: 上游请求执行失败
+  - target: customer
+    module: gateway_upstream
+    constant: RESPONSE_TOO_LARGE
+    code: UPSTREAM_RESPONSE_TOO_LARGE
+    number: 35003
+    message: 上游响应超过允许大小
+  - target: customer
+    module: gateway_upstream
+    constant: USAGE_INVALID
+    code: UPSTREAM_USAGE_INVALID
+    number: 35004
+    message: 上游响应缺少有效的用量信息
+  - target: customer
+    module: gateway_upstream
+    constant: IMAGE_DELIVERY_FAILED
+    code: IMAGE_DELIVERY_FAILED
+    number: 35005
+    message: 图片已生成，但交付图片失败
+  - target: customer
+    module: upstream
+    constant: CREDENTIAL_DUPLICATE
+    code: UPSTREAM_CREDENTIAL_DUPLICATE
+    number: 13001
+    message: 该上游凭据已经存在，复制同一凭据不能作为独立实例
+  - target: customer
+    module: upstream
+    constant: CREDENTIAL_NOT_FOUND
+    code: UPSTREAM_CREDENTIAL_NOT_FOUND
+    number: 13002
+    message: 上游凭据不存在
+  - target: customer
+    module: upstream
+    constant: CREDENTIAL_REFRESH_CONFLICT
+    code: UPSTREAM_CREDENTIAL_REFRESH_CONFLICT
+    number: 13003
+    message: 上游凭据已被其他刷新任务更新
+  - target: customer
+    module: upstream
+    constant: CREDENTIAL_INVALID
+    code: UPSTREAM_CREDENTIAL_INVALID
+    number: 13004
+    message: 上游凭据无效或无法解密
+  - target: customer
+    module: upstream
+    constant: ACCOUNT_NOT_FOUND
+    code: UPSTREAM_ACCOUNT_NOT_FOUND
+    number: 13005
+    message: 订阅/账号不存在
+  - target: customer
+    module: upstream
+    constant: CREDENTIAL_REFRESH_BUSY
+    code: UPSTREAM_CREDENTIAL_REFRESH_BUSY
+    number: 13006
+    message: 该凭据实例正在刷新，请稍后重试
+  - target: customer
+    module: upstream
+    constant: CREDENTIAL_REFRESH_LEASE_INVALID
+    code: UPSTREAM_CREDENTIAL_REFRESH_LEASE_INVALID
+    number: 13007
+    message: 凭据刷新租约无效或已过期
+  - target: customer
+    module: upstream
+    constant: OAUTH_SESSION_INVALID
+    code: UPSTREAM_OAUTH_SESSION_INVALID
+    number: 13008
+    message: 上游授权会话无效或已过期
+  - target: customer
+    module: upstream
+    constant: OAUTH_EXCHANGE_FAILED
+    code: UPSTREAM_OAUTH_EXCHANGE_FAILED
+    number: 13009
+    message: 上游授权码兑换失败
+  - target: customer
+    module: upstream
+    constant: OAUTH_SESSION_BUSY
+    code: UPSTREAM_OAUTH_SESSION_BUSY
+    number: 13010
+    message: 上游授权会话正在完成
+  - target: customer
+    module: upstream
+    constant: MODEL_SYNC_FAILED
+    code: UPSTREAM_MODEL_SYNC_FAILED
+    number: 13011
+    message: 订阅/账号没有返回可用模型
+  - target: customer
+    module: upstream
+    constant: ACCOUNT_INPUT_INVALID
+    code: UPSTREAM_ACCOUNT_INPUT_INVALID
+    number: 13012
+    message: 订阅/账号管理参数无效
+  - target: customer
+    module: upstream
+    constant: MODEL_NOT_FOUND
+    code: UPSTREAM_MODEL_NOT_FOUND
+    number: 13013
+    message: 上游模型不存在
+  - target: customer
+    module: upstream
+    constant: MODEL_INPUT_INVALID
+    code: UPSTREAM_MODEL_INPUT_INVALID
+    number: 13014
+    message: 上游模型管理参数无效
+  - target: customer
+    module: upstream
+    constant: ACCOUNT_LIMIT_REACHED
+    code: UPSTREAM_ACCOUNT_LIMIT_REACHED
+    number: 13015
+    message: 订阅/账号已达到许可证上限
+  - target: customer
+    module: upstream
+    constant: CONNECTION_REVISION_CONFLICT
+    code: UPSTREAM_CONNECTION_REVISION_CONFLICT
+    number: 13016
+    message: API Key 连接已被其他操作更新
+  - target: customer
+    module: upstream
+    constant: PLUGIN_UNAVAILABLE
+    code: UPSTREAM_PLUGIN_UNAVAILABLE
+    number: 13017
+    message: 上游适配插件未就绪，请先配置并激活插件
+  - target: customer
+    module: platform
+    constant: SETTINGS_INVALID
+    code: PLATFORM_SETTINGS_INVALID
+    number: 15001
+    message: 运行配置参数无效
+  - target: customer
+    module: platform
+    constant: SETTINGS_UPDATE_CONFLICT
+    code: PLATFORM_SETTINGS_UPDATE_CONFLICT
+    number: 15002
+    message: 运行配置已被其他管理员更新
+  - target: customer
+    module: platform
+    constant: AUDIT_QUERY_INVALID
+    code: PLATFORM_AUDIT_QUERY_INVALID
+    number: 15003
+    message: 安全审计查询参数无效
+  - target: customer
+    module: platform
+    constant: BILLING_PRICE_SYNC_UNSUPPORTED
+    code: BILLING_PRICE_SYNC_UNSUPPORTED
+    number: 15004
+    message: 该模型暂无可可靠同步的官方价格，请手动配置
+  - target: customer
+    module: maintenance
+    constant: INPUT_INVALID
+    code: MAINTENANCE_INPUT_INVALID
+    number: 15010
+    message: 升级包或维护参数无效
+  - target: customer
+    module: maintenance
+    constant: BUSY
+    code: MAINTENANCE_BUSY
+    number: 15011
+    message: 已有升级或维护任务正在执行
+  - target: customer
+    module: maintenance
+    constant: UNAVAILABLE
+    code: MAINTENANCE_UNAVAILABLE
+    number: 15012
+    message: 升级维护功能暂时不可用
+  - target: customer
+    module: license
+    constant: MISSING
+    code: LICENSE_MISSING
+    number: 51001
+    message: 尚未安装许可证
+  - target: customer
+    module: license
+    constant: EXPIRED
+    code: LICENSE_EXPIRED
+    number: 51002
+    message: 许可证已到期
+  - target: customer
+    module: license
+    constant: INVALID
+    code: LICENSE_INVALID
+    number: 51003
+    message: 许可证无效
+  - target: customer
+    module: license
+    constant: TIME_INVALID
+    code: LICENSE_TIME_INVALID
+    number: 51004
+    message: 本机时间不满足许可证要求
+  - target: customer
+    module: license
+    constant: MACHINE_MISMATCH
+    code: LICENSE_MACHINE_MISMATCH
+    number: 51005
+    message: 许可证与当前机器不匹配
+  - target: customer
+    module: license
+    constant: VERSION_INVALID
+    code: LICENSE_VERSION_INVALID
+    number: 51006
+    message: 当前程序版本不满足许可证要求
+  - target: customer
+    module: license
+    constant: ROLLBACK_REJECTED
+    code: LICENSE_ROLLBACK_REJECTED
+    number: 51007
+    message: 检测到许可证状态回滚
+  - target: customer
+    module: license
+    constant: FEATURE_NOT_LICENSED
+    code: FEATURE_NOT_LICENSED
+    number: 51008
+    message: 许可证未包含该功能
+  - target: customer
+    module: license
+    constant: SEAT_OVERAGE_EXPIRED
+    code: MEMBER_SEAT_OVERAGE_EXPIRED
+    number: 51009
+    message: 成员席位超额宽限期已结束
+  - target: customer
+    module: backend
+    constant: DATABASE_CONNECTION_FAILED
+    code: BACKEND_DATABASE_CONNECTION_FAILED
+    number: 91005
+    message: 数据库连接失败，请检查数据库服务与连接配置
+  - target: customer
+    module: backend
+    constant: DATABASE_SCHEMA_MISMATCH
+    code: BACKEND_DATABASE_SCHEMA_MISMATCH
+    number: 91006
+    message: 数据库结构与当前程序不匹配，请检查迁移状态
+  - target: customer
+    module: backend
+    constant: DATABASE_DECODE_FAILED
+    code: BACKEND_DATABASE_DECODE_FAILED
+    number: 91010
+    message: 数据库字段读取失败，字段类型与当前程序不匹配
+  - target: customer
+    module: backend
+    constant: DATABASE_QUERY_FAILED
+    code: BACKEND_DATABASE_QUERY_FAILED
+    number: 91007
+    message: 数据库查询或写入失败，请查看服务端日志
+  - target: customer
+    module: backend
+    constant: LOCAL_STATE_FAILED
+    code: BACKEND_LOCAL_STATE_FAILED
+    number: 91008
+    message: 服务端本地状态读取或写入失败，请检查文件与权限
+  - target: customer
+    module: backend
+    constant: INTERNAL_OPERATION_FAILED
+    code: BACKEND_INTERNAL_OPERATION_FAILED
+    number: 91009
+    message: 服务端内部操作失败，请查看服务端日志
+  - target: customer
+    module: backend
+    constant: STORAGE_NOT_CONFIGURED
+    code: BACKEND_STORAGE_NOT_CONFIGURED
+    number: 91011
+    message: 服务端数据库尚未配置
+  - target: customer
+    module: backend
+    constant: TIME_CONVERSION_FAILED
+    code: BACKEND_TIME_CONVERSION_FAILED
+    number: 91012
+    message: 服务端时间无法转换为存储格式
+  - target: customer
+    module: backend
+    constant: RANDOMNESS_UNAVAILABLE
+    code: BACKEND_RANDOMNESS_UNAVAILABLE
+    number: 91013
+    message: 服务端随机数生成失败
+  - target: customer
+    module: backend
+    constant: RUNNER_TASK_ISSUER_NOT_CONFIGURED
+    code: BACKEND_RUNNER_TASK_ISSUER_NOT_CONFIGURED
+    number: 91014
+    message: Runner 任务签发配置缺失
+  - target: customer
+    module: backend
+    constant: TASK_EXECUTION_FAILED
+    code: BACKEND_TASK_EXECUTION_FAILED
+    number: 91015
+    message: 服务端后台任务执行失败，请查看服务端日志
+  - target: customer
+    module: backend
+    constant: AUDIT_READ_CONFLICT
+    code: BACKEND_AUDIT_READ_CONFLICT
+    number: 91016
+    message: 审计记录持续变化，请稍后重新读取
+  - target: customer
+    module: backend
+    constant: INSTANCE_DRAINING
+    code: BACKEND_INSTANCE_DRAINING
+    number: 91003
+    message: 当前实例正在排空，请重试请求
+  - target: customer
+    module: backend
+    constant: REQUEST_DEADLINE_EXCEEDED
+    code: BACKEND_REQUEST_DEADLINE_EXCEEDED
+    number: 91004
+    message: 请求处理超时，请确认操作结果
+  - target: customer
+    module: backend
+    constant: DATA_INTEGRITY_INVALID
+    code: BACKEND_DATA_INTEGRITY_INVALID
+    number: 91002
+    message: 关键业务数据完整性校验失败
+  - target: customer
+    module: routing
+    constant: RUNNER_NOT_READY
+    code: RUNNER_NOT_READY
+    number: 33003
+    message: 当前没有可用的 Runner
+  - target: customer
+    module: routing
+    constant: RETRY_FORBIDDEN
+    code: RUNNER_RETRY_FORBIDDEN
+    number: 33004
+    message: 请求已发送到上游，不能自动切换 Runner
+  - target: customer
+    module: runner
+    constant: PROTOCOL_INCOMPATIBLE
+    code: RUNNER_PROTOCOL_INCOMPATIBLE
+    number: 41001
+    message: Runner 协议版本不兼容
+  - target: customer
+    module: runner
+    constant: TASK_TICKET_INVALID
+    code: RUNNER_TASK_TICKET_INVALID
+    number: 41002
+    message: Runner 任务票据无效
+  - target: customer
+    module: runner
+    constant: TASK_REPLAYED
+    code: RUNNER_TASK_REPLAYED
+    number: 41003
+    message: Runner 任务票据已使用
+  - target: customer
+    module: runner
+    constant: UNAUTHENTICATED
+    code: RUNNER_UNAUTHENTICATED
+    number: 41004
+    message: Runner 身份凭据无效
+  - target: customer
+    module: delivery
+    constant: ROOT_REQUIRED
+    code: DELIVERY_ROOT_REQUIRED
+    number: 43001
+    message: 该交付管理命令必须使用 root 权限执行
+  - target: customer
+    module: delivery
+    constant: RELEASE_NOT_SELECTED
+    code: DELIVERY_RELEASE_NOT_SELECTED
+    number: 43002
+    message: 尚未通过 init.sh 选择已签名发布包
+  - target: customer
+    module: delivery
+    constant: RELEASE_INVALID
+    code: DELIVERY_RELEASE_INVALID
+    number: 43003
+    message: 发布包签名、完整性或目录结构校验失败
+  - target: customer
+    module: delivery
+    constant: MAINTENANCE_BUSY
+    code: DELIVERY_MAINTENANCE_BUSY
+    number: 43004
+    message: 另一个安装、升级、恢复或维护操作正在执行
+  - target: customer
+    module: delivery
+    constant: INSTALL_FAILED
+    code: DELIVERY_INSTALL_FAILED
+    number: 43005
+    message: Aster Team 安装失败
+  - target: customer
+    module: delivery
+    constant: UPGRADE_FAILED
+    code: DELIVERY_UPGRADE_FAILED
+    number: 43006
+    message: Aster Team 升级失败并已按安全策略处理
+  - target: customer
+    module: delivery
+    constant: INPUT_INVALID
+    code: DELIVERY_INPUT_INVALID
+    number: 43007
+    message: 交付管理命令参数无效
+  - target: customer
+    module: delivery
+    constant: FILESYSTEM_FAILED
+    code: DELIVERY_FILESYSTEM_FAILED
+    number: 43008
+    message: 无法安全读写 Aster Team 交付文件
+  - target: customer
+    module: delivery
+    constant: COMMAND_FAILED
+    code: DELIVERY_COMMAND_FAILED
+    number: 43009
+    message: Aster Team 底层维护命令执行失败
+  - target: customer
+    module: delivery
+    constant: PLATFORM_UNSUPPORTED
+    code: DELIVERY_PLATFORM_UNSUPPORTED
+    number: 43010
+    message: 当前 Linux 主机不满足 Aster Team 运行要求
+  - target: customer
+    module: delivery
+    constant: SERVICE_FAILED
+    code: DELIVERY_SERVICE_FAILED
+    number: 43011
+    message: Aster Team 服务控制失败
+  - target: customer
+    module: delivery
+    constant: LICENSE_FAILED
+    code: DELIVERY_LICENSE_FAILED
+    number: 43012
+    message: Aster Team 离线许可证操作失败
+  - target: customer
+    module: delivery
+    constant: BACKUP_FAILED
+    code: DELIVERY_BACKUP_FAILED
+    number: 43013
+    message: Aster Team 备份或恢复失败
+  - target: customer
+    module: delivery
+    constant: RUNNER_FAILED
+    code: DELIVERY_RUNNER_FAILED
+    number: 43014
+    message: Aster Team Runner 管理失败
+  - target: customer
+    module: delivery
+    constant: DIAGNOSTIC_FAILED
+    code: DELIVERY_DIAGNOSTIC_FAILED
+    number: 43015
+    message: Aster Team 主机诊断未通过
+  - target: customer
+    module: delivery
+    constant: UNINSTALL_FAILED
+    code: DELIVERY_UNINSTALL_FAILED
+    number: 43016
+    message: Aster Team 卸载失败
+  - target: customer
+    module: runner_admin
+    constant: ENROLLMENT_INVALID
+    code: RUNNER_ENROLLMENT_INVALID
+    number: 14001
+    message: Runner 注册凭据无效或已使用
+  - target: customer
+    module: runner_admin
+    constant: NOT_FOUND
+    code: RUNNER_NOT_FOUND
+    number: 14002
+    message: 指定的 Runner 不存在
+  - target: customer
+    module: runner_admin
+    constant: INPUT_INVALID
+    code: RUNNER_INPUT_INVALID
+    number: 14003
+    message: Runner 配置参数无效
+  - target: customer
+    module: runner_admin
+    constant: LIMIT_REACHED
+    code: RUNNER_LIMIT_REACHED
+    number: 14004
+    message: Runner 已达到许可证上限
+  - target: operations
+    code: UNAUTHORIZED
+    number: 61001
+  - target: operations
+    code: INVALID_CREDENTIALS
+    number: 61002
+  - target: operations
+    code: ORIGIN_FORBIDDEN
+    number: 61003
+  - target: operations
+    code: CSRF_INVALID
+    number: 61004
+  - target: operations
+    code: CURRENT_PASSWORD_INVALID
+    number: 61005
+  - target: operations
+    code: PASSWORD_INVALID
+    number: 61006
+  - target: operations
+    code: REAUTHENTICATION_FAILED
+    number: 61007
+  - target: operations
+    code: LOGIN_FAILED
+    number: 61008
+  - target: operations
+    code: LOGOUT_FAILED
+    number: 61009
+  - target: operations
+    code: PASSWORD_CHANGE_FAILED
+    number: 61010
+  - target: operations
+    code: CUSTOMERS_LIST_FAILED
+    number: 62001
+  - target: operations
+    code: CUSTOMER_CREATE_FAILED
+    number: 62002
+  - target: operations
+    code: CUSTOMER_PROFILE_FAILED
+    number: 62003
+  - target: operations
+    code: CUSTOMER_UPDATE_FAILED
+    number: 62004
+  - target: operations
+    code: CONTACT_CREATE_FAILED
+    number: 62005
+  - target: operations
+    code: BILLING_PROFILE_UPDATE_FAILED
+    number: 62006
+  - target: operations
+    code: PLANS_LIST_FAILED
+    number: 63001
+  - target: operations
+    code: PLAN_CREATE_FAILED
+    number: 63002
+  - target: operations
+    code: PLAN_PRICE_PUBLISH_FAILED
+    number: 63003
+  - target: operations
+    code: ORDERS_LIST_FAILED
+    number: 63004
+  - target: operations
+    code: ORDER_CREATE_FAILED
+    number: 63005
+  - target: operations
+    code: PAYMENT_CONFIRM_FAILED
+    number: 63006
+  - target: operations
+    code: REFUND_NOTES_LIST_FAILED
+    number: 63007
+  - target: operations
+    code: REFUND_NOTE_CREATE_FAILED
+    number: 63008
+  - target: operations
+    code: TRIALS_LIST_FAILED
+    number: 63009
+  - target: operations
+    code: TRIAL_CREATE_FAILED
+    number: 63010
+  - target: operations
+    code: TRIAL_EXTENSION_FAILED
+    number: 63011
+  - target: operations
+    code: FULFILLMENT_INVALID
+    number: 64001
+  - target: operations
+    code: LICENSE_POLICY_CREATE_FAILED
+    number: 64002
+  - target: operations
+    code: RELEASES_LIST_FAILED
+    number: 64003
+  - target: operations
+    code: RELEASE_IMPORT_FAILED
+    number: 64004
+  - target: operations
+    code: DELIVERIES_LIST_FAILED
+    number: 64005
+  - target: operations
+    code: DELIVERY_CREATE_FAILED
+    number: 64006
+  - target: operations
+    code: DELIVERY_RECEIPT_FAILED
+    number: 64007
+  - target: operations
+    code: LICENSES_QUERY_FAILED
+    number: 64008
+  - target: operations
+    code: LICENSE_ISSUANCES_QUERY_FAILED
+    number: 64009
+  - target: operations
+    code: LICENSE_ISSUANCE_FAILED
+    number: 64010
+  - target: operations
+    code: RISK_NOTES_LIST_FAILED
+    number: 65001
+  - target: operations
+    code: RISK_NOTE_CREATE_FAILED
+    number: 65002
+  - target: operations
+    code: BACKUP_HISTORY_FAILED
+    number: 65003
+  - target: operations
+    code: OPERATIONS_EXPORT_FAILED
+    number: 65004
+  - target: operations
+    code: AUDIT_LIST_FAILED
+    number: 65005
+  - target: operations
+    code: INTERNAL_ERROR
+    number: 69001
+  - target: operations
+    code: DATABASE_UNAVAILABLE
+    number: 69002
+  - target: operations
+    code: BUSINESS_STORE_UNAVAILABLE
+    number: 69003
+  - target: operations
+    code: INVALID_JSON
+    number: 69004
+  - target: operations
+    code: INVALID_LIMIT
+    number: 69005
+  - target: operations
+    code: VALIDATION_FAILED
+    number: 69006
+  - target: operations
+    code: NOT_FOUND
+    number: 69007
+  - target: operations
+    code: OVERVIEW_FAILED
+    number: 69008
+  - target: operations
+    code: INVALID_OFFSET
+    number: 69009
+  - target: operations
+    code: API_UNAVAILABLE
+    number: 66001
+  - target: operations
+    code: RELEASE_PERMISSION_DENIED
+    number: 67001
+    message: 当前运营账号没有发布中心权限
+  - target: operations
+    code: RELEASE_PERMISSION_CHECK_FAILED
+    number: 67002
+    message: 发布中心权限检查失败
+  - target: operations
+    code: RELEASE_TASKS_LIST_FAILED
+    number: 67003
+    message: 读取发布任务失败
+  - target: operations
+    code: RELEASE_TASK_DETAIL_FAILED
+    number: 67004
+    message: 读取发布任务详情失败
+  - target: operations
+    code: RELEASE_TASK_INPUT_INVALID
+    number: 67005
+    message: 发布任务版本或来源参数无效
+  - target: operations
+    code: RELEASE_ORCHESTRATOR_UNAVAILABLE
+    number: 67101
+    message: 发布中心尚未配置 GitHub App
+  - target: operations
+    code: RELEASE_DUPLICATE_ACTIVE
+    number: 67102
+    message: 相同版本和提交已有未结束的发布任务
+  - target: operations
+    code: RELEASE_TASK_CREATE_FAILED
+    number: 67103
+    message: 创建发布任务失败
+  - target: operations
+    code: RELEASE_RETRY_FAILED
+    number: 67104
+    message: 重试发布任务失败
+  - target: operations
+    code: GITHUB_PREFLIGHT_FAILED
+    number: 67201
+    message: GitHub 发布前检查失败
+  - target: operations
+    code: GITHUB_DISPATCH_FAILED
+    number: 67202
+    message: GitHub Workflow 触发失败
+  - target: operations
+    code: GITHUB_SYNC_FAILED
+    number: 67203
+    message: GitHub Run 状态同步失败
+  - target: operations
+    code: GITHUB_WORKFLOW_FAILED
+    number: 67204
+    message: GitHub Workflow 执行失败
+  - target: operations
+    code: RELEASE_BUILD_FAILED
+    number: 67301
+    message: Customer Release 构建或签名失败
+  - target: operations
+    code: RELEASE_LINUX_VALIDATION_FAILED
+    number: 67401
+    message: Linux 安装、升级、恢复或回滚验收失败
+  - target: operations
+    code: RELEASE_ARTIFACT_UNAVAILABLE
+    number: 67501
+    message: GitHub Run 未产生可复核的 Customer 安装包
+  - target: operations
+    code: RELEASE_ARTIFACT_HASH_MISMATCH
+    number: 67502
+    message: GitHub Artifact、安装包或校验文件摘要不一致
+  - target: operations
+    code: RELEASE_PACKAGE_POLICY_FAILED
+    number: 67503
+    message: 安装包文件树、权限、大小或内容边界不符合交付规则
+  - target: operations
+    code: RELEASE_MANIFEST_INVALID
+    number: 67504
+    message: RELEASE.json 结构、字段或文件清单无效
+  - target: operations
+    code: RELEASE_SIGNATURE_INVALID
+    number: 67505
+    message: RELEASE.json 使用了不受信任的密钥或签名无效
+  - target: operations
+    code: RELEASE_SBOM_INVALID
+    number: 67506
+    message: CycloneDX SBOM 缺失或与发布版本不一致
+  - target: operations
+    code: RELEASE_ABI_INCOMPATIBLE
+    number: 67507
+    message: Linux 二进制不是目标架构的 musl 全静态程序
+  - target: operations
+    code: RELEASE_DOWNLOAD_FAILED
+    number: 67508
+    message: 已复核安装包不存在、损坏或无法下载
+  - target: operations
+    code: RELEASE_PUBLISHER_UNAVAILABLE
+    number: 67601
+    message: 正式发布尚未配置独立 GitHub App
+  - target: operations
+    code: RELEASE_PUBLISH_INPUT_INVALID
+    number: 67602
+    message: 正式发布申请、审批或执行参数无效
+  - target: operations
+    code: RELEASE_PUBLISH_REQUEST_FAILED
+    number: 67603
+    message: 创建正式发布申请失败
+  - target: operations
+    code: RELEASE_PUBLISH_DUPLICATE
+    number: 67604
+    message: 相同版本已有未结束或已完成的正式发布申请
+  - target: operations
+    code: RELEASE_PUBLISH_APPROVAL_FAILED
+    number: 67605
+    message: 正式发布审批状态写入失败
+  - target: operations
+    code: RELEASE_PUBLISH_SELF_APPROVAL_FORBIDDEN
+    number: 67606
+    message: 正式发布申请人不能审批自己的申请
+  - target: operations
+    code: RELEASE_PUBLISH_PROVENANCE_INVALID
+    number: 67607
+    message: 待发布物的版本、来源提交或固定摘要不完整或发生变化
+  - target: operations
+    code: GITHUB_PUBLISH_FAILED
+    number: 67608
+    message: GitHub 受保护 Tag、草稿资产复核或公开 Release 操作失败
+  - target: operations
+    code: RELEASE_PUBLISH_REQUESTS_LIST_FAILED
+    number: 67609
+    message: 读取正式发布申请失败
+  - target: operations
+    code: COMMERCIAL_PERMISSION_DENIED
+    number: 67701
+    message: 当前运营账号没有此项套餐或订单管理权限
+  - target: operations
+    code: COMMERCIAL_SNAPSHOT_CONFLICT
+    number: 67702
+    message: 套餐版本已变化或操作标识对应其他内容，请核对最新版本
+  - target: operations
+    code: COMMERCIAL_PLAN_VERSION_CONFLICT
+    number: 67703
+    message: 本次操作未保存且套餐版本已变化，请比较最新版本后继续
+  - target: operations
+    code: COMMERCIAL_DISTRIBUTION_FAILED
+    number: 67704
+    message: 免费分发审批或签发失败
+  - target: operations
+    code: COMMERCIAL_DISTRIBUTION_NOT_ISSUED
+    number: 67705
+    message: 该分发记录尚未完成签发
+  - target: operations
+    code: COMMERCIAL_V2_SIGNER_UNAVAILABLE
+    number: 67706
+    message: 尚未配置对应的受限 v2 签发密钥
+  - target: operations
+    code: COMMERCIAL_DRAFT_FAILED
+    number: 67707
+    message: 套餐草稿操作失败
+  - target: operations
+    code: COMMERCIAL_DRAFT_REVISION_CONFLICT
+    number: 67708
+    message: 本次操作未保存且草稿已变化，请比较最新修订后继续
+  - target: operations
+    code: COMMERCIAL_CATALOG_FAILED
+    number: 67709
+    message: 公开目录操作失败
+  - target: operations
+    code: COMMERCIAL_CATALOG_PREVIEW_CONFLICT
+    number: 67710
+    message: 本次批准未保存且公开内容与预览不符，请重新核对
+  - target: operations
+    code: COMMERCIAL_CATALOG_EXPORT_UNAVAILABLE
+    number: 67711
+    message: 尚未配置公开目录导出位置
+  - target: operations
+    code: COMMERCIAL_CATALOG_NOT_EXPORTED
+    number: 67712
+    message: 该公开目录尚未导出
+  - target: operations
+    code: COMMERCIAL_PUBLICATION_FAILED
+    number: 67713
+    message: 公开发布核对或受理失败
+  - target: operations
+    code: COMMERCIAL_PUBLICATION_UNAVAILABLE
+    number: 67714
+    message: 尚未配置对应环境的官网核对地址
+  - target: operations
+    code: COMMERCIAL_PUBLICATION_UNVERIFIED
+    number: 67715
+    message: 官网内容尚未通过核对，请保留原发布记录并在排查后重试
+  - target: operations
+    code: COMMERCIAL_PUBLICATION_PREPARE_REJECTED
+    number: 67716
+    message: 原请求未保存，环境记录或受理期限已变化，请重新核对后准备
+  - target: operations
+    code: COMMERCIAL_PUBLICATION_FAILURE_NOT_RECORDED
+    number: 67717
+    message: 未能保存本次核对的故障记录，请重新读取原发布记录确认结果
+  - target: operations
+    code: COMMERCIAL_FULFILLMENT_FAILED
+    number: 67718
+    message: 付费履约批准、签发或读取失败
+  - target: operations
+    code: COMMERCIAL_FULFILLMENT_NOT_ISSUED
+    number: 67719
+    message: 该付费履约尚未完成签发
+  - target: operations
+    code: COMMERCIAL_V2_VERIFIER_UNAVAILABLE
+    number: 67720
+    message: 缺少该证书的可信公钥，无法核验原授权文件
+  - target: operations
+    code: COMMERCIAL_CUSTOMER_REF_UNAVAILABLE
+    number: 67721
+    message: 客户引用派生能力不可用，新履约尚未批准
+  - target: operations
+    code: COMMERCIAL_FULFILLMENT_ENVIRONMENT
+    number: 67722
+    message: 当前履约环境未配置或与原批准来源不同
+  - target: operations
+    code: COMMERCIAL_FULFILLMENT_TRANSFER_NOT_ISSUED
+    number: 67723
+    message: 该换机授权尚未完成签发
+
+  - target: operations
+    code: ENVIRONMENT_UPGRADE_FAILED
+    number: 67801
+    message: 环境升级配置、探测或执行失败

@@ -1,0 +1,8 @@
+# Copy this file to website/.prod.vars. The destination is gitignored.
+# Never commit or paste production values into chat.
+TURNSTILE_SECRET=
+RATE_LIMIT_SALT=
+GITHUB_RELEASES_TOKEN=
+
+# Optional. Leave empty to store leads without email notification.
+SMTP_PASSWORD=

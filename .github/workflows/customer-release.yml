@@ -1,0 +1,905 @@
+name: Release Rust-native customer package
+run-name: Customer ${{ inputs.version || github.ref_name }} · ${{ inputs.release_task_id || github.event_name }} · ${{ inputs.source_commit_sha || github.sha }} · ${{ inputs.free_license_sha256 || 'tag-license' }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: SemVer version to build without creating a tag or GitHub Release
+        required: true
+        type: string
+      release_task_id:
+        description: Operations release task correlation ID
+        required: false
+        default: manual
+        type: string
+      source_commit_sha:
+        description: Preflighted source commit that must already belong to main
+        required: false
+        default: ''
+        type: string
+      free_distribution_id:
+        description: Issued Operations free-distribution record bundled by this build
+        required: false
+        default: ''
+        type: string
+      free_license_sha256:
+        description: SHA-256 of the exact signed free license document
+        required: false
+        default: ''
+        type: string
+      free_license_base64:
+        description: Base64 of the exact signed free license document
+        required: false
+        default: ''
+        type: string
+
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: customer-release-${{ github.event_name }}-${{ inputs.version || github.ref_name }}-${{ inputs.source_commit_sha || github.sha }}-${{ inputs.free_license_sha256 || 'tag-license' }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Audit release dependencies
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    outputs:
+      version: ${{ steps.source.outputs.version }}
+      sha: ${{ steps.source.outputs.sha }}
+      tag: ${{ steps.source.outputs.tag }}
+      free_license_sha256: ${{ steps.free_license.outputs.sha256 }}
+      free_distribution_id: ${{ steps.free_license.outputs.distribution_id }}
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.source_commit_sha || github.sha }}
+      - name: Install locked Node dependencies
+        uses: ./.github/actions/install-node-dependencies
+      - name: Set up Rust
+        run: rustup show active-toolchain
+      - name: Test tag release orchestration and publication
+        run: npm run test:release-tag
+      - name: Resolve immutable release source and version
+        id: source
+        env:
+          DISPATCH_VERSION: ${{ inputs.version }}
+          RELEASE_SOURCE_SHA: ${{ inputs.source_commit_sha }}
+        run: npm run release:source
+      - name: Resolve immutable bundled free license
+        id: free_license
+        env:
+          DISPATCH_FREE_DISTRIBUTION_ID: ${{ inputs.free_distribution_id }}
+          DISPATCH_FREE_LICENSE_SHA256: ${{ inputs.free_license_sha256 }}
+        run: |
+          set -Eeuo pipefail
+          distribution_id="$DISPATCH_FREE_DISTRIBUTION_ID"
+          license_sha256="$DISPATCH_FREE_LICENSE_SHA256"
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            tag_message="$(git cat-file tag "$GITHUB_REF_NAME")"
+            license_sha256="$(sed -n 's/^Free-License-SHA256: //p' <<< "$tag_message")"
+            distribution_id="$(sed -n 's/^Free-Distribution-ID: //p' <<< "$tag_message")"
+          fi
+          [[ "$distribution_id" =~ ^[A-Za-z0-9_.:-]{3,64}$ ]]
+          [[ "$license_sha256" =~ ^[0-9a-f]{64}$ ]]
+          echo "distribution_id=$distribution_id" >> "$GITHUB_OUTPUT"
+          echo "sha256=$license_sha256" >> "$GITHUB_OUTPUT"
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          cache-targets: false
+          cache-on-failure: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Run release security preflight
+        run: npm run release:preflight
+
+  asterctl-windows:
+    name: Build downloadable asterctl (Windows x64)
+    needs: preflight
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.preflight.outputs.sha }}
+      - name: Require the client tool commit to belong to main
+        shell: bash
+        env:
+          RELEASE_SOURCE_SHA: ${{ needs.preflight.outputs.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$RELEASE_SOURCE_SHA"
+          git merge-base --is-ancestor "$RELEASE_SOURCE_SHA" origin/main
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: windows-msvc-static
+          cache-bin: false
+          cache-on-failure: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Build static Windows client tool once
+        shell: pwsh
+        run: |
+          node scripts/build-asterctl-windows.mjs --output=target/client-tools/asterctl.exe
+          if ($LASTEXITCODE -ne 0) { throw 'shared Windows asterctl build failed' }
+          $digest = (Get-FileHash -LiteralPath target/client-tools/asterctl.exe -Algorithm SHA256).Hash.ToLowerInvariant()
+          [IO.File]::WriteAllText(
+            (Join-Path $env:GITHUB_WORKSPACE 'target/client-tools/asterctl.exe.sha256'),
+            "$digest  asterctl.exe`n",
+            [Text.UTF8Encoding]::new($false)
+          )
+      - name: Upload Windows client tool
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: release-asterctl-windows-x64-${{ needs.preflight.outputs.sha }}
+          path: |
+            target/client-tools/asterctl.exe
+            target/client-tools/asterctl.exe.sha256
+          if-no-files-found: error
+          retention-days: 1
+
+  build:
+    name: Build signed Linux amd64 package
+    needs: [preflight, asterctl-windows]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 65
+    environment: customer-release
+    outputs:
+      version: ${{ needs.preflight.outputs.version }}
+      smoke-matrix: ${{ steps.release-platform.outputs.matrix }}
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.preflight.outputs.sha }}
+
+      - name: Download Windows client tool
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: release-asterctl-windows-x64-${{ needs.preflight.outputs.sha }}
+          path: ${{ runner.temp }}/asterctl-client
+
+      - name: Expose Windows client tool to package builders
+        run: |
+          cd "$RUNNER_TEMP/asterctl-client"
+          sha256sum --check asterctl.exe.sha256
+          echo "ASTER_CLIENT_ASTERCTL_WINDOWS_X64=$RUNNER_TEMP/asterctl-client/asterctl.exe" >> "$GITHUB_ENV"
+
+      - name: Require the release commit to belong to main
+        env:
+          RELEASE_SOURCE_SHA: ${{ needs.preflight.outputs.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$RELEASE_SOURCE_SHA"
+          git merge-base --is-ancestor "$RELEASE_SOURCE_SHA" origin/main
+
+      - name: Resolve supported Linux install matrix
+        id: release-platform
+        run: echo "matrix=$(node scripts/ci/release-smoke-matrix.mjs linux-amd64 --exclude ubuntu-20.04)" >> "$GITHUB_OUTPUT"
+
+      - name: Install frontend dependencies with a populated download cache
+        uses: ./.github/actions/install-node-dependencies
+
+      - name: Set up Go for contract generation
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: '1.25.14'
+          cache: false
+
+      - name: Set up Rust
+        run: |
+          rustup show active-toolchain
+          rustup target add x86_64-unknown-linux-musl
+
+      - uses: ./.github/actions/prepare-ci-images
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          cache-bin: false
+          cache-on-failure: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Cache verified release downloads
+        id: release-downloads
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: target/release-downloads
+          key: aster-release-downloads-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/caddy-runtime.json') }}
+
+      - name: Verify customer production SBOM licenses
+        run: npm run verify:customer-sbom
+
+      - name: Verify customer logging boundary
+        run: npm run verify:customer-logging
+
+      - name: Verify generated public contracts
+        run: npm run verify:contracts
+
+      - name: Verify generated Caddy configuration formatting
+        run: npm run verify:caddy-format
+
+      - name: Materialize release signing inputs
+        env:
+          LICENSE_KEYRING_JSON: ${{ vars.ASTER_LICENSE_TRUSTED_KEYS_JSON }}
+          RELEASE_KEYRING_JSON: ${{ vars.ASTER_RELEASE_TRUSTED_KEYS_JSON }}
+          RELEASE_SIGNING_SEED_BASE64: ${{ secrets.ASTER_RELEASE_SIGNING_SEED_BASE64 }}
+          FREE_LICENSE_BASE64: ${{ inputs.free_license_base64 || vars.ASTER_CUSTOMER_FREE_LICENSE_BASE64 }}
+          DECLARED_FREE_LICENSE_SHA256: ${{ inputs.free_license_sha256 || vars.ASTER_CUSTOMER_FREE_LICENSE_SHA256 }}
+          EXPECTED_FREE_LICENSE_SHA256: ${{ needs.preflight.outputs.free_license_sha256 }}
+        run: |
+          set -Eeuo pipefail
+          test -n "$LICENSE_KEYRING_JSON"
+          test -n "$RELEASE_KEYRING_JSON"
+          test -n "$RELEASE_SIGNING_SEED_BASE64"
+          test -n "$FREE_LICENSE_BASE64"
+          test "$DECLARED_FREE_LICENSE_SHA256" = "$EXPECTED_FREE_LICENSE_SHA256"
+          printf '%s' "$LICENSE_KEYRING_JSON" > "$RUNNER_TEMP/aster-license-public-keys.json"
+          printf '%s' "$RELEASE_KEYRING_JSON" > "$RUNNER_TEMP/aster-release-public-keys.json"
+          printf '%s' "$RELEASE_SIGNING_SEED_BASE64" | base64 --decode > "$RUNNER_TEMP/aster-release.seed"
+          printf '%s' "$FREE_LICENSE_BASE64" | base64 --decode > "$RUNNER_TEMP/aster-free-license.json"
+          test "$(sha256sum "$RUNNER_TEMP/aster-free-license.json" | awk '{print $1}')" = "$EXPECTED_FREE_LICENSE_SHA256"
+          chmod 0600 "$RUNNER_TEMP/aster-release.seed"
+
+      - name: Build and verify signed Rust-native package
+        env:
+          RELEASE_KEY_ID: ${{ vars.ASTER_RELEASE_SIGNING_KEY_ID }}
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          set -Eeuo pipefail
+          version="$RELEASE_VERSION"
+          npm run ci:builder -- bash scripts/build-linux-amd64.sh --version "$version" \
+            --license-keyring "$RUNNER_TEMP/aster-license-public-keys.json" \
+            --release-keyring "$RUNNER_TEMP/aster-release-public-keys.json" \
+            --release-signing-key "$RUNNER_TEMP/aster-release.seed" \
+            --release-signing-key-id "$RELEASE_KEY_ID" \
+            --free-license "$RUNNER_TEMP/aster-free-license.json" \
+            --asterctl-windows-x64 "$ASTER_CLIENT_ASTERCTL_WINDOWS_X64" \
+            --allow-non-main
+          archive="$GITHUB_WORKSPACE/dist/linux/aster-team-${version}-linux-amd64.tar.gz"
+          bundle="$GITHUB_WORKSPACE/dist/linux/aster-team-${version}-linux-amd64"
+          test -f "$archive"
+          test -f "$archive.sha256"
+          archive_entries="$RUNNER_TEMP/aster-customer-release-entries.txt"
+          tar -tzf "$archive" > "$archive_entries"
+          grep -q '/bin/aster-control$' "$archive_entries"
+          grep -q '/bin/aster-runner$' "$archive_entries"
+          grep -q '/bin/aster-team-cli$' "$archive_entries"
+          grep -q '/client-tools/asterctl/windows-x86_64/asterctl.exe$' "$archive_entries"
+          grep -q '/init.sh$' "$archive_entries"
+          grep -q '/libexec/install.sh$' "$archive_entries"
+          grep -q '/licenses/free-license.json$' "$archive_entries"
+          if grep -Eq "aster-team-${version}-linux-amd64/(install|restore-backup)\.sh$" "$archive_entries"; then
+            echo 'Customer archive exposes a private lifecycle engine at the package root.' >&2
+            exit 1
+          fi
+          grep -q '/SBOM.cdx.json$' "$archive_entries"
+          if grep -Eq '(^|/)(node|server\.cjs|license-guard|src|source-map)(/|$)' "$archive_entries"; then
+            echo 'Customer archive contains a forbidden legacy runtime or source artifact.' >&2
+            exit 1
+          fi
+          grep -q '/bin/caddy$' "$archive_entries"
+          grep -q '/THIRD_PARTY_LICENSES/Caddy-Apache-2.0.txt$' "$archive_entries"
+          grep -q '/THIRD_PARTY_LICENSES/qrc-MIT.txt$' "$archive_entries"
+          bash scripts/ci/verify-linux-static-runtime.sh \
+            --bundle "$bundle" \
+            --platform-manifest contracts/release-platforms.json \
+            --platform linux-amd64
+          archive_sha256="$(sha256sum "$archive" | awk '{print $1}')"
+          archive_bytes="$(stat -c '%s' "$archive")"
+          manifest_sha256="$(sha256sum "$bundle/RELEASE.json" | awk '{print $1}')"
+          {
+            echo '### Customer release candidate'
+            echo
+            echo "- Commit: $(git rev-parse HEAD)"
+            echo "- Version: $version"
+            echo '- Architecture: linux/amd64'
+            echo '- Runtime: Rust-native and fully offline'
+            echo "- Archive: \`$archive\` ($archive_bytes bytes)"
+            echo "- Archive SHA-256: \`$archive_sha256\`"
+            echo "- RELEASE.json SHA-256: \`$manifest_sha256\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Save verified downloads before upgrade and installation tests
+        if: steps.release-downloads.outputs.cache-hit != 'true'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: target/release-downloads
+          key: ${{ steps.release-downloads.outputs.cache-primary-key }}
+
+      - name: Build an honest higher-version Linux upgrade fixture
+        id: linux-upgrade-fixture
+        env:
+          ASTER_LICENSE_TRUSTED_KEYS_JSON: ${{ vars.ASTER_LICENSE_TRUSTED_KEYS_JSON }}
+          ASTER_RELEASE_TRUSTED_KEYS_JSON: ${{ vars.ASTER_RELEASE_TRUSTED_KEYS_JSON }}
+          ASTER_RELEASE_SIGNING_KEY_ID: ${{ vars.ASTER_RELEASE_SIGNING_KEY_ID }}
+          ASTER_RELEASE_SIGNING_KEY_FILE: ${{ runner.temp }}/aster-release.seed
+          ASTER_OVERWRITE: 'true'
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          set -Eeuo pipefail
+          export ASTER_RELEASE_CREATED_AT="$(date -u +%Y-%m-%dT%H:%M:%S.000Z)"
+          export SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)"
+          npm run ci:builder -- node scripts/ci/build-linux-upgrade-fixture.mjs --base-version="$RELEASE_VERSION"
+
+      - name: Exercise install, recovery, continuous Blue Green upgrade and rollback
+        env:
+          RELEASE_KEY_ID: ${{ vars.ASTER_RELEASE_SIGNING_KEY_ID }}
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+          CANDIDATE_VERSION: ${{ steps.linux-upgrade-fixture.outputs.candidate_version }}
+        run: |
+          set -Eeuo pipefail
+          version="$RELEASE_VERSION"
+          bundle="$GITHUB_WORKSPACE/dist/linux/aster-team-${version}-linux-amd64"
+          upgrade_bundle="$GITHUB_WORKSPACE/dist/linux/aster-team-${CANDIDATE_VERSION}-linux-amd64"
+          bash scripts/ci/exercise-customer-install.sh \
+            --bundle "$bundle" \
+            --upgrade-bundle "$upgrade_bundle" \
+            --version "$version" \
+            --owner-email release-owner@example.test \
+            --release-signing-key "$RUNNER_TEMP/aster-release.seed" \
+            --release-signing-key-id "$RELEASE_KEY_ID" \
+            --release-tool "$GITHUB_WORKSPACE/target/x86_64-unknown-linux-musl/release/aster-release-tool"
+
+      - name: Collect failed install diagnostics
+        if: ${{ failure() }}
+        run: bash scripts/ci/collect-linux-diagnostics.sh linux-diagnostics
+
+      - name: Upload failed install diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: customer-install-diagnostics-${{ github.run_id }}
+          path: linux-diagnostics
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Remove private signing material
+        if: ${{ always() }}
+        env:
+          CANDIDATE_VERSION: ${{ steps.linux-upgrade-fixture.outputs.candidate_version }}
+        run: |
+          rm -f "$RUNNER_TEMP/aster-release.seed"
+          if [[ -n "$CANDIDATE_VERSION" ]]; then
+            rm -rf -- "$GITHUB_WORKSPACE/dist/linux/aster-team-${CANDIDATE_VERSION}-linux-amd64"
+            rm -f -- \
+              "$GITHUB_WORKSPACE/dist/linux/aster-team-${CANDIDATE_VERSION}-linux-amd64.tar.gz" \
+              "$GITHUB_WORKSPACE/dist/linux/aster-team-${CANDIDATE_VERSION}-linux-amd64.tar.gz.sha256"
+          fi
+
+      - name: Upload verified package
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: customer-linux-amd64-${{ needs.preflight.outputs.version }}
+          path: |
+            dist/linux/aster-team-*-linux-amd64.tar.gz
+            dist/linux/aster-team-*-linux-amd64.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && 7 || 1 }}
+
+  linux-primary:
+    name: Verify Linux primary (ubuntu-20.04)
+    needs: [preflight, build]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out smoke-test scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.preflight.outputs.sha }}
+
+      - name: Download verified package
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: customer-linux-amd64-${{ needs.build.outputs.version }}
+          path: package
+
+      - uses: ./.github/actions/prepare-ci-images
+
+      - name: Exercise Customer install on Ubuntu 20.04
+        run: |
+          bash scripts/ci/exercise-supported-linux-install.sh \
+            --target ubuntu-20.04 \
+            --mode container \
+            --role customer \
+            --package-dir package \
+            --version "${{ needs.build.outputs.version }}" \
+            --image ubuntu:20.04 \
+            --package-family apt
+
+      - name: Exercise dedicated Runner install on Ubuntu 20.04
+        run: |
+          bash scripts/ci/exercise-supported-linux-install.sh \
+            --target ubuntu-20.04 \
+            --mode container \
+            --role runner \
+            --package-dir package \
+            --version "${{ needs.build.outputs.version }}" \
+            --image ubuntu:20.04 \
+            --package-family apt
+
+      - name: Upload failed primary diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: linux-primary-diagnostics-${{ github.run_id }}
+          path: linux-diagnostics
+          if-no-files-found: ignore
+          retention-days: 7
+
+  runner-install:
+    name: Verify dedicated Runner install (${{ matrix.target.id }})
+    needs: [preflight, build, linux-primary]
+    runs-on: ${{ matrix.target.runner }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.build.outputs.smoke-matrix) }}
+    steps:
+      - name: Check out smoke-test scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.preflight.outputs.sha }}
+
+      - name: Download verified package
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: customer-linux-amd64-${{ needs.build.outputs.version }}
+          path: package
+
+      - uses: ./.github/actions/prepare-ci-images
+        if: matrix.target.mode == 'container'
+
+      - name: Exercise Runner-only install and upgrade
+        env:
+          SMOKE_IMAGE: ${{ matrix.target.image }}
+          SMOKE_PACKAGE_FAMILY: ${{ matrix.target.package_family }}
+        run: |
+          bash scripts/ci/exercise-supported-linux-install.sh \
+            --target "${{ matrix.target.id }}" \
+            --mode "${{ matrix.target.mode }}" \
+            --role runner \
+            --package-dir package \
+            --version "${{ needs.build.outputs.version }}" \
+            --image "$SMOKE_IMAGE" \
+            --package-family "$SMOKE_PACKAGE_FAMILY"
+
+      - name: Collect failed Runner diagnostics
+        if: ${{ failure() }}
+        run: bash scripts/ci/collect-linux-diagnostics.sh linux-diagnostics
+
+      - name: Upload failed Runner diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: runner-install-diagnostics-${{ matrix.target.id }}-${{ github.run_id }}
+          path: linux-diagnostics
+          if-no-files-found: ignore
+          retention-days: 7
+
+  windows-install:
+    name: Build and verify Windows amd64 package
+    needs: [preflight, asterctl-windows]
+    runs-on: windows-2025
+    timeout-minutes: 75
+    environment: customer-release
+    steps:
+      - name: Check out release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: ${{ needs.preflight.outputs.sha }}
+
+      - name: Download shared Windows client tool
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: release-asterctl-windows-x64-${{ needs.preflight.outputs.sha }}
+          path: ${{ runner.temp }}\asterctl-client
+
+      - name: Verify and expose shared Windows client tool
+        shell: pwsh
+        run: |
+          $clientRoot = Join-Path $env:RUNNER_TEMP 'asterctl-client'
+          $client = Join-Path $clientRoot 'asterctl.exe'
+          $checksum = (Get-Content -LiteralPath (Join-Path $clientRoot 'asterctl.exe.sha256') -Raw).Trim()
+          if ($checksum -notmatch '^([0-9a-f]{64})  asterctl\.exe$') { throw 'shared Windows asterctl checksum file is invalid' }
+          $expected = $checksum.Substring(0, 64)
+          $actual = (Get-FileHash -LiteralPath $client -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw 'shared Windows asterctl checksum does not match' }
+          "ASTER_CLIENT_ASTERCTL_WINDOWS_X64=$client" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Require the release commit to belong to main
+        shell: pwsh
+        env:
+          RELEASE_SOURCE_SHA: ${{ needs.preflight.outputs.sha }}
+        run: |
+          if ((git rev-parse HEAD) -ne $env:RELEASE_SOURCE_SHA) { throw 'checked out source does not match the requested commit' }
+          git merge-base --is-ancestor $env:RELEASE_SOURCE_SHA origin/main
+          if ($LASTEXITCODE -ne 0) { throw 'release source is not on main' }
+
+      - name: Install frontend dependencies with a populated download cache
+        uses: ./.github/actions/install-node-dependencies
+
+      - name: Test service launchers under Windows PowerShell 5.1
+        if: vars.ASTER_ENABLE_WINDOWS_TESTS == 'true'
+        run: npm run test:windows-services
+
+      - name: Set up Rust
+        shell: pwsh
+        run: rustup show active-toolchain
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: windows-msvc-static-${{ hashFiles('tools/windows-build-runtime.json') }}
+          cache-bin: false
+          cache-on-failure: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Cache pinned Windows native build runtime
+        id: windows-runtime
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ${{ runner.temp }}\aster-windows-build-runtime
+          key: aster-windows-build-runtime-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/windows-build-runtime.json') }}
+
+      - name: Cache verified release downloads
+        id: release-downloads
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: target/release-downloads
+          key: aster-release-downloads-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/caddy-runtime.json') }}
+
+      - name: Set up pinned Windows native build runtime
+        shell: pwsh
+        run: .\scripts\ci\setup-windows-build-runtime.ps1
+
+      - name: Save the prepared native runtime before compiling
+        if: steps.windows-runtime.outputs.cache-hit != 'true'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ${{ runner.temp }}\aster-windows-build-runtime
+          key: ${{ steps.windows-runtime.outputs.cache-primary-key }}
+
+      - name: Materialize release signing inputs
+        shell: pwsh
+        env:
+          LICENSE_KEYRING_JSON: ${{ vars.ASTER_LICENSE_TRUSTED_KEYS_JSON }}
+          RELEASE_KEYRING_JSON: ${{ vars.ASTER_RELEASE_TRUSTED_KEYS_JSON }}
+          RELEASE_SIGNING_SEED_BASE64: ${{ secrets.ASTER_RELEASE_SIGNING_SEED_BASE64 }}
+          FREE_LICENSE_BASE64: ${{ inputs.free_license_base64 || vars.ASTER_CUSTOMER_FREE_LICENSE_BASE64 }}
+          DECLARED_FREE_LICENSE_SHA256: ${{ inputs.free_license_sha256 || vars.ASTER_CUSTOMER_FREE_LICENSE_SHA256 }}
+          EXPECTED_FREE_LICENSE_SHA256: ${{ needs.preflight.outputs.free_license_sha256 }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:LICENSE_KEYRING_JSON) -or
+              [string]::IsNullOrWhiteSpace($env:RELEASE_KEYRING_JSON) -or
+              [string]::IsNullOrWhiteSpace($env:RELEASE_SIGNING_SEED_BASE64) -or
+              [string]::IsNullOrWhiteSpace($env:FREE_LICENSE_BASE64) -or
+              $env:DECLARED_FREE_LICENSE_SHA256 -ne $env:EXPECTED_FREE_LICENSE_SHA256) {
+            throw 'release signing inputs are incomplete'
+          }
+          [IO.File]::WriteAllText((Join-Path $env:RUNNER_TEMP 'aster-license-public-keys.json'), $env:LICENSE_KEYRING_JSON, [Text.UTF8Encoding]::new($false))
+          [IO.File]::WriteAllText((Join-Path $env:RUNNER_TEMP 'aster-release-public-keys.json'), $env:RELEASE_KEYRING_JSON, [Text.UTF8Encoding]::new($false))
+          [IO.File]::WriteAllBytes((Join-Path $env:RUNNER_TEMP 'aster-release.seed'), [Convert]::FromBase64String($env:RELEASE_SIGNING_SEED_BASE64))
+          $freeLicense = Join-Path $env:RUNNER_TEMP 'aster-free-license.json'
+          [IO.File]::WriteAllBytes($freeLicense, [Convert]::FromBase64String($env:FREE_LICENSE_BASE64))
+          $actualFreeLicenseSHA256 = (Get-FileHash -LiteralPath $freeLicense -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actualFreeLicenseSHA256 -ne $env:EXPECTED_FREE_LICENSE_SHA256) { throw 'free license digest does not match the release input' }
+
+      - name: Build signed Windows package
+        shell: pwsh
+        env:
+          ASTER_LICENSE_TRUSTED_KEYS_JSON: ${{ vars.ASTER_LICENSE_TRUSTED_KEYS_JSON }}
+          ASTER_RELEASE_TRUSTED_KEYS_JSON: ${{ vars.ASTER_RELEASE_TRUSTED_KEYS_JSON }}
+          ASTER_RELEASE_SIGNING_KEY_ID: ${{ vars.ASTER_RELEASE_SIGNING_KEY_ID }}
+          ASTER_RELEASE_SIGNING_KEY_FILE: ${{ runner.temp }}\aster-release.seed
+          ASTER_CUSTOMER_FREE_LICENSE_FILE: ${{ runner.temp }}\aster-free-license.json
+          ASTER_OVERWRITE: 'true'
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          $version = $env:RELEASE_VERSION.TrimStart('v')
+          if ($version -notmatch '^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$') { throw 'release version is invalid' }
+          $env:SOURCE_DATE_EPOCH = (git show -s --format=%ct HEAD).Trim()
+          $env:ASTER_RELEASE_CREATED_AT = [DateTimeOffset]::FromUnixTimeSeconds([long]$env:SOURCE_DATE_EPOCH).UtcDateTime.ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
+          npm run build:windows -- --version=$version
+          if ($LASTEXITCODE -ne 0) { throw 'Windows package build failed' }
+
+      - name: Save verified downloads before upgrade and installation tests
+        if: steps.release-downloads.outputs.cache-hit != 'true'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: target/release-downloads
+          key: ${{ steps.release-downloads.outputs.cache-primary-key }}
+
+      - name: Build an honest higher-version Windows upgrade fixture
+        if: vars.ASTER_ENABLE_WINDOWS_TESTS == 'true'
+        id: windows-upgrade-fixture
+        shell: pwsh
+        env:
+          ASTER_LICENSE_TRUSTED_KEYS_JSON: ${{ vars.ASTER_LICENSE_TRUSTED_KEYS_JSON }}
+          ASTER_RELEASE_TRUSTED_KEYS_JSON: ${{ vars.ASTER_RELEASE_TRUSTED_KEYS_JSON }}
+          ASTER_RELEASE_SIGNING_KEY_ID: ${{ vars.ASTER_RELEASE_SIGNING_KEY_ID }}
+          ASTER_RELEASE_SIGNING_KEY_FILE: ${{ runner.temp }}\aster-release.seed
+          ASTER_OVERWRITE: 'true'
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          $version = $env:RELEASE_VERSION.TrimStart('v')
+          $env:SOURCE_DATE_EPOCH = (git show -s --format=%ct HEAD).Trim()
+          $env:ASTER_RELEASE_CREATED_AT = [DateTimeOffset]::FromUnixTimeSeconds([long]$env:SOURCE_DATE_EPOCH).UtcDateTime.ToString('yyyy-MM-ddTHH:mm:ss.fffZ')
+          npm run build:windows-upgrade-fixture -- --base-version=$version
+          if ($LASTEXITCODE -ne 0) { throw 'Windows upgrade fixture build failed' }
+
+      - name: Exercise Windows install, authorization, backup, Blue Green upgrade and cleanup
+        if: vars.ASTER_ENABLE_WINDOWS_TESTS == 'true'
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+          CANDIDATE_VERSION: ${{ steps.windows-upgrade-fixture.outputs.candidate_version }}
+          CANDIDATE_ARCHIVE: ${{ steps.windows-upgrade-fixture.outputs.candidate_archive }}
+          RELEASE_SIGNING_KEY_ID: ${{ vars.ASTER_RELEASE_SIGNING_KEY_ID }}
+        run: |
+          $version = $env:RELEASE_VERSION.TrimStart('v')
+          $archive = Join-Path $env:GITHUB_WORKSPACE "dist\windows\aster-team-$version-windows-amd64.tar.gz"
+          npm run test:windows-release -- `
+            -Archive $archive `
+            -Version $version `
+            -CandidateVersion $env:CANDIDATE_VERSION `
+            -CandidateArchive $env:CANDIDATE_ARCHIVE `
+            -ReleaseTool (Join-Path $env:GITHUB_WORKSPACE 'target\release\aster-release-tool.exe') `
+            -ReleaseSigningKey (Join-Path $env:RUNNER_TEMP 'aster-release.seed') `
+            -ReleaseSigningKeyId $env:RELEASE_SIGNING_KEY_ID `
+            -ServicePrefix 'ci-control' -PortOffset 10000 `
+            -WorkRoot (Join-Path $env:RUNNER_TEMP 'aster-windows-release-smoke') `
+            -DiagnosticsRoot (Join-Path $env:RUNNER_TEMP 'aster-windows-diagnostics')
+          if ($LASTEXITCODE -ne 0) { throw 'Windows release lifecycle failed' }
+
+      - name: Collect Windows diagnostics
+        if: ${{ failure() }}
+        shell: pwsh
+        run: |
+          $diagnostics = Join-Path $env:RUNNER_TEMP 'aster-windows-diagnostics'
+          New-Item -ItemType Directory -Force -Path $diagnostics | Out-Null
+          if (-not (Test-Path -LiteralPath (Join-Path $diagnostics 'tasks.txt'))) { 'No task diagnostics were collected.' | Out-File (Join-Path $diagnostics 'tasks.txt') -Encoding utf8 }
+
+      - name: Remove Windows fixture and signing material
+        if: ${{ always() }}
+        shell: pwsh
+        env:
+          CANDIDATE_VERSION: ${{ steps.windows-upgrade-fixture.outputs.candidate_version }}
+        run: |
+          # Lifecycle cleanup belongs to the shared script, which verifies task
+          # ownership before deleting anything. Do not globally clean task names.
+          if (-not [string]::IsNullOrWhiteSpace($env:CANDIDATE_VERSION)) {
+            $candidatePrefix = Join-Path $env:GITHUB_WORKSPACE "dist\windows\aster-team-$($env:CANDIDATE_VERSION)-windows-amd64"
+            Remove-Item -LiteralPath $candidatePrefix -Recurse -Force -ErrorAction SilentlyContinue
+            Remove-Item -LiteralPath "$candidatePrefix.tar.gz" -Force -ErrorAction SilentlyContinue
+            Remove-Item -LiteralPath "$candidatePrefix.tar.gz.sha256" -Force -ErrorAction SilentlyContinue
+          }
+          Remove-Item -LiteralPath (Join-Path $env:RUNNER_TEMP 'aster-release.seed') -Force -ErrorAction SilentlyContinue
+
+      - name: Upload Windows diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: customer-windows-diagnostics-${{ github.run_id }}
+          path: ${{ runner.temp }}\aster-windows-diagnostics
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload verified Windows package
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: customer-windows-amd64-${{ needs.preflight.outputs.version }}
+          path: |
+            dist/windows/aster-team-*-windows-amd64.tar.gz
+            dist/windows/aster-team-*-windows-amd64.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && 7 || 1 }}
+
+  customer-install:
+    name: Verify customer install (${{ matrix.target.id }})
+    needs: [preflight, build, linux-primary]
+    runs-on: ${{ matrix.target.runner }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.build.outputs.smoke-matrix) }}
+    steps:
+      - name: Check out smoke-test scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.preflight.outputs.sha }}
+
+      - name: Download verified package
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: customer-linux-amd64-${{ needs.build.outputs.version }}
+          path: package
+
+      - uses: ./.github/actions/prepare-ci-images
+        if: matrix.target.mode == 'container'
+
+      - name: Exercise customer install on a supported distribution
+        env:
+          SMOKE_IMAGE: ${{ matrix.target.image }}
+          SMOKE_PACKAGE_FAMILY: ${{ matrix.target.package_family }}
+        run: |
+          bash scripts/ci/exercise-supported-linux-install.sh \
+            --target "${{ matrix.target.id }}" \
+            --mode "${{ matrix.target.mode }}" \
+            --role customer \
+            --package-dir package \
+            --version "${{ needs.build.outputs.version }}" \
+            --image "$SMOKE_IMAGE" \
+            --package-family "$SMOKE_PACKAGE_FAMILY"
+
+      - name: Collect failed customer diagnostics
+        if: ${{ failure() }}
+        run: bash scripts/ci/collect-linux-diagnostics.sh linux-diagnostics
+
+      - name: Upload failed customer diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: customer-install-diagnostics-${{ matrix.target.id }}-${{ github.run_id }}
+          path: linux-diagnostics
+          if-no-files-found: ignore
+          retention-days: 7
+
+  windows-runner-install:
+    name: Verify dedicated Runner install (windows-2025)
+    if: vars.ASTER_ENABLE_WINDOWS_TESTS == 'true'
+    needs: [preflight, windows-install]
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - name: Check out smoke-test scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.preflight.outputs.sha }}
+
+      - name: Download verified Windows package
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: customer-windows-amd64-${{ needs.preflight.outputs.version }}
+          path: package
+
+      - name: Exercise Windows Runner-only install and restore
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          $version = $env:RELEASE_VERSION.TrimStart('v')
+          npm run test:windows-runner-install -- `
+            -Archive (Join-Path $env:GITHUB_WORKSPACE "package\aster-team-$version-windows-amd64.tar.gz") `
+            -Version $version `
+            -WorkRoot (Join-Path $env:RUNNER_TEMP 'aster-windows-runner-smoke') `
+            -DiagnosticsRoot (Join-Path $env:RUNNER_TEMP 'aster-windows-runner-diagnostics')
+          if ($LASTEXITCODE -ne 0) { throw 'Windows Runner lifecycle failed' }
+
+      - name: Upload failed Windows Runner diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: windows-runner-diagnostics-${{ github.run_id }}
+          path: ${{ runner.temp }}\aster-windows-runner-diagnostics
+          if-no-files-found: ignore
+          retention-days: 7
+
+  release-gate:
+    name: Require Linux verification and Windows package build
+    if: ${{ always() }}
+    needs:
+      - asterctl-windows
+      - build
+      - linux-primary
+      - runner-install
+      - customer-install
+      - windows-install
+      - windows-runner-install
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require all release jobs to succeed
+        env:
+          ASTERCTL_RESULT: ${{ needs['asterctl-windows'].result }}
+          LINUX_BUILD_RESULT: ${{ needs.build.result }}
+          LINUX_PRIMARY_RESULT: ${{ needs['linux-primary'].result }}
+          LINUX_RUNNER_RESULT: ${{ needs['runner-install'].result }}
+          LINUX_CUSTOMER_RESULT: ${{ needs['customer-install'].result }}
+          WINDOWS_RESULT: ${{ needs['windows-install'].result }}
+          WINDOWS_RUNNER_RESULT: ${{ needs['windows-runner-install'].result }}
+          WINDOWS_TESTS_ENABLED: ${{ vars.ASTER_ENABLE_WINDOWS_TESTS }}
+        run: |
+          for result in \
+            "$ASTERCTL_RESULT" \
+            "$LINUX_BUILD_RESULT" \
+            "$LINUX_PRIMARY_RESULT" \
+            "$LINUX_RUNNER_RESULT" \
+            "$LINUX_CUSTOMER_RESULT" \
+            "$WINDOWS_RESULT"; do
+            test "$result" = success
+          done
+          if [ "$WINDOWS_TESTS_ENABLED" = true ]; then
+            test "$WINDOWS_RUNNER_RESULT" = success
+          else
+            test "$WINDOWS_RUNNER_RESULT" = skipped
+          fi
+
+  publish:
+    name: Publish Customer package
+    # A deliberately skipped optional Windows job is an ancestor of release-gate.
+    # Override the implicit success() over that chain, then require the gate itself.
+    if: ${{ always() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && needs.preflight.result == 'success' && needs['release-gate'].result == 'success' }}
+    needs: [preflight, release-gate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: customer-release
+    permissions:
+      contents: write
+    steps:
+      - name: Check out release publisher
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.preflight.outputs.sha }}
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.19.0
+          package-manager-cache: false
+      - name: Download verified Linux package
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: customer-linux-amd64-${{ needs.preflight.outputs.version }}
+          path: release-assets
+      - name: Download verified Windows package
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: customer-windows-amd64-${{ needs.preflight.outputs.version }}
+          path: release-assets
+      - name: Publish complete release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.preflight.outputs.tag }}
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+          RELEASE_SOURCE_SHA: ${{ needs.preflight.outputs.sha }}
+          RELEASE_ASSETS: release-assets
+        run: npm run release:publish
+
+  cleanup-published-artifacts:
+    name: Remove temporary package artifacts
+    needs: [preflight, publish]
+    if: ${{ always() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && needs.preflight.result == 'success' && needs.publish.result == 'success' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Remove this run's published Linux and Windows artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          set -Eeuo pipefail
+          rows="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts?per_page=100" --paginate --jq '.artifacts[] | [.id, .name] | @tsv')"
+          removed=0
+          while IFS=$'\t' read -r id name; do
+            case "$name" in
+              "customer-linux-amd64-${RELEASE_VERSION}"|"customer-windows-amd64-${RELEASE_VERSION}")
+                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}"
+                removed=$((removed + 1))
+                ;;
+            esac
+          done <<< "$rows"
+          test "$removed" -eq 2

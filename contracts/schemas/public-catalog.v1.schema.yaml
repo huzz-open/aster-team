@@ -1,0 +1,119 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/public-catalog.v1.schema.json
+title: Aster public catalog and internal approval wire contracts
+description: Public projection is a strict whitelist. Approval and export do not prove deployment or authorize orders. Digests, source identity, selected version membership, amount calculation and permissions require application checks.
+$ref: '#/$defs/catalog'
+$defs:
+  digest: { type: string, pattern: '^[a-f0-9]{64}$' }
+  revision: { type: string, pattern: '^catalog_[a-f0-9]{48}$' }
+  environment: { type: string, enum: [local, production] }
+  selection:
+    type: object
+    additionalProperties: false
+    required: [plan_id, version, expected_sha256]
+    properties:
+      plan_id: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      version: { type: integer, minimum: 1, maximum: 4294967295 }
+      expected_sha256: { $ref: '#/$defs/digest' }
+  request:
+    type: object
+    additionalProperties: false
+    required: [operation_id, environment, reason, plans]
+    properties:
+      operation_id: { $ref: commercial.v1.schema.yaml#/$defs/id }
+      environment: { $ref: '#/$defs/environment' }
+      reason: { type: string, minLength: 1, maxLength: 1000 }
+      plans: { type: array, maxItems: 100, items: { $ref: '#/$defs/selection' } }
+  public_term:
+    type: object
+    additionalProperties: false
+    required: [years, discount_basis_points, total_amount_minor]
+    properties:
+      years: { type: integer, minimum: 1, maximum: 5 }
+      discount_basis_points: { type: integer, minimum: 1, maximum: 10000 }
+      total_amount_minor: { type: integer, minimum: 1, maximum: 9000000000000 }
+  public_offer:
+    oneOf:
+      - type: object
+        additionalProperties: false
+        required: [kind, currency, annual_amount_minor, tax_mode, terms, term_rule, term_timezone]
+        properties:
+          kind: { const: fixed_price }
+          currency: { type: string, pattern: '^[A-Z]{3}$' }
+          annual_amount_minor: { type: integer, minimum: 1, maximum: 9000000000000 }
+          tax_mode: { enum: [inclusive, none] }
+          terms: { type: array, minItems: 1, maxItems: 5, items: { $ref: '#/$defs/public_term' } }
+          term_rule: { const: calendar_years_clamp_day }
+          term_timezone: { enum: [UTC, Asia/Shanghai] }
+      - type: object
+        additionalProperties: false
+        required: [kind, expiry]
+        properties:
+          kind: { const: free }
+          expiry: { $ref: commercial.v1.schema.yaml#/$defs/expiry }
+      - type: object
+        additionalProperties: false
+        required: [kind]
+        properties:
+          kind: { const: contact }
+  public_plan:
+    type: object
+    additionalProperties: false
+    required: [plan_id, version, name, description, edition, entitlements, quota_policy_version, minimum_version, support_terms_version, offer]
+    properties:
+      plan_id: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      version: { type: integer, minimum: 1, maximum: 4294967295 }
+      name: { type: string, minLength: 1, maxLength: 160 }
+      description: { type: string, maxLength: 4000 }
+      edition: { $ref: commercial.v1.schema.yaml#/$defs/id }
+      entitlements: { $ref: entitlements.v1.schema.yaml }
+      quota_policy_version: { const: 1 }
+      minimum_version: { type: string }
+      support_terms_version: { $ref: commercial.v1.schema.yaml#/$defs/id }
+      offer: { $ref: '#/$defs/public_offer' }
+  catalog:
+    type: object
+    additionalProperties: false
+    required: [schema, revision, product, environment, plans]
+    properties:
+      schema: { const: aster.public-plans.v1 }
+      revision: { $ref: '#/$defs/revision' }
+      product: { const: aster-team }
+      environment: { $ref: '#/$defs/environment' }
+      plans: { type: array, maxItems: 100, items: { $ref: '#/$defs/public_plan' } }
+  preview:
+    type: object
+    additionalProperties: false
+    required: [catalog, sha256]
+    properties:
+      catalog: { $ref: '#/$defs/catalog' }
+      sha256: { $ref: '#/$defs/digest' }
+  approval_input:
+    type: object
+    additionalProperties: false
+    required: [request, expected_public_sha256, current_password]
+    properties:
+      request: { $ref: '#/$defs/request' }
+      expected_public_sha256: { $ref: '#/$defs/digest' }
+      current_password: { type: string, minLength: 1, maxLength: 1024 }
+  approval_snapshot:
+    type: object
+    additionalProperties: false
+    required: [schema, id, request, plans, public_sha256, approved_by, approved_at]
+    properties:
+      schema: { const: aster.catalog-approval.v1 }
+      id: { $ref: '#/$defs/revision' }
+      request: { $ref: '#/$defs/request' }
+      plans: { type: array, maxItems: 100, items: { $ref: commercial.v1.schema.yaml#/$defs/plan } }
+      public_sha256: { $ref: '#/$defs/digest' }
+      approved_by: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      approved_at: { $ref: commercial.v1.schema.yaml#/$defs/exact_time }
+  record:
+    type: object
+    additionalProperties: false
+    required: [snapshot, sha256, public, status]
+    properties:
+      snapshot: { $ref: '#/$defs/approval_snapshot' }
+      sha256: { $ref: '#/$defs/digest' }
+      public: { $ref: '#/$defs/preview' }
+      status: { enum: [approved, exported] }

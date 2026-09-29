@@ -1,0 +1,7 @@
+# Core rules
+
+1. Before editing a page, inspect that page, comparable views, and the shared UI package. Identify the existing navigation, layout, spacing, typography, controls, states, and responsive behavior. Base the change on those patterns.
+2. Reuse existing controls and layout patterns. When the same behavior or styling is needed in multiple places, extract or extend the shared component or style instead of copying a page-local implementation. Keep product behavior and visual conventions consistent across surfaces.
+3. Before adding or relocating a visible section, data display, action, navigation entry, or auxiliary copy, produce a visual mockup based on the real page structure. Include the proposed wording and placement. Self-review it against the existing UI, correct mismatches, and then implement. The self-review does not wait for a separate user prompt or approval unless the user explicitly asks to review first.
+4. Keep the page focused on the user's state and available actions. Put implementation mechanics and operational explanations in documentation. Do not add persistent helper paragraphs or new information areas simply because data or explanatory text is available from an API.
+5. Preserve the established interaction and accessibility patterns. Check empty, loading, error, disabled, and narrow-screen states relevant to the change. Use focused checks appropriate to the task; the repository's verification requirements are still defined in `AGENTS.md`.

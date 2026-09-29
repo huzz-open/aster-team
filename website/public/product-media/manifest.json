@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-14T09:51:02.019Z",
+  "source": "compiled-admin-and-member-demo-builds",
+  "delivery": "static-media-only",
+  "screenshotViewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "screenshotInstant": "2026-09-03T03:00:00.000Z",
+  "screenshotTimezone": "Asia/Shanghai",
+  "dataProfile": "website-media-synthetic-v1",
+  "locales": {
+    "zh": {
+      "images": [
+        "member-usage.png",
+        "member-home.png",
+        "admin-overview.png",
+        "admin-users.png",
+        "member-keys.png"
+      ]
+    },
+    "en": {
+      "images": [
+        "member-usage.png",
+        "member-home.png",
+        "admin-overview.png",
+        "admin-users.png",
+        "member-keys.png"
+      ]
+    }
+  }
+}

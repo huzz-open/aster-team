@@ -1,0 +1,237 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/runner-task.v4.schema.json
+title: Aster Team signed Runner task ticket v4
+type: object
+additionalProperties: false
+required: [schema, key_id, task_id, runner_id, provider_id, credential_instance_id, credential_revision, upstream_host, command, authorization, payload_sha256, issued_at, expires_at, execution_deadline_ms, nonce, signature]
+properties:
+  schema: { const: aster.runner-task.v4 }
+  key_id: { $ref: '#/$defs/identifier' }
+  task_id: { $ref: '#/$defs/identifier' }
+  runner_id: { $ref: '#/$defs/identifier' }
+  provider_id: { $ref: '#/$defs/identifier' }
+  credential_instance_id:
+    oneOf:
+      - { $ref: '#/$defs/identifier' }
+      - { type: 'null' }
+  credential_revision:
+    oneOf:
+      - { type: integer, minimum: 0, maximum: 4294967295 }
+      - { type: 'null' }
+  upstream_host:
+    type: string
+    minLength: 1
+    maxLength: 253
+    pattern: '^(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))*$'
+  command:
+    enum: [execute, fetch_asset, discover_models, refresh_credential, authorize_credential, probe]
+  authorization:
+    oneOf:
+      - { $ref: '#/$defs/model' }
+      - { $ref: '#/$defs/imageModel' }
+      - { $ref: '#/$defs/fetchAsset' }
+      - { $ref: '#/$defs/discover' }
+      - { $ref: '#/$defs/refresh' }
+      - { $ref: '#/$defs/enrollment' }
+      - { $ref: '#/$defs/probe' }
+  payload_sha256: { type: string, pattern: '^[A-Za-z0-9_-]{43}$' }
+  issued_at: { $ref: '#/$defs/timestamp' }
+  expires_at: { $ref: '#/$defs/timestamp' }
+  execution_deadline_ms: { $ref: '#/$defs/timestamp' }
+  nonce: { $ref: '#/$defs/identifier' }
+  signature: { type: string, pattern: '^[A-Za-z0-9_-]{86}$' }
+# Relational time constraints (0 < expiry - issued <= 120, and expiry <=
+# every signed business deadline) are also checked by the Rust verifier.
+allOf:
+  - if:
+      properties: { command: { const: execute } }
+    then:
+      properties:
+        authorization:
+          oneOf:
+            - { $ref: '#/$defs/model' }
+            - { $ref: '#/$defs/imageModel' }
+  - if:
+      properties: { command: { const: fetch_asset } }
+    then:
+      properties: { authorization: { $ref: '#/$defs/fetchAsset' } }
+  - if:
+      properties: { command: { const: discover_models } }
+    then:
+      properties: { authorization: { $ref: '#/$defs/discover' } }
+  - if:
+      properties: { command: { const: refresh_credential } }
+    then:
+      properties: { authorization: { $ref: '#/$defs/refresh' } }
+  - if:
+      properties: { command: { const: authorize_credential } }
+    then:
+      properties:
+        authorization: { $ref: '#/$defs/enrollment' }
+        credential_instance_id: { type: 'null' }
+        credential_revision: { type: 'null' }
+  - if:
+      properties: { command: { enum: [execute, fetch_asset, discover_models, refresh_credential] } }
+    then:
+      properties:
+        credential_instance_id: { $ref: '#/$defs/identifier' }
+        credential_revision: { type: integer, minimum: 0, maximum: 4294967295 }
+  - if:
+      properties: { command: { const: probe } }
+    then:
+      properties:
+        authorization: { $ref: '#/$defs/probe' }
+        provider_id: { const: aster }
+        upstream_host: { const: runner.internal }
+        credential_instance_id: { type: 'null' }
+        credential_revision: { type: 'null' }
+$defs:
+  probe:
+    type: object
+    additionalProperties: false
+    required: [kind]
+    properties: { kind: { const: probe } }
+  identifier: { type: string, pattern: '^[A-Za-z0-9_.:-]{3,128}$' }
+  digest: { type: string, pattern: '^[a-f0-9]{64}$' }
+  timestamp: { type: integer, minimum: -9223372036854775808, maximum: 9223372036854775807 }
+  modelName: { type: string, minLength: 1, maxLength: 256, pattern: '^[^\x00-\x1f\x7f-\x9f]+$' }
+  license:
+    type: object
+    additionalProperties: false
+    required: [license_id, license_sha256, expiry]
+    properties:
+      license_id: { $ref: '#/$defs/identifier' }
+      license_sha256: { $ref: '#/$defs/digest' }
+      expiry:
+        oneOf:
+          - type: object
+            additionalProperties: false
+            required: [kind, expires_at]
+            properties:
+              kind: { const: fixed }
+              expires_at: { $ref: '#/$defs/timestamp' }
+          - type: object
+            additionalProperties: false
+            required: [kind]
+            properties: { kind: { const: never } }
+  admin:
+    type: object
+    additionalProperties: false
+    required: [kind, identity_id]
+    properties:
+      kind: { const: admin }
+      identity_id: { $ref: '#/$defs/identifier' }
+  model:
+    type: object
+    additionalProperties: false
+    required: [kind, subject, resource, license]
+    properties:
+      kind: { const: model }
+      license: { $ref: '#/$defs/license' }
+      subject:
+        type: object
+        additionalProperties: false
+        required: [identity_id, api_key_id, request_id, reservation_id, reserved_tokens, reservation_expires_at]
+        properties:
+          identity_id: { $ref: '#/$defs/identifier' }
+          api_key_id: { $ref: '#/$defs/identifier' }
+          request_id: { $ref: '#/$defs/identifier' }
+          reservation_id: { $ref: '#/$defs/identifier' }
+          reserved_tokens: { type: integer, minimum: 1, maximum: 9223372036854775807 }
+          reservation_expires_at: { $ref: '#/$defs/timestamp' }
+      resource:
+        type: object
+        additionalProperties: false
+        required: [account_id, public_model, upstream_model]
+        properties:
+          account_id: { $ref: '#/$defs/identifier' }
+          public_model: { $ref: '#/$defs/modelName' }
+          upstream_model: { $ref: '#/$defs/modelName' }
+  imageSubject:
+    type: object
+    additionalProperties: false
+    required: [identity_id, api_key_id, request_id, reservation_id, reserved_images, reservation_expires_at]
+    properties:
+      identity_id: { $ref: '#/$defs/identifier' }
+      api_key_id: { $ref: '#/$defs/identifier' }
+      request_id: { $ref: '#/$defs/identifier' }
+      reservation_id: { $ref: '#/$defs/identifier' }
+      reserved_images: { type: integer, minimum: 1, maximum: 10 }
+      reservation_expires_at: { $ref: '#/$defs/timestamp' }
+  imageResource:
+    type: object
+    additionalProperties: false
+    required: [account_id, public_model, upstream_model]
+    properties:
+      account_id: { $ref: '#/$defs/identifier' }
+      public_model: { $ref: '#/$defs/modelName' }
+      upstream_model: { $ref: '#/$defs/modelName' }
+  imageModel:
+    type: object
+    additionalProperties: false
+    required: [kind, subject, resource, license]
+    properties:
+      kind: { const: image_model }
+      subject: { $ref: '#/$defs/imageSubject' }
+      resource: { $ref: '#/$defs/imageResource' }
+      license: { $ref: '#/$defs/license' }
+  fetchAsset:
+    type: object
+    additionalProperties: false
+    required: [kind, subject, resource, license]
+    properties:
+      kind: { const: fetch_asset }
+      subject: { $ref: '#/$defs/imageSubject' }
+      resource: { $ref: '#/$defs/imageResource' }
+      license: { $ref: '#/$defs/license' }
+  discover:
+    type: object
+    additionalProperties: false
+    required: [kind, actor, account_id, license]
+    properties:
+      kind: { const: discover_models }
+      account_id: { $ref: '#/$defs/identifier' }
+      license: { $ref: '#/$defs/license' }
+      actor:
+        oneOf:
+          - { $ref: '#/$defs/admin' }
+          - type: object
+            additionalProperties: false
+            required: [kind, service]
+            properties:
+              kind: { const: service }
+              service: { const: model_catalog }
+  refresh:
+    type: object
+    additionalProperties: false
+    required: [kind, actor, account_id, lease_sha256, lease_expires_at, license]
+    properties:
+      kind: { const: refresh_credential }
+      account_id: { $ref: '#/$defs/identifier' }
+      license: { $ref: '#/$defs/license' }
+      lease_sha256: { $ref: '#/$defs/digest' }
+      lease_expires_at: { $ref: '#/$defs/timestamp' }
+      actor:
+        oneOf:
+          - { $ref: '#/$defs/admin' }
+          - type: object
+            additionalProperties: false
+            required: [kind, service]
+            properties:
+              kind: { const: service }
+              service: { const: credential_broker }
+  enrollment:
+    type: object
+    additionalProperties: false
+    required: [kind, actor, enrollment_id, session_expires_at, license]
+    properties:
+      kind: { const: authorize_credential }
+      enrollment_id: { $ref: '#/$defs/identifier' }
+      session_expires_at: { $ref: '#/$defs/timestamp' }
+      license: { $ref: '#/$defs/license' }
+      actor:
+        type: object
+        additionalProperties: false
+        required: [identity_id]
+        properties:
+          identity_id: { $ref: '#/$defs/identifier' }

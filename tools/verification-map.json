@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 2,
+  "rules": [
+    {
+      "id": "verification-foundations",
+      "reason": "verification, dependency, toolchain, workflow, or root build configuration changed",
+      "level": "repo-full",
+      "paths": [
+        ".gitignore",
+        ".dockerignore",
+        ".env.example",
+        ".gitattributes",
+        "Cargo.lock",
+        "Cargo.toml",
+        "go.mod",
+        "go.sum",
+        "package-lock.json",
+        "package.json",
+        "rust-toolchain.toml",
+        "tsconfig.json",
+        "tools/caddy-runtime.json",
+        "tools/linux-build-runtime.json",
+        "tools/release-boundaries.json",
+        "tools/ci-base-images.lock.json",
+        "tools/verification-map.json",
+        "tools/windows-build-runtime.json"
+      ],
+      "prefixes": [
+        ".cargo/",
+        ".github/actions/",
+        ".github/workflows/",
+        "scripts/run-domain-verification.mjs",
+        "scripts/run-full-verification.mjs",
+        "scripts/run-rust-tests.mjs",
+        "scripts/verification-runner.mjs",
+        "scripts/verify-changed",
+        "scripts/verify-",
+        "third_party/",
+        "tools/codegen/",
+        "tools/toolchains/"
+      ]
+    },
+    {
+      "id": "repository-agent-metadata",
+      "reason": "repository agent instructions or metadata changed",
+      "suites": ["documentation"],
+      "paths": ["AGENTS.md"],
+      "prefixes": [".agents/"]
+    },
+    {
+      "id": "cross-language-contracts",
+      "reason": "a shared contract changed",
+      "level": "repo-full",
+      "prefixes": ["contracts/"]
+    },
+    {
+      "id": "customer-source-domain",
+      "reason": "Customer security, persistence, protocol, or runtime code changed",
+      "level": "domain",
+      "suites": ["customer-domain"],
+      "prefixes": [
+        "customer/backend/control/",
+        "customer/backend/asterctl/",
+        "customer/backend/cli/",
+        "customer/backend/runner/",
+        "customer/backend/schema/",
+        "customer/backend/crates/auth-core/",
+        "customer/backend/crates/codex-config/",
+        "customer/backend/crates/credential-vault/",
+        "customer/backend/crates/license-state/",
+        "customer/backend/crates/machine-identity/",
+        "customer/backend/crates/policy-core/",
+        "customer/backend/crates/runner-protocol/",
+        "customer/backend/crates/storage/",
+        "customer/backend/crates/upgrade-core/"
+      ]
+    },
+    {
+      "id": "customer-release-foundations",
+      "reason": "Customer installation, shared licensing, or release code changed",
+      "level": "repo-full",
+      "prefixes": [
+        "customer/deploy/",
+        "packages/rust/license-core/",
+        "packages/rust/release-core/",
+        "scripts/build-",
+        "scripts/release-"
+      ]
+    },
+    {
+      "id": "operations-source-domain",
+      "reason": "Operations persistence, licensing, signing, or security code changed",
+      "level": "domain",
+      "suites": ["operations-domain"],
+      "prefixes": [
+        "operations/backend/schema/",
+        "operations/backend/cmd/backup/",
+        "operations/backend/internal/adapters/licensing/",
+        "operations/backend/internal/adapters/mariadb/",
+        "operations/backend/internal/adapters/releaseverification/",
+        "operations/backend/internal/adapters/signing/",
+        "operations/backend/internal/licenseprotocol/"
+      ]
+    },
+    {
+      "id": "operations-release-foundations",
+      "reason": "Operations installation, release, or CI platform code changed",
+      "level": "repo-full",
+      "prefixes": [
+        "operations/deploy/",
+        "operations/release-tool/",
+        "scripts/ci/"
+      ]
+    },
+    {
+      "id": "shared-ui",
+      "reason": "the shared UI package affects every frontend",
+      "suites": [
+        "common-policy",
+        "ui-policy",
+        "customer-admin",
+        "customer-member",
+        "operations-console",
+        "website"
+      ],
+      "prefixes": ["packages/ui/"]
+    },
+    {
+      "id": "customer-admin",
+      "reason": "Customer Admin changed",
+      "suites": ["common-policy", "ui-policy", "customer-admin"],
+      "prefixes": ["customer/admin/"]
+    },
+    {
+      "id": "customer-member",
+      "reason": "Customer Member changed",
+      "suites": ["common-policy", "ui-policy", "customer-member"],
+      "prefixes": ["customer/member/"]
+    },
+    {
+      "id": "customer-sdk",
+      "reason": "the Customer SDK changed",
+      "suites": ["common-policy", "customer-sdk"],
+      "prefixes": ["customer/sdk/"]
+    },
+    {
+      "id": "customer-demo",
+      "reason": "Customer Demo UI changed",
+      "suites": ["common-policy", "ui-policy"],
+      "prefixes": ["customer/demo/"]
+    },
+    {
+      "id": "customer-rust",
+      "reason": "Customer Rust code changed",
+      "suites": ["common-policy", "rust-workspace"],
+      "prefixes": ["customer/backend/", "packages/rust/"]
+    },
+    {
+      "id": "operations-console",
+      "reason": "the Operations console changed",
+      "suites": ["common-policy", "ui-policy", "operations-console"],
+      "prefixes": ["operations/console/"]
+    },
+    {
+      "id": "operations-go",
+      "reason": "the Operations Go backend changed",
+      "suites": ["common-policy", "operations-go"],
+      "prefixes": ["operations/backend/"]
+    },
+    {
+      "id": "website",
+      "reason": "the website changed",
+      "suites": ["common-policy", "ui-policy", "website"],
+      "prefixes": ["website/"]
+    },
+    {
+      "id": "documentation",
+      "reason": "documentation changed",
+      "suites": ["documentation"],
+      "paths": ["README-LINUX.md", "README-LOCAL.md", "README.md"],
+      "prefixes": ["docs/"]
+    },
+    {
+      "id": "repository-tooling",
+      "reason": "repository tooling or its tests changed",
+      "suites": ["tooling-tests"],
+      "prefixes": ["scripts/", "tests/"]
+    }
+  ],
+  "extensionRules": [
+    {
+      "always": true,
+      "extensions": [".md"],
+      "reason": "a Markdown document changed",
+      "suites": ["documentation"]
+    },
+    {
+      "extensions": [".rs"],
+      "reason": "unclassified Rust code changed",
+      "suites": ["common-policy", "rust-workspace"]
+    },
+    {
+      "extensions": [".go"],
+      "reason": "unclassified Go code changed",
+      "suites": ["common-policy", "operations-go"]
+    }
+  ]
+}

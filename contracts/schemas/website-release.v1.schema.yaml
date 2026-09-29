@@ -1,0 +1,46 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/website-release.v1.schema.json
+title: Aster website runtime release manifest
+type: object
+additionalProperties: false
+required: [schema, catalog, files]
+properties:
+  schema:
+    const: aster.website-release.v1
+  catalog:
+    type: object
+    additionalProperties: false
+    required: [revision, sha256, environment, path]
+    properties:
+      revision:
+        type: string
+        pattern: '^catalog_[a-f0-9]{48}$'
+      sha256:
+        type: string
+        pattern: '^[a-f0-9]{64}$'
+      environment:
+        enum: [local, production]
+      path:
+        type: string
+        pattern: '^/catalog/catalog_[a-f0-9]{48}/plans\.json$'
+  files:
+    type: array
+    minItems: 3
+    maxItems: 500
+    items:
+      type: object
+      additionalProperties: false
+      required: [path, sha256, size_bytes]
+      properties:
+        path:
+          type: string
+          minLength: 2
+          maxLength: 1024
+          pattern: '^/'
+        sha256:
+          type: string
+          pattern: '^[a-f0-9]{64}$'
+        size_bytes:
+          type: integer
+          minimum: 0
+          maximum: 10485760

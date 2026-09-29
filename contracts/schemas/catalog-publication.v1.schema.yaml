@@ -1,0 +1,97 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/catalog-publication.v1.schema.json
+title: Aster controlled website publication and acceptance
+description: Prepared events do not authorize quotations. Evidence is obtained by a trusted environment-bound adapter; it cannot be submitted by the caller. Active channel compare-and-swap, content hashes and acceptance intervals require application checks.
+$ref: '#/$defs/record'
+$defs:
+  failure:
+    type: object
+    additionalProperties: false
+    required: [id, publication_id, publication_sha256, stage, code, operator_id, created_at]
+    properties:
+      id: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      publication_id: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      publication_sha256: { $ref: commercial.v1.schema.yaml#/$defs/digest }
+      stage: { enum: [verification, acceptance] }
+      code: { enum: [target_not_configured, content_unverified, invalid_evidence, head_conflict, deadline_expired, commit_unconfirmed] }
+      operator_id: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      created_at: { $ref: commercial.v1.schema.yaml#/$defs/exact_time }
+    allOf:
+      - if:
+          properties: { stage: { const: verification } }
+        then:
+          properties:
+            code: { enum: [target_not_configured, content_unverified, invalid_evidence] }
+        else:
+          properties:
+            code: { enum: [head_conflict, deadline_expired, commit_unconfirmed] }
+  prepare_input:
+    type: object
+    additionalProperties: false
+    required: [operation_id, catalog_revision, build_sha256, expected_active_id, accept_until, reason]
+    properties:
+      operation_id: { $ref: commercial.v1.schema.yaml#/$defs/id }
+      catalog_revision: { $ref: public-catalog.v1.schema.yaml#/$defs/revision }
+      build_sha256: { $ref: commercial.v1.schema.yaml#/$defs/digest }
+      expected_active_id:
+        anyOf:
+          - { const: '' }
+          - { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      accept_until: { $ref: commercial.v1.schema.yaml#/$defs/exact_time }
+      reason: { type: string, minLength: 1, maxLength: 1000 }
+  prepare_request:
+    type: object
+    additionalProperties: false
+    required: [operation_id, catalog_revision, build_sha256, expected_active_id, accept_until, reason, current_password]
+    properties:
+      operation_id: { $ref: '#/$defs/prepare_input/properties/operation_id' }
+      catalog_revision: { $ref: '#/$defs/prepare_input/properties/catalog_revision' }
+      build_sha256: { $ref: '#/$defs/prepare_input/properties/build_sha256' }
+      expected_active_id: { $ref: '#/$defs/prepare_input/properties/expected_active_id' }
+      accept_until: { $ref: '#/$defs/prepare_input/properties/accept_until' }
+      reason: { $ref: '#/$defs/prepare_input/properties/reason' }
+      current_password: { type: string, minLength: 1, maxLength: 72 }
+  snapshot:
+    type: object
+    additionalProperties: false
+    required: [schema, id, request, catalog, created_by, created_at]
+    properties:
+      schema: { const: aster.catalog-publication.v1 }
+      id: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      request: { $ref: '#/$defs/prepare_input' }
+      catalog: { $ref: public-catalog.v1.schema.yaml#/$defs/approval_snapshot }
+      created_by: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      created_at: { $ref: commercial.v1.schema.yaml#/$defs/exact_time }
+  evidence:
+    type: object
+    additionalProperties: false
+    required: [environment, origin, build_sha256, catalog_revision, catalog_sha256, observed_at]
+    properties:
+      environment: { $ref: public-catalog.v1.schema.yaml#/$defs/environment }
+      origin: { type: string, minLength: 1, maxLength: 2048 }
+      build_sha256: { $ref: commercial.v1.schema.yaml#/$defs/digest }
+      catalog_revision: { $ref: public-catalog.v1.schema.yaml#/$defs/revision }
+      catalog_sha256: { $ref: commercial.v1.schema.yaml#/$defs/digest }
+      observed_at: { $ref: commercial.v1.schema.yaml#/$defs/exact_time }
+  record:
+    type: object
+    additionalProperties: false
+    required: [snapshot, sha256, status]
+    properties:
+      snapshot: { $ref: '#/$defs/snapshot' }
+      sha256: { $ref: commercial.v1.schema.yaml#/$defs/digest }
+      status: { enum: [prepared, accepted] }
+      evidence: { $ref: '#/$defs/evidence' }
+      accepted_by: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      accepted_at: { $ref: commercial.v1.schema.yaml#/$defs/exact_time }
+    allOf:
+      - if:
+          properties: { status: { const: accepted } }
+        then:
+          required: [evidence, accepted_by, accepted_at]
+          properties:
+            evidence: { $ref: '#/$defs/evidence' }
+            accepted_by: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+            accepted_at: { $ref: commercial.v1.schema.yaml#/$defs/exact_time }
+        else:
+          properties: { evidence: false, accepted_by: false, accepted_at: false }

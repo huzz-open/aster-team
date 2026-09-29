@@ -1,0 +1,69 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/license.v1.schema.json
+title: Aster Team signed offline license v1
+type: object
+additionalProperties: false
+required:
+  - schema
+  - key_id
+  - license_id
+  - serial
+  - request_id
+  - customer_ref
+  - product
+  - edition
+  - features
+  - limits
+  - minimum_version
+  - installation_id
+  - machine_fingerprint_sha256
+  - transfer_sequence
+  - issued_at
+  - not_before
+  - expires_at
+  - signature
+properties:
+  schema: { const: aster.license.v1 }
+  key_id: { $ref: '#/$defs/identifier' }
+  license_id: { $ref: '#/$defs/identifier' }
+  serial: { $ref: '#/$defs/identifier' }
+  request_id: { $ref: '#/$defs/identifier' }
+  customer_ref: { $ref: '#/$defs/identifier' }
+  product: { const: aster-team }
+  edition: { $ref: '#/$defs/identifier' }
+  features:
+    type: array
+    minItems: 1
+    maxItems: 64
+    uniqueItems: true
+    items:
+      type: string
+      pattern: '^[A-Za-z0-9._:@+/-]{1,64}$'
+  limits:
+    $ref: '#/$defs/license_limits'
+  minimum_version: { $ref: '#/$defs/identifier' }
+  installation_id: { $ref: '#/$defs/identifier' }
+  machine_fingerprint_sha256:
+    type: string
+    pattern: '^[A-Za-z0-9_-]{43}$'
+  transfer_sequence: { type: integer, minimum: 0, maximum: 10000 }
+  issued_at: { $ref: '#/$defs/exact_time' }
+  not_before: { $ref: '#/$defs/exact_time' }
+  expires_at: { $ref: '#/$defs/exact_time' }
+  signature:
+    type: string
+    pattern: '^[A-Za-z0-9_-]{86}$'
+$defs:
+  license_limits:
+    type: object
+    additionalProperties: false
+    required: [member_seats, seat_over_limit_grace_days]
+    properties:
+      member_seats: { type: integer, minimum: 0, maximum: 1000000 }
+      seat_over_limit_grace_days: { type: integer, minimum: 0, maximum: 90 }
+  identifier:
+    type: string
+    pattern: '^[A-Za-z0-9._:@+/-]{1,128}$'
+  exact_time:
+    type: string
+    pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$'

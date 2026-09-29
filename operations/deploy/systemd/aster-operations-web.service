@@ -1,0 +1,26 @@
+[Unit]
+Description=Aster Team Operations Console
+After=network-online.target aster-operations-api.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aster-operations
+Group=aster-operations
+ExecStart=@ASTER_OPERATIONS_ROOT@/current/bin/aster-webhost --addr 127.0.0.1:12080 --dir @ASTER_OPERATIONS_ROOT@/current/console --api http://127.0.0.1:12090
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target

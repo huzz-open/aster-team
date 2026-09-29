@@ -1,0 +1,348 @@
+openapi: 3.1.0
+info:
+  title: Aster unified gateway API
+  version: 1.0.0
+  description: >-
+    Public model requests use an Aster member API Key and a public model ID.
+    Model support is deployment-specific. Check the model capability endpoint and
+    model field matrix before relying on optional fields.
+servers:
+  - url: https://YOUR_ASTER_HOST
+    description: Replace with your Aster deployment address
+tags:
+  - name: Models
+  - name: Text
+  - name: Images
+security:
+  - bearerKey: []
+paths:
+  /v1/models:
+    get:
+      tags: [Models]
+      summary: List models granted to the current member
+      responses:
+        '200':
+          description: Available public models
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  object: { const: list }
+                  data:
+                    type: array
+                    items: { $ref: '#/components/schemas/Model' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/responses:
+    post:
+      tags: [Text]
+      summary: Generate a Responses-compatible text result
+      description: >-
+        The initial common contract supports text, function tools, selected
+        reasoning controls, and streaming. Remote response state is unavailable;
+        store=true and previous_response_id are rejected.
+      parameters:
+        - $ref: '#/components/parameters/Compatibility'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ResponsesRequest' }
+            examples:
+              basic:
+                value: { model: YOUR_PUBLIC_MODEL, input: Hello }
+      responses:
+        '200':
+          description: JSON response or server-sent events when stream=true
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ResponsesResult' }
+            text/event-stream:
+              schema: { type: string, description: Responses event frames }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/chat/completions:
+    post:
+      tags: [Text]
+      summary: Generate a Chat Completions-compatible result
+      parameters:
+        - $ref: '#/components/parameters/Compatibility'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ChatRequest' }
+            examples:
+              basic:
+                value:
+                  model: YOUR_PUBLIC_MODEL
+                  messages: [{ role: user, content: Hello }]
+      responses:
+        '200':
+          description: JSON completion or server-sent events when stream=true
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChatResult' }
+            text/event-stream:
+              schema: { type: string, description: Chat completion chunks }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/messages:
+    post:
+      tags: [Text]
+      summary: Generate an Anthropic Messages-compatible result
+      description: Supply an Aster member API Key using x-api-key or Bearer authorization.
+      parameters:
+        - $ref: '#/components/parameters/Compatibility'
+      security:
+        - bearerKey: []
+        - anthropicKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MessagesRequest' }
+            examples:
+              basic:
+                value:
+                  model: YOUR_PUBLIC_MODEL
+                  max_tokens: 256
+                  messages: [{ role: user, content: Hello }]
+      responses:
+        '200':
+          description: Message JSON or server-sent events when stream=true
+          content:
+            application/json:
+              schema: { type: object, additionalProperties: true }
+            text/event-stream:
+              schema: { type: string, description: Messages event frames }
+        default: { $ref: '#/components/responses/AnthropicError' }
+  /v1/images/generations:
+    post:
+      tags: [Images]
+      summary: Generate images from a prompt
+      description: >-
+        n reserves image-count quota before generation. A provider that returns
+        only a URL is downloaded through the Runner. Successfully generated
+        images consume quota even if delivery later fails.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ImageRequest' }
+            examples:
+              basic:
+                value: { model: YOUR_IMAGE_MODEL, prompt: A blue bird, n: 1 }
+      responses:
+        '200':
+          description: Generated images as Base64
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImageResult' }
+        default: { $ref: '#/components/responses/Error' }
+  /v1/images/edits:
+    post:
+      tags: [Images]
+      summary: Edit one or more input images
+      description: >-
+        Editing is enabled only for models whose capability declares it.
+        GLM generation models do not provide this operation. Multipart image
+        files are sent to the upstream edit endpoint; JSON data URLs are also accepted.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [model, prompt, image]
+              properties:
+                model: { type: string }
+                prompt: { type: string, maxLength: 32000 }
+                image:
+                  type: array
+                  minItems: 1
+                  maxItems: 16
+                  items: { type: string, format: binary }
+                mask: { type: string, format: binary, description: PNG mask }
+                n: { type: integer, minimum: 1, maximum: 10, default: 1 }
+                size: { type: string }
+                quality: { type: string }
+                background: { type: string }
+                output_format: { type: string, enum: [png, jpeg, webp] }
+          application/json:
+            schema: { $ref: '#/components/schemas/ImageEditJsonRequest' }
+      responses:
+        '200':
+          description: Edited images as Base64
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ImageResult' }
+        default: { $ref: '#/components/responses/Error' }
+components:
+  securitySchemes:
+    bearerKey: { type: http, scheme: bearer }
+    anthropicKey: { type: apiKey, in: header, name: x-api-key }
+  parameters:
+    Compatibility:
+      name: X-Aster-Compatibility
+      in: header
+      required: false
+      description: >-
+        compatible permits documented mappings; strict rejects approximate
+        value mappings. Duplicate or unknown values return INVALID_COMPATIBILITY_MODE.
+      schema: { type: string, enum: [compatible, strict], default: compatible }
+  responses:
+    Error:
+      description: Request, authorization, quota, upstream, or delivery error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ErrorResult' }
+    AnthropicError:
+      description: Messages-compatible error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              type: { const: error }
+              error:
+                type: object
+                properties:
+                  type: { type: string }
+                  message: { type: string }
+                  number: { type: integer }
+              request_id: { type: [string, 'null'] }
+  schemas:
+    Model:
+      type: object
+      properties:
+        id: { type: string, description: Public model ID }
+        object: { const: model }
+        created: { type: integer }
+        owned_by: { type: string }
+    ResponsesRequest:
+      type: object
+      additionalProperties: false
+      required: [model, input]
+      properties:
+        model: { type: string }
+        input:
+          oneOf:
+            - { type: string }
+            - { type: array, minItems: 1, items: { type: object, additionalProperties: true } }
+        instructions: { type: string }
+        max_output_tokens: { type: integer, minimum: 1 }
+        reasoning:
+          type: object
+          additionalProperties: false
+          properties:
+            effort: { type: string, enum: [none, minimal, low, medium, high, xhigh, max, ultra] }
+        tools: { type: array, items: { type: object, additionalProperties: true } }
+        tool_choice: { oneOf: [{ type: string }, { type: object }] }
+        parallel_tool_calls: { type: boolean }
+        text: { type: object, description: Text or supported JSON object format }
+        temperature: { type: number }
+        top_p: { type: number }
+        stream: { type: boolean, default: false }
+        store: { const: false, default: false }
+    ChatRequest:
+      type: object
+      additionalProperties: false
+      required: [model, messages]
+      properties:
+        model: { type: string }
+        messages: { type: array, minItems: 1, items: { type: object, additionalProperties: true } }
+        max_completion_tokens: { type: integer, minimum: 1 }
+        max_tokens: { type: integer, minimum: 1, deprecated: true }
+        reasoning_effort: { type: string }
+        tools: { type: array, items: { type: object, additionalProperties: true } }
+        tool_choice: { oneOf: [{ type: string }, { type: object }] }
+        parallel_tool_calls: { type: boolean }
+        response_format: { type: object }
+        temperature: { type: number }
+        top_p: { type: number }
+        stream: { type: boolean, default: false }
+    MessagesRequest:
+      type: object
+      additionalProperties: false
+      required: [model, messages, max_tokens]
+      properties:
+        model: { type: string }
+        messages: { type: array, minItems: 1, items: { type: object, additionalProperties: true } }
+        max_tokens: { type: integer, minimum: 1 }
+        system: { type: string }
+        thinking: { type: object }
+        tools: { type: array, items: { type: object, additionalProperties: true } }
+        tool_choice: { oneOf: [{ type: string }, { type: object }] }
+        temperature: { type: number }
+        top_p: { type: number }
+        stream: { type: boolean, default: false }
+    ImageRequest:
+      type: object
+      additionalProperties: false
+      required: [model, prompt]
+      properties:
+        model: { type: string }
+        prompt: { type: string, minLength: 1, maxLength: 32000 }
+        n: { type: integer, minimum: 1, maximum: 10, default: 1 }
+        size: { type: string, default: auto }
+        quality: { type: string, default: auto }
+        background: { type: string, default: auto }
+        moderation: { type: string, default: auto }
+        output_format: { type: string, enum: [png, jpeg, webp], default: png }
+        output_compression: { type: integer, minimum: 0, maximum: 100 }
+        response_format: { const: b64_json, default: b64_json }
+    ImageEditJsonRequest:
+      type: object
+      additionalProperties: false
+      required: [model, prompt, images]
+      properties:
+        model: { type: string }
+        prompt: { type: string, minLength: 1, maxLength: 32000 }
+        n: { type: integer, minimum: 1, maximum: 10, default: 1 }
+        size: { type: string, default: auto }
+        quality: { type: string, default: auto }
+        background: { type: string, default: auto }
+        output_format: { type: string, enum: [png, jpeg, webp], default: png }
+        output_compression: { type: integer, minimum: 0, maximum: 100 }
+        input_fidelity: { type: string }
+        response_format: { const: b64_json, default: b64_json }
+        images:
+          type: array
+          minItems: 1
+          maxItems: 16
+          items:
+            type: object
+            required: [image_url]
+            properties:
+              image_url: { type: string, description: Image data URL }
+        mask:
+          type: object
+          properties:
+            image_url: { type: string, description: PNG data URL }
+    ImageResult:
+      type: object
+      required: [created, data]
+      properties:
+        created: { type: integer, description: Unix timestamp in seconds }
+        data:
+          type: array
+          items:
+            type: object
+            required: [b64_json]
+            properties:
+              b64_json: { type: string, description: Base64 encoded image }
+              revised_prompt: { type: [string, 'null'] }
+    ResponsesResult: { type: object, additionalProperties: true }
+    ChatResult: { type: object, additionalProperties: true }
+    ErrorResult:
+      type: object
+      properties:
+        error:
+          type: object
+          required: [message, type, code, number]
+          properties:
+            message: { type: string }
+            type: { type: string }
+            param: { type: [string, 'null'] }
+            code: { type: string }
+            number: { type: integer }
+        request_id: { type: [string, 'null'] }

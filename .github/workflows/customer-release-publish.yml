@@ -1,0 +1,106 @@
+name: Resume verified Customer release publication
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing immutable release tag (v<version>)
+        required: true
+        type: string
+      source_run_id:
+        description: Successful tag-triggered Customer release run containing both verified packages
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  verify:
+    name: Bind existing tag, release gate and verified artifacts
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    outputs:
+      tag: ${{ steps.source.outputs.tag }}
+      version: ${{ steps.source.outputs.version }}
+      sha: ${{ steps.source.outputs.sha }}
+      run_id: ${{ steps.source.outputs.run_id }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.19.0
+          package-manager-cache: false
+      - name: Verify original tag run and packages
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+        run: node scripts/ci/verify-customer-release-run.mjs
+
+  publish:
+    name: Publish verified packages
+    needs: verify
+    runs-on: ubuntu-24.04
+    environment: customer-release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.19.0
+          package-manager-cache: false
+      - name: Download only the verified package artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ needs.verify.outputs.version }}
+          SOURCE_RUN_ID: ${{ needs.verify.outputs.run_id }}
+        run: |
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "customer-linux-amd64-${RELEASE_VERSION}" --dir release-assets
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "customer-windows-amd64-${RELEASE_VERSION}" --dir release-assets
+      - name: Publish or verify identical public release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.verify.outputs.tag }}
+          RELEASE_VERSION: ${{ needs.verify.outputs.version }}
+          RELEASE_SOURCE_SHA: ${{ needs.verify.outputs.sha }}
+          RELEASE_VERIFIED_RUN_ID: ${{ needs.verify.outputs.run_id }}
+          RELEASE_ASSETS: release-assets
+        run: npm run release:publish
+
+  cleanup:
+    name: Remove the original run's temporary packages
+    needs: [verify, publish]
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Delete only the two published packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ needs.verify.outputs.run_id }}
+          RELEASE_VERSION: ${{ needs.verify.outputs.version }}
+        run: |
+          set -Eeuo pipefail
+          rows="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}/artifacts?per_page=100" --jq '.artifacts[] | [.id, .name] | @tsv')"
+          removed=0
+          while IFS=$'\t' read -r id name; do
+            case "$name" in
+              "customer-linux-amd64-${RELEASE_VERSION}"|"customer-windows-amd64-${RELEASE_VERSION}")
+                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}"
+                removed=$((removed + 1))
+                ;;
+            esac
+          done <<< "$rows"
+          test "$removed" -eq 2

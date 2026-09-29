@@ -1,0 +1,71 @@
+{
+  "note": "Test vectors, not approved production defaults. Integer minor units with a single half-up rounding.",
+  "cases": [
+    {
+      "annual_amount_minor": 599900,
+      "years": 1,
+      "discount_basis_points": 10000,
+      "amount_minor": 599900
+    },
+    {
+      "annual_amount_minor": 599900,
+      "years": 2,
+      "discount_basis_points": 9000,
+      "amount_minor": 1079820
+    },
+    {
+      "annual_amount_minor": 599900,
+      "years": 3,
+      "discount_basis_points": 8500,
+      "amount_minor": 1529745
+    },
+    {
+      "annual_amount_minor": 599900,
+      "years": 4,
+      "discount_basis_points": 8000,
+      "amount_minor": 1919680
+    },
+    {
+      "annual_amount_minor": 599900,
+      "years": 5,
+      "discount_basis_points": 7000,
+      "amount_minor": 2099650
+    },
+    {
+      "annual_amount_minor": 999900,
+      "years": 1,
+      "discount_basis_points": 10000,
+      "amount_minor": 999900
+    },
+    {
+      "annual_amount_minor": 999900,
+      "years": 2,
+      "discount_basis_points": 9000,
+      "amount_minor": 1799820
+    },
+    {
+      "annual_amount_minor": 999900,
+      "years": 3,
+      "discount_basis_points": 8500,
+      "amount_minor": 2549745
+    },
+    {
+      "annual_amount_minor": 999900,
+      "years": 4,
+      "discount_basis_points": 8000,
+      "amount_minor": 3199680
+    },
+    {
+      "annual_amount_minor": 999900,
+      "years": 5,
+      "discount_basis_points": 7000,
+      "amount_minor": 3499650
+    },
+    {
+      "annual_amount_minor": 1,
+      "years": 1,
+      "discount_basis_points": 5000,
+      "amount_minor": 1
+    }
+  ]
+}

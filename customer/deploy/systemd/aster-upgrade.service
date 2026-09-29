@@ -1,0 +1,14 @@
+[Unit]
+Description=Execute one queued Aster Team upgrade job
+After=network-online.target aster-caddy.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=@ASTER_ROOT@/bin/aster-team-cli maintenance run-next
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true

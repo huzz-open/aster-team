@@ -1,0 +1,36 @@
+[Unit]
+Description=Aster Team Rust Control (%i slot)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aster-team
+Group=aster-team
+WorkingDirectory=@ASTER_ROOT@/data
+EnvironmentFile=-@ASTER_ROOT@/config/control/control.env
+EnvironmentFile=@ASTER_ROOT@/config/control/control-%i.env
+ExecStartPre=+@ASTER_ROOT@/state/slots/%i-release/bin/aster-control verify-machine-identity
+ExecStart=@ASTER_ROOT@/state/slots/%i-release/bin/aster-control serve --admin-assets @ASTER_ROOT@/state/slots/%i-release/admin --member-assets @ASTER_ROOT@/state/slots/%i-release/member
+Restart=on-failure
+RestartSec=3s
+TimeoutStopSec=120s
+KillSignal=SIGTERM
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+ReadOnlyPaths=@ASTER_ROOT@/config @ASTER_ROOT@/releases @ASTER_ROOT@/current @ASTER_ROOT@/state/slots
+ReadWritePaths=@ASTER_ROOT@/data @ASTER_ROOT@/state @ASTER_ROOT@/logs @ASTER_ROOT@/staging @ASTER_ROOT@/config/license
+
+[Install]
+WantedBy=multi-user.target

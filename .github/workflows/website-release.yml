@@ -1,0 +1,23 @@
+name: Release static website bundle
+on:
+  push:
+    tags: ['website-v*']
+permissions: { contents: write }
+concurrency:
+  group: website-release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: ./.github/actions/install-node-dependencies
+      - name: Build provider-neutral static bundle
+        env: { ASTER_WEBSITE_RELEASE_VERSION: '${{ github.ref_name }}' }
+        run: npm run build:website-release
+      - name: Publish immutable release assets
+        env: { GH_TOKEN: '${{ github.token }}', GH_REPO: '${{ github.repository }}', RELEASE_TAG: '${{ github.ref_name }}' }
+        run: |
+          gh release view "$RELEASE_TAG" >/dev/null 2>&1 || gh release create "$RELEASE_TAG" --verify-tag --generate-notes
+          gh release upload "$RELEASE_TAG" dist/website-release/aster-website-*.tar.gz* --clobber

@@ -1,0 +1,113 @@
+{
+  "note": "TEST ONLY public keys from the existing license vectors. This profile is not a production trust configuration or a decision on free expiry.",
+  "keyring": [
+    {
+      "key_id": "license-cross-language-v2",
+      "public_key_spki": "MCowBQYDK2VwAyEAebVWLo_mVPlAeLES6KmLp5AfhTrmlb7X4OORC60ElmQ",
+      "policy": {
+        "sources": [
+          "commercial_order"
+        ],
+        "bindings": [
+          "installation"
+        ],
+        "expiries": [
+          "fixed"
+        ],
+        "entitlement_ceiling": {
+          "catalog_version": 1,
+          "features": [
+            "gateway",
+            "member",
+            "runner"
+          ],
+          "quotas": [
+            {
+              "id": "member_seats",
+              "limit": {
+                "mode": "limited",
+                "value": 20
+              }
+            },
+            {
+              "id": "runners",
+              "limit": {
+                "mode": "unlimited"
+              }
+            },
+            {
+              "id": "upstream_accounts",
+              "limit": {
+                "mode": "unlimited"
+              }
+            },
+            {
+              "id": "api_keys_per_member",
+              "limit": {
+                "mode": "unlimited"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key_id": "test-only-v2",
+      "public_key_spki": "MCowBQYDK2VwAyEAGX9rI-FshTLGq8g4-s1ep4m-DHaykgM0A5v6iz02jWE",
+      "policy": {
+        "sources": [
+          "free_distribution"
+        ],
+        "bindings": [
+          "unbound"
+        ],
+        "expiries": [
+          "fixed",
+          "none"
+        ],
+        "entitlement_ceiling": {
+          "catalog_version": 1,
+          "features": [
+            "gateway",
+            "member",
+            "runner"
+          ],
+          "quotas": [
+            {
+              "id": "member_seats",
+              "limit": {
+                "mode": "limited",
+                "value": 3
+              }
+            },
+            {
+              "id": "runners",
+              "limit": {
+                "mode": "limited",
+                "value": 1
+              }
+            },
+            {
+              "id": "upstream_accounts",
+              "limit": {
+                "mode": "limited",
+                "value": 1
+              }
+            },
+            {
+              "id": "api_keys_per_member",
+              "limit": {
+                "mode": "limited",
+                "value": 2
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "legacy_entry": {
+    "key_id": "license-cross-language-v1",
+    "public_key_spki": "MCowBQYDK2VwAyEAebVWLo_mVPlAeLES6KmLp5AfhTrmlb7X4OORC60ElmQ"
+  }
+}

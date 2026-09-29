@@ -1,0 +1,28 @@
+[Unit]
+Description=Aster Team Operations API
+After=network-online.target mariadb.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aster-operations
+Group=aster-operations
+EnvironmentFile=@ASTER_OPERATIONS_ROOT@/config/operations-api.env
+ExecStart=@ASTER_OPERATIONS_ROOT@/current/bin/aster-operations-api --env-file=@ASTER_OPERATIONS_ROOT@/config/operations-api.env
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadWritePaths=@ASTER_OPERATIONS_ROOT@
+
+[Install]
+WantedBy=multi-user.target

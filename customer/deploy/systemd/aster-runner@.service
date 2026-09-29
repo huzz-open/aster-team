@@ -1,0 +1,36 @@
+[Unit]
+Description=Aster Team local Runner (%i slot)
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=@ASTER_ROOT@/state/slots/%i-release/bin/aster-runner
+ConditionPathExists=@ASTER_ROOT@/config/runner/slots/%i/runner.env
+ConditionPathExists=@ASTER_ROOT@/config/runner/slots/%i/identity.json
+ConditionPathExists=@ASTER_ROOT@/config/runner/slots/%i/task-keys.json
+
+[Service]
+Type=simple
+User=aster-runner
+Group=aster-runner
+EnvironmentFile=@ASTER_ROOT@/config/runner/slots/%i/runner.env
+ExecStart=@ASTER_ROOT@/state/slots/%i-release/bin/aster-runner serve-slot --slot %i --allowed-upstream-host api.openai.com --allowed-upstream-host auth.openai.com --allowed-upstream-host api.anthropic.com --allowed-upstream-host chatgpt.com --allowed-upstream-host api.deepseek.com --allowed-upstream-host open.bigmodel.cn --allowed-upstream-host api.z.ai
+Restart=on-failure
+RestartSec=3s
+TimeoutStopSec=30s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+ReadOnlyPaths=@ASTER_ROOT@/config/runner/slots/%i @ASTER_ROOT@/releases @ASTER_ROOT@/state/slots/%i-release
+InaccessiblePaths=-@ASTER_ROOT@/config/keys -@ASTER_ROOT@/config/control
+
+[Install]
+WantedBy=multi-user.target

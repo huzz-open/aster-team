@@ -1,0 +1,8 @@
+{
+  "schema": "aster.windows-build-runtime.v1",
+  "strawberry_perl": {
+    "version": "5.42.2.1",
+    "url": "https://github.com/StrawberryPerl/Perl-Dist-Strawberry/releases/download/SP_54221_64bit/strawberry-perl-5.42.2.1-64bit-portable.zip",
+    "sha256": "32d83be90cf04b807cfb9477482bc36302cdee6f5b04cf57e81adecbd8f07898"
+  }
+}

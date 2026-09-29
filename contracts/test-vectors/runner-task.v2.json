@@ -1,0 +1,22 @@
+{
+  "schema": "aster.runner-task.test-vector.v2",
+  "public_key_spki": "MCowBQYDK2VwAyEAl9HSs5QYUFddYYdqHLaD51frq1tPz6020LGCs8H6I_o",
+  "private_key_pkcs8": "MC4CAQAwBQYDK2VwBCIEIBwH__73TYC7JLeV5rpWEHw4B3x7TTXd1p8L65kQI_LX",
+  "payload_json": "{\"model\":\"gpt-test\",\"input\":\"hello\"}",
+  "ticket": {
+    "schema": "aster.runner-task.v2",
+    "key_id": "runner-task-vector-v2",
+    "task_id": "task-vector-123",
+    "runner_id": "runner-vector-123",
+    "provider_id": "openai",
+    "credential_instance_id": "credential_00000000000000000000000000000001",
+    "credential_revision": 7,
+    "upstream_host": "api.openai.com",
+    "command": "execute",
+    "payload_sha256": "oXvVldHA9g8KxNlaUAZD-girT4UZdg-A8wxan6dKbaU",
+    "issued_at": 1787565600,
+    "expires_at": 1787565720,
+    "nonce": "vector-nonce-1234567890",
+    "signature": "aySl2_QzZGaaIWVVvYEVSy-t1d38IMBMPxhUwzfzsSq7uwOgtuwd2qkb01xm7HzTtw2Re3XId1PD88gGT6cZAQ"
+  }
+}

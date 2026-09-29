@@ -1,0 +1,10 @@
+{
+  "catalog_version": 1,
+  "features": ["gateway", "member", "runner"],
+  "quotas": [
+    {"id": "member_seats", "limit": {"mode": "limited", "value": 3}},
+    {"id": "runners", "limit": {"mode": "limited", "value": 1}},
+    {"id": "upstream_accounts", "limit": {"mode": "limited", "value": 1}},
+    {"id": "api_keys_per_member", "limit": {"mode": "limited", "value": 1}}
+  ]
+}

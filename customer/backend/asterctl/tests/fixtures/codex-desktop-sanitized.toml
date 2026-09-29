@@ -1,0 +1,83 @@
+# Structurally derived from a Codex Desktop config.toml.
+# Every identity, path, command, endpoint, hash, and preference value is fictional.
+service_tier = "priority"
+model = "gpt-example"
+model_reasoning_effort = "medium"
+personality = "pragmatic"
+sandbox_mode = "workspace-write"
+notify = ['C:\Users\member\AppData\Local\OpenAI\Codex\runtimes\cua_node\example\codex-computer-use.exe', "turn-ended"]
+
+[mcp_servers]
+
+[mcp_servers.codex_apps]
+args = ["--stdio"]
+command = 'C:\Program Files\OpenAI\Codex\codex-app-server.exe'
+startup_timeout_sec = 30
+
+[mcp_servers.codex_apps.env]
+CODEX_HOME = 'C:\Users\member\.codex'
+CODEX_CLI_PATH = 'C:\Users\member\AppData\Local\OpenAI\Codex\bin\example\codex.exe'
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "5000"
+NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\member\Documents\sample-project'
+
+[mcp_servers.optional_tool]
+command = 'C:\Program Files\Example\optional-tool.exe'
+enabled = false
+
+[projects.'C:\Users\member\Documents\sample-project']
+trust_level = "trusted"
+
+[projects.'D:\work\another-project']
+trust_level = "untrusted"
+
+[desktop]
+followUpQueueMode = "queue"
+integratedTerminalShell = "powershell"
+appearanceTheme = "system"
+
+[desktop.open-in-target-preferences]
+global = "codex"
+
+[windows]
+sandbox = "elevated"
+
+[marketplaces.openai-bundled]
+source_type = "catalog"
+source = "openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+source_type = "catalog"
+source = "openai-primary-runtime"
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = false
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = false
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = false
+
+[plugins."sites@openai-bundled"]
+enabled = true
+
+[plugins."codex-app-tools@openai-bundled"]
+enabled = true
+
+[features]
+js_repl = true
+
+[shell_environment_policy.set]
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "example-sha256"

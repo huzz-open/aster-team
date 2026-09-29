@@ -1,6 +1,6 @@
 # Aster Team
 
-[简体中文](README.zh-CN.md) · [Documentation](docs/README.md) · [Releases](https://github.com/huzz-open/aster-team/releases) · [Issues](https://github.com/huzz-open/aster-team/issues)
+[简体中文](README.zh-CN.md) · [Documentation](docs/README.md) · [MIT License](LICENSE) · [Disclaimer](DISCLAIMER.md) · [Releases](https://github.com/huzz-open/aster-team/releases) · [Issues](https://github.com/huzz-open/aster-team/issues)
 
 Aster Team is a privately deployed AI gateway for teams. It gives administrators one place to connect customer-authorized AI accounts or subscriptions, issue independent member API keys, allocate quotas, route requests through customer-controlled runners, and audit usage without distributing upstream credentials.
 
@@ -76,6 +76,26 @@ The [documentation index](docs/README.md) links every English and Chinese page.
 ## Support and issue safety
 
 When opening an issue, never attach passwords, API keys, license files, private keys, cookies, databases, complete diagnostic bundles, or unredacted logs.
+
+## Build from source
+
+Clone this repository and use Node.js 22.19+ with the platform prerequisites in [local development](README-LOCAL.md):
+
+```bash
+git clone https://github.com/huzz-open/aster-team.git
+cd aster-team
+npm run setup
+npm run setup:check
+npm run dev:manager
+```
+
+The manager starts the local development services. Follow the [installation and first-run guide](docs/getting-started.md) to connect your own authorized provider account and create a member API key. For a Linux package, follow [Linux build guidance](README-LINUX.md). Building your own signed package requires your own signing material; the repository does not include the maintainer's production keys or deployment settings.
+
+The optional website uses example values in `website/.env.*`, `website/.dev.vars.example`, and `website/wrangler.jsonc`. Before deploying it, supply your own contact address, domain, Turnstile keys, Cloudflare D1 binding, and optional SMTP credentials as described in the [website deployment guide](website/deploy/README.md). Do not deploy the example values. GitHub release signing and license variables must likewise be configured by the publisher; see the [Operations guide](docs/operations-guide.md).
+
+## Source license and disclaimer
+
+Source material that contributors have the right to license is available under the [MIT License](LICENSE). See the [disclaimer](DISCLAIMER.md) for software and third-party service boundaries, and [third-party notices](THIRD_PARTY_NOTICES.md) for material stored in this repository under separate notices.
 
 ## Trademarks and compatibility
 

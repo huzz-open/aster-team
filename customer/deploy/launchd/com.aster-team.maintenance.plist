@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.aster-team.maintenance</string>
+  <key>ProgramArguments</key><array><string>@ASTER_ROOT@/config/services/service-launch.sh</string><string>--service</string><string>maintenance</string></array>
+  <key>RunAtLoad</key><true/>
+  <key>StartInterval</key><integer>15</integer>
+  <key>ProcessType</key><string>Background</string>
+  <key>StandardOutPath</key><string>@ASTER_ROOT@/logs/maintenance.log</string>
+  <key>StandardErrorPath</key><string>@ASTER_ROOT@/logs/maintenance.log</string>
+</dict></plist>

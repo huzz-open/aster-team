@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 640 320" role="img" aria-labelledby="title desc">
+  <title id="title">Aster Team GitHub social preview</title>
+  <desc id="desc">Aster Team brand mark beside the product name and Chinese description on a navy background.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="640" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#061D3D"/>
+      <stop offset="1" stop-color="#08284B"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientTransform="translate(501 160) rotate(90) scale(191 205)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#145D78" stop-opacity=".64"/>
+      <stop offset=".62" stop-color="#104B71" stop-opacity=".24"/>
+      <stop offset="1" stop-color="#104B71" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="accent" x1="48" y1="0" x2="222" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#70A8FF"/>
+      <stop offset="1" stop-color="#6AE8C9"/>
+    </linearGradient>
+    <linearGradient id="leftMark" x1="470" y1="230" x2="210" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B7E8FF"/>
+      <stop offset=".5" stop-color="#72ADFF"/>
+      <stop offset="1" stop-color="#327CFF"/>
+    </linearGradient>
+    <linearGradient id="rightMark" x1="554" y1="230" x2="820" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B8FFE8"/>
+      <stop offset=".5" stop-color="#77ECCA"/>
+      <stop offset="1" stop-color="#35DDBB"/>
+    </linearGradient>
+    <linearGradient id="gatewayMark" x1="512" y1="620" x2="512" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A8F8DF"/>
+      <stop offset="1" stop-color="#5BE4C7"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="640" height="320" fill="url(#background)"/>
+  <rect width="640" height="320" fill="url(#halo)"/>
+  <path d="M341 0 640 299M411 0 640 229M481 0 640 159" stroke="#9CCEFF" stroke-opacity=".055"/>
+  <circle cx="506" cy="160" r="120" fill="none" stroke="#9BD7EF" stroke-opacity=".12"/>
+  <circle cx="506" cy="160" r="148" fill="none" stroke="#9BD7EF" stroke-opacity=".055"/>
+
+  <rect x="48" y="55" width="26" height="3" rx="1.5" fill="url(#accent)"/>
+  <text x="84" y="61" fill="#A9C2D8" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="2.3">PRIVATE AI PLATFORM</text>
+  <text x="45" y="151" fill="#F6FBFF" font-family="Arial, sans-serif" font-size="57" font-weight="700" letter-spacing="-2.4">Aster Team</text>
+  <rect x="48" y="174" width="174" height="3" rx="1.5" fill="url(#accent)"/>
+  <text x="48" y="214" fill="#D1E1EE" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="18">企业私有化团队 AI 接入平台</text>
+  <text x="48" y="273" fill="#91AEC5" font-family="Arial, sans-serif" font-size="12" letter-spacing=".8">PRIVATE DEPLOYMENT  ·  TEAM CONTROL</text>
+
+  <!-- The three paths and gradients below match the canonical brand SVG. -->
+  <svg x="402" y="71" width="208" height="186" viewBox="120 182 784 700" overflow="visible">
+    <path fill="url(#leftMark)" d="M485 226c-18 0-34 10-43 27L151 790c-12 23 5 50 31 50h126c16 0 31-7 41-20l72-89c9-11 14-25 14-39v-67c0-14 5-27 15-37l35-36c10-10 15-23 15-37V241c0-8-7-15-15-15Z"/>
+    <path fill="url(#rightMark)" d="M539 226c18 0 34 10 43 27l291 537c12 23-5 50-31 50H716c-16 0-31-7-41-20l-72-89c-9-11-14-25-14-39v-67c0-14-5-27-15-37l-35-36c-10-10-15-23-15-37V241c0-8 7-15 15-15Z"/>
+    <path fill="url(#gatewayMark)" d="M512 634c-20 0-36 16-36 36v170h72V670c0-20-16-36-36-36Z"/>
+  </svg>
+</svg>

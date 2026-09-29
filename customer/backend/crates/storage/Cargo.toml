@@ -1,0 +1,28 @@
+[package]
+name = "aster-storage"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+default = ["mariadb", "sqlite-dev"]
+mariadb = ["dep:sqlx", "dep:tokio"]
+sqlite-dev = ["dep:rusqlite", "rusqlite/bundled"]
+sqlcipher = ["dep:rusqlite", "rusqlite/bundled-sqlcipher-vendored-openssl"]
+
+[dependencies]
+aster-upgrade-core = { path = "../upgrade-core" }
+rusqlite = { workspace = true, optional = true }
+sqlx = { workspace = true, optional = true }
+tokio = { workspace = true, optional = true }
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+tempfile = "3.27.0"
+tokio = { workspace = true, features = ["test-util"] }

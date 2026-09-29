@@ -1,0 +1,305 @@
+name: Verify release domains
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  asterctl-windows:
+    name: Build downloadable asterctl (Windows x64)
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Test service launchers under Windows PowerShell 5.1
+        if: vars.ASTER_ENABLE_WINDOWS_TESTS == 'true'
+        run: npm run test:windows-services
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          key: windows-msvc-static
+          cache-bin: false
+          cache-on-failure: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Build static Windows client tool
+        run: node scripts/build-asterctl-windows.mjs --output=target/client-tools/asterctl.exe
+      - name: Upload Windows client tool
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: verify-asterctl-windows-x64-${{ github.sha }}
+          path: target/client-tools/asterctl.exe
+          if-no-files-found: error
+          retention-days: 1
+
+  customer:
+    name: Customer domain
+    needs: asterctl-windows
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    outputs:
+      version: ${{ steps.release-meta.outputs.version }}
+      smoke-matrix: ${{ steps.release-platform.outputs.matrix }}
+    services:
+      mariadb:
+        image: mariadb:11.8.6
+        env:
+          MARIADB_ROOT_PASSWORD: aster_test_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "healthcheck.sh --connect --innodb_initialized"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      ASTER_CONTROL_MYSQL_TEST_URL: mysql://root:aster_test_password@127.0.0.1:3306
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Download Windows client tool
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: verify-asterctl-windows-x64-${{ github.sha }}
+          path: ${{ runner.temp }}/asterctl-client
+      - name: Expose Windows client tool to package builders
+        run: echo "ASTER_CLIENT_ASTERCTL_WINDOWS_X64=$RUNNER_TEMP/asterctl-client/asterctl.exe" >> "$GITHUB_ENV"
+      - name: Resolve package version
+        id: release-meta
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Resolve supported Linux install matrix
+        id: release-platform
+        run: echo "matrix=$(node scripts/ci/release-smoke-matrix.mjs linux-amd64)" >> "$GITHUB_OUTPUT"
+      - uses: ./.github/actions/install-node-dependencies
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: '1.25.14'
+          cache: true
+      - name: Set up Rust
+        run: |
+          rustup show active-toolchain
+          rustup target add x86_64-unknown-linux-musl
+      - uses: ./.github/actions/prepare-ci-images
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          cache-on-failure: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Verify customer production SBOM licenses
+        run: npm run verify:customer-sbom
+      - name: Verify dependency cache scripts and workflow contracts
+        run: npm run test:ci-cache
+      - name: Verify image boundaries and maintenance contracts
+        run: npm run test:ci-images
+      - name: Audit locked Rust and production frontend dependencies
+        run: npm run release:preflight
+      - run: npm run verify:table-layout
+      - run: npm run verify:contracts
+      - run: npm run verify:docs
+      - run: npm run verify:caddy-format
+      - run: npm run verify:boundaries -- --domain=customer
+      - run: npm run verify:customer-logging
+      - run: npm run test:boundaries
+      - run: npm run build --workspace @aster/admin
+      - run: npm run build --workspace @aster/member
+      - run: npm run ci:builder -- npm run check:rust
+      - run: npm run ci:builder -- cargo test --workspace
+      - run: npm run ci:builder -- cargo test -p aster-control --no-default-features --features sqlite-dev
+      - run: npm run ci:builder -- cargo test -p aster-runner --features local-demo
+      - name: Build and inspect signed Rust amd64 package
+        env:
+          RELEASE_VERSION: ${{ steps.release-meta.outputs.version }}
+        run: |
+          set -Eeuo pipefail
+          version="$RELEASE_VERSION"
+          node - <<'NODE'
+          const {createPrivateKey,createPublicKey,generateKeyPairSync,randomBytes}=require('node:crypto')
+          const {writeFileSync}=require('node:fs')
+          const seed=randomBytes(32)
+          const pkcs8=Buffer.concat([Buffer.from('302e020100300506032b657004220420','hex'),seed])
+          const releasePublic=createPublicKey(createPrivateKey({key:pkcs8,format:'der',type:'pkcs8'})).export({format:'der',type:'spki'}).toString('base64url')
+          const licensePublic=generateKeyPairSync('ed25519').publicKey.export({format:'der',type:'spki'}).toString('base64url')
+          writeFileSync('/tmp/aster-ci-release.seed',seed,{mode:0o600})
+          writeFileSync('/tmp/aster-ci-license-keys.json',JSON.stringify([{key_id:'ci-license-v1',public_key_spki:licensePublic}]))
+          writeFileSync('/tmp/aster-ci-release-keys.json',JSON.stringify([{key_id:'ci-release-v1',public_key_spki:releasePublic}]))
+          NODE
+          npm run ci:builder -- bash scripts/build-linux-amd64.sh --version "$version" \
+            --license-keyring /tmp/aster-ci-license-keys.json \
+            --release-keyring /tmp/aster-ci-release-keys.json \
+            --release-signing-key /tmp/aster-ci-release.seed \
+            --release-signing-key-id ci-release-v1 \
+            --asterctl-windows-x64 "$ASTER_CLIENT_ASTERCTL_WINDOWS_X64" \
+            --allow-non-main --overwrite
+          archive="dist/linux/aster-team-${version}-linux-amd64.tar.gz"
+          bundle="dist/linux/aster-team-${version}-linux-amd64"
+          entries="$RUNNER_TEMP/aster-ci-release-entries.txt"
+          tar -tzf "$archive" > "$entries"
+          grep -q '/bin/aster-control$' "$entries"
+          grep -q '/bin/aster-team-cli$' "$entries"
+          grep -q '/client-tools/asterctl/windows-x86_64/asterctl.exe$' "$entries"
+          grep -q '/init.sh$' "$entries"
+          grep -q '/libexec/install.sh$' "$entries"
+          if grep -Eq '/(install|restore-backup)\.sh$' "$entries" && grep -Eq "aster-team-${version}-linux-amd64/(install|restore-backup)\.sh$" "$entries"; then exit 1; fi
+          grep -q '/SBOM.cdx.json$' "$entries"
+          if grep -Eq 'node|server\.cjs|license-guard' "$entries"; then exit 1; fi
+          bash scripts/ci/verify-linux-static-runtime.sh \
+            --bundle "$bundle" \
+            --platform-manifest contracts/release-platforms.json \
+            --platform linux-amd64
+      - name: Exercise signed SQLCipher install and idempotent upgrade
+        env:
+          RELEASE_VERSION: ${{ steps.release-meta.outputs.version }}
+        run: |
+          set -Eeuo pipefail
+          version="$RELEASE_VERSION"
+          bash scripts/ci/exercise-customer-install.sh \
+            --bundle "$GITHUB_WORKSPACE/dist/linux/aster-team-${version}-linux-amd64" \
+            --version "$version" \
+            --release-signing-key /tmp/aster-ci-release.seed \
+            --release-signing-key-id ci-release-v1 \
+            --release-tool "$GITHUB_WORKSPACE/target/x86_64-unknown-linux-musl/release/aster-release-tool"
+      - name: Collect failed customer diagnostics
+        if: ${{ failure() }}
+        run: bash scripts/ci/collect-linux-diagnostics.sh linux-diagnostics
+      - name: Upload failed customer diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: verify-customer-diagnostics-${{ github.run_id }}
+          path: linux-diagnostics
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Remove ephemeral CI signing seed
+        if: ${{ always() }}
+        run: rm -f /tmp/aster-ci-release.seed
+      - name: Preserve package for dedicated Runner install test
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: ci-customer-linux-amd64-${{ github.sha }}
+          path: |
+            dist/linux/aster-team-*-linux-amd64.tar.gz
+            dist/linux/aster-team-*-linux-amd64.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 1
+  runner-install:
+    name: Dedicated Runner install (${{ matrix.target.id }})
+    needs: customer
+    runs-on: ${{ matrix.target.runner }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.customer.outputs.smoke-matrix) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Download signed CI package
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: ci-customer-linux-amd64-${{ github.sha }}
+          path: ci-package
+      - uses: ./.github/actions/prepare-ci-images
+        if: matrix.target.mode == 'container'
+      - name: Exercise Runner-only install and idempotent upgrade
+        env:
+          SMOKE_IMAGE: ${{ matrix.target.image }}
+          SMOKE_PACKAGE_FAMILY: ${{ matrix.target.package_family }}
+        run: |
+          bash scripts/ci/exercise-supported-linux-install.sh \
+            --target "${{ matrix.target.id }}" \
+            --mode "${{ matrix.target.mode }}" \
+            --role runner \
+            --package-dir ci-package \
+            --version "${{ needs.customer.outputs.version }}" \
+            --image "$SMOKE_IMAGE" \
+            --package-family "$SMOKE_PACKAGE_FAMILY"
+      - name: Collect failed Runner diagnostics
+        if: ${{ failure() }}
+        run: bash scripts/ci/collect-linux-diagnostics.sh linux-diagnostics
+      - name: Upload failed Runner diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: verify-runner-diagnostics-${{ matrix.target.id }}-${{ github.run_id }}
+          path: linux-diagnostics
+          if-no-files-found: ignore
+          retention-days: 7
+
+  customer-install:
+    name: Customer install (${{ matrix.target.id }})
+    needs: customer
+    runs-on: ${{ matrix.target.runner }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.customer.outputs.smoke-matrix) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Download signed CI package
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: ci-customer-linux-amd64-${{ github.sha }}
+          path: ci-package
+      - uses: ./.github/actions/prepare-ci-images
+        if: matrix.target.mode == 'container'
+      - name: Exercise customer install on a supported distribution
+        env:
+          SMOKE_IMAGE: ${{ matrix.target.image }}
+          SMOKE_PACKAGE_FAMILY: ${{ matrix.target.package_family }}
+        run: |
+          bash scripts/ci/exercise-supported-linux-install.sh \
+            --target "${{ matrix.target.id }}" \
+            --mode "${{ matrix.target.mode }}" \
+            --role customer \
+            --package-dir ci-package \
+            --version "${{ needs.customer.outputs.version }}" \
+            --image "$SMOKE_IMAGE" \
+            --package-family "$SMOKE_PACKAGE_FAMILY"
+      - name: Collect failed customer diagnostics
+        if: ${{ failure() }}
+        run: bash scripts/ci/collect-linux-diagnostics.sh linux-diagnostics
+      - name: Upload failed customer diagnostics
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: verify-customer-diagnostics-${{ matrix.target.id }}-${{ github.run_id }}
+          path: linux-diagnostics
+          if-no-files-found: ignore
+          retention-days: 7
+  operations:
+    name: Operations domain
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: ./.github/actions/install-node-dependencies
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: '1.25.14'
+          cache: true
+      - run: npm run verify:boundaries -- --domain=operations
+      - run: go test ./operations/...
+      - run: npm test --workspace @aster/operations-console
+      - name: Install authorization delivery test browser
+        run: npm run setup:delivery-tests -- --with-deps
+      - name: Exercise JSON, QR and terminal-screenshot delivery in the real consoles
+        run: npm run test:license-delivery:browser
+      - run: npm run build --workspace @aster/operations-console
+      - name: Verify generated Operations client is current
+        run: git diff --exit-code -- operations/console/src/api/generated/schema.ts
+
+  website:
+    name: Website domain
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: ./.github/actions/install-node-dependencies
+      - run: npm run verify:boundaries -- --domain=website
+      - name: Build static website when present
+        if: ${{ hashFiles('website/package.json') != '' }}
+        run: npm run build --workspace @aster/website

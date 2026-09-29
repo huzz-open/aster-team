@@ -1,6 +1,6 @@
 # Aster Team
 
-[English](README.md) · [中文文档](docs/zh-CN/README.md) · [下载](https://github.com/huzz-open/aster-team/releases) · [问题反馈](https://github.com/huzz-open/aster-team/issues)
+[English](README.md) · [中文文档](docs/zh-CN/README.md) · [MIT 许可](LICENSE) · [免责声明](DISCLAIMER.md) · [下载](https://github.com/huzz-open/aster-team/releases) · [问题反馈](https://github.com/huzz-open/aster-team/issues)
 
 Aster Team 是面向团队的私有化 AI 网关。管理员可以集中接入客户有权使用的 AI 账号或订阅，为成员签发独立 API Key、分配额度，通过客户控制的 Runner 转发请求并审计用量，同时不把上游凭据分发给成员。
 
@@ -76,6 +76,26 @@ Aster 不提供或转售第三方账号、订阅、API 额度或模型权益，�
 ## 支持与 Issue 安全
 
 提交 Issue 时，请勿附带密码、API Key、License 文件、私钥、Cookie、数据库、完整诊断包或未脱敏日志。
+
+## 从源码构建
+
+准备 Node.js 22.19+ 和[本地开发说明](README-LOCAL.md)中的平台依赖，然后克隆仓库并启动本地开发服务：
+
+```bash
+git clone https://github.com/huzz-open/aster-team.git
+cd aster-team
+npm run setup
+npm run setup:check
+npm run dev:manager
+```
+
+随后按照[安装与首次使用](docs/zh-CN/getting-started.md)接入自己有权使用的服务商账号，创建成员 API Key。Linux 安装包的构建步骤见[构建说明](README-LINUX.md)。自行构建签名安装包需使用自己的签名材料；仓库不包含维护者的生产密钥或部署配置。
+
+可选官网的 `website/.env.*`、`website/.dev.vars.example` 与 `website/wrangler.jsonc` 只含示例值。部署前按[官网部署说明](website/deploy/README.md)填入自己的联系邮箱、域名、Turnstile 密钥、Cloudflare D1 绑定，以及按需配置的 SMTP 凭据；不要直接部署示例值。GitHub 发行签名与许可证变量也由发布者自行配置，见 [Operations 指南](docs/operations-guide.md)。
+
+## 源码许可与免责声明
+
+贡献者有权许可的源码材料采用 [MIT License](LICENSE)。软件与第三方服务边界见[免责声明](DISCLAIMER.md)，仓库内另有声明的材料见[第三方声明](THIRD_PARTY_NOTICES.md)。
 
 ## 商标与兼容性
 

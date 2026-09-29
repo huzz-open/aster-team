@@ -1,0 +1,50 @@
+name: Maintain Actions dependency caches
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: Delete the selected rebuildable caches (otherwise preview only)
+        type: boolean
+        default: false
+  workflow_run:
+    workflows: ['Release Rust-native customer package', 'Verify release domains', 'System E2E']
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: actions-cache-maintenance
+  cancel-in-progress: false
+
+jobs:
+  prune:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: write
+      pull-requests: read
+    steps:
+      # Always use trusted main, never code or artifacts from the completed run.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22.19.0
+          package-manager-cache: false
+      - name: Maintain rebuildable caches independently of the release result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APPLY_CACHE_CLEANUP: ${{ github.event_name == 'workflow_run' || inputs.apply }}
+        run: |
+          if [ "$APPLY_CACHE_CLEANUP" = true ]; then
+            npm run ci:cache:prune -- --apply
+          else
+            npm run ci:cache:prune -- --dry-run
+          fi

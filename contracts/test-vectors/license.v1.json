@@ -1,0 +1,30 @@
+{
+  "public_key_spki": "MCowBQYDK2VwAyEAebVWLo_mVPlAeLES6KmLp5AfhTrmlb7X4OORC60ElmQ",
+  "document": {
+    "schema": "aster.license.v1",
+    "key_id": "license-cross-language-v1",
+    "license_id": "license_cross_language_001",
+    "serial": "AT-CROSS-001",
+    "request_id": "request_cross_language_001",
+    "customer_ref": "customer_cross_language_001",
+    "product": "aster-team",
+    "edition": "enterprise",
+    "features": [
+      "gateway",
+      "member",
+      "runner"
+    ],
+    "limits": {
+      "member_seats": 25,
+      "seat_over_limit_grace_days": 7
+    },
+    "minimum_version": "1.1.0",
+    "installation_id": "installation_cross_language_001",
+    "machine_fingerprint_sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "transfer_sequence": 0,
+    "issued_at": "2026-08-28T00:00:00.000Z",
+    "not_before": "2026-08-28T00:00:00.000Z",
+    "expires_at": "2027-08-28T00:00:00.000Z",
+    "signature": "jWqkKp_8RKLKEeOI2TUOdbsaURcEkosi4UCv35FqmZSM9zv836zZTYM3UqqgkMyrwD_3uSEROQkvPxgh44QOCQ"
+  }
+}

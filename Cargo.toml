@@ -1,0 +1,82 @@
+[workspace]
+resolver = "3"
+members = [
+  "customer/backend/asterctl",
+  "customer/backend/cli",
+  "customer/backend/control",
+  "operations/release-tool",
+  "customer/backend/runner",
+  "customer/backend/crates/error-catalog",
+  "customer/backend/crates/install-layout",
+  "customer/backend/crates/auth-core",
+  "customer/backend/crates/credential-vault",
+  "customer/backend/crates/claude-config",
+  "customer/backend/crates/codex-config",
+  "packages/rust/license-core",
+  "customer/backend/crates/license-state",
+  "customer/backend/crates/machine-identity",
+  "customer/backend/crates/policy-core",
+  "customer/backend/crates/plugin-core",
+  "customer/backend/crates/routing",
+  "packages/rust/release-core",
+  "customer/backend/crates/runner-protocol",
+  "customer/backend/crates/storage",
+  "customer/backend/crates/upgrade-core",
+]
+
+[workspace.package]
+version = "2.1.1"
+edition = "2024"
+rust-version = "1.95"
+license = "LicenseRef-Aster-Proprietary"
+publish = false
+
+[workspace.dependencies]
+axum = { version = "0.8.9", features = ["ws", "multipart"] }
+argon2 = { version = "0.6.0", features = ["zeroize"] }
+base64 = "0.23.1"
+chacha20poly1305 = { version = "0.11.0", features = ["zeroize"] }
+clap = { version = "4.6.6", features = ["derive", "env"] }
+ed25519-dalek = { version = "3.0.0", features = ["alloc", "pkcs8"] }
+http-body = "1.1.0"
+http-body-util = "0.1.5"
+futures-util = { version = "=0.3.32", features = ["sink"] }
+getrandom = "0.3.4"
+hmac = "0.13.0"
+hkdf = "0.13.0"
+semver = "1.0.28"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+sha2 = "0.11.0"
+rusqlite = { version = "0.40.2", default-features = false }
+sqlx = { version = "0.9.0", default-features = false, features = ["mysql", "runtime-tokio", "tls-rustls-ring-webpki"] }
+thiserror = "2.0.20"
+time = { version = "0.3.55", features = ["formatting", "macros", "parsing"] }
+tokio = { version = "1.53.1", features = ["macros", "net", "rt-multi-thread", "signal", "sync", "time"] }
+tokio-tungstenite = { version = "0.29.0", default-features = false, features = ["connect", "rustls-tls-webpki-roots"] }
+tokio-rustls = { version = "0.26.4", default-features = false, features = ["ring", "tls12"] }
+tower = { version = "0.5.3", features = ["util"] }
+tower-http = { version = "0.6.11", features = ["fs"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "fmt", "json"] }
+zeroize = "1.9.0"
+url = "2.5.7"
+toml_edit = "0.25.13"
+rpassword = "7.5.4"
+reqwest = { version = "0.12.28", default-features = false, features = ["rustls-tls-webpki-roots", "stream", "json"] }
+flate2 = "1.1.5"
+tar = "0.4.44"
+rustls = { version = "0.23.45", default-features = false, features = ["ring", "std", "tls12"] }
+webpki-roots = "1.0.9"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+
+[patch.crates-io]
+# crates.io sparse-index access is not available in the Windows development
+# environment; keep this small MIT-licensed handshake dependency checksum-pinned.
+data-encoding = { path = "third_party/rust/data-encoding-2.11.1" }

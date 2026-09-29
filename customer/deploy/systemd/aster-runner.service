@@ -1,0 +1,34 @@
+[Unit]
+Description=Aster Team Rust Runner
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=@ASTER_ROOT@/config/runner/runner.env
+ConditionPathExists=@ASTER_ROOT@/config/runner/identity.json
+ConditionPathExists=@ASTER_ROOT@/config/runner/task-keys.json
+
+[Service]
+Type=simple
+User=aster-runner
+Group=aster-runner
+EnvironmentFile=@ASTER_ROOT@/config/runner/runner.env
+ExecStart=@ASTER_ROOT@/current/bin/aster-runner serve --control-wss ${ASTER_RUNNER_CONTROL_WSS} --allowed-upstream-host api.openai.com --allowed-upstream-host auth.openai.com --allowed-upstream-host api.anthropic.com --allowed-upstream-host chatgpt.com --allowed-upstream-host api.deepseek.com --allowed-upstream-host open.bigmodel.cn --allowed-upstream-host api.z.ai
+Restart=always
+RestartSec=3s
+TimeoutStopSec=30s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+ReadOnlyPaths=@ASTER_ROOT@/config/runner @ASTER_ROOT@/releases @ASTER_ROOT@/current
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,288 @@
+{
+  "models": [
+    {
+      "slug": "gpt-6-astra-fast",
+      "display_name": "GPT-6-Astra Fast Aster",
+      "description": "Our most capable model for complex, demanding work. Fast processing through Aster Team.",
+      "default_reasoning_level": "medium",
+      "shell_type": "unified_exec",
+      "visibility": "list",
+      "supported_in_api": true,
+      "priority": 1,
+      "include_skills_usage_instructions": false,
+      "include_plugin_usage_instructions": true,
+      "include_apps_usage_instructions": true,
+      "default_reasoning_summary": "none",
+      "support_verbosity": true,
+      "default_verbosity": "low",
+      "apply_patch_tool_type": "freeform",
+      "web_search_tool_type": "text_and_image",
+      "truncation_policy": {
+        "mode": "tokens",
+        "limit": 10000
+      },
+      "supports_image_detail_original": true,
+      "context_window": 272000,
+      "max_context_window": 872000,
+      "comp_hash": "3000",
+      "effective_context_window_percent": 95,
+      "input_modalities": [
+        "text",
+        "image"
+      ],
+      "supports_search_tool": true,
+      "use_responses_lite": false,
+      "node_repl_auto_review_required": false,
+      "node_repl_disabled": false,
+      "tool_mode": "code_mode_only",
+      "multi_agent_version": "v1",
+      "supported_reasoning_levels": [
+        {
+          "effort": "low",
+          "description": "Fast responses with lighter reasoning"
+        },
+        {
+          "effort": "medium",
+          "description": "Balances speed and reasoning depth for everyday tasks"
+        },
+        {
+          "effort": "high",
+          "description": "Greater reasoning depth for complex problems"
+        },
+        {
+          "effort": "xhigh",
+          "description": "Extra high reasoning depth for complex problems"
+        },
+        {
+          "effort": "max",
+          "description": "Maximum reasoning depth for the hardest problems"
+        }
+      ],
+      "base_instructions": "You are Codex, an expert programming assistant. You help users write, edit, and debug code. You think step by step, write clean code, and explain your reasoning. When editing files, you make minimal, targeted changes. You always verify your work.",
+      "additional_speed_tiers": [
+        "fast"
+      ],
+      "service_tiers": [
+        {
+          "id": "priority",
+          "name": "Fast",
+          "description": "Faster processing through Aster Team"
+        }
+      ],
+      "experimental_supported_tools": []
+    },
+    {
+      "slug": "gpt-5.6-sol-fast",
+      "display_name": "GPT-5.6-Sol Fast Aster",
+      "description": "Reliable agentic workhorse for everyday tasks. Fast processing through Aster Team.",
+      "default_reasoning_level": "low",
+      "shell_type": "unified_exec",
+      "visibility": "list",
+      "supported_in_api": true,
+      "priority": 2,
+      "include_skills_usage_instructions": false,
+      "include_plugin_usage_instructions": true,
+      "include_apps_usage_instructions": true,
+      "default_reasoning_summary": "none",
+      "support_verbosity": true,
+      "default_verbosity": "low",
+      "apply_patch_tool_type": "freeform",
+      "web_search_tool_type": "text_and_image",
+      "truncation_policy": {
+        "mode": "tokens",
+        "limit": 10000
+      },
+      "supports_image_detail_original": true,
+      "context_window": 272000,
+      "max_context_window": 872000,
+      "comp_hash": "3000",
+      "effective_context_window_percent": 95,
+      "input_modalities": [
+        "text",
+        "image"
+      ],
+      "supports_search_tool": true,
+      "use_responses_lite": false,
+      "node_repl_auto_review_required": false,
+      "node_repl_disabled": false,
+      "tool_mode": "code_mode_only",
+      "multi_agent_version": "v1",
+      "supported_reasoning_levels": [
+        {
+          "effort": "low",
+          "description": "Fast responses with lighter reasoning"
+        },
+        {
+          "effort": "medium",
+          "description": "Balances speed and reasoning depth for everyday tasks"
+        },
+        {
+          "effort": "high",
+          "description": "Greater reasoning depth for complex problems"
+        },
+        {
+          "effort": "xhigh",
+          "description": "Extra high reasoning depth for complex problems"
+        },
+        {
+          "effort": "max",
+          "description": "Maximum reasoning depth for the hardest problems"
+        }
+      ],
+      "base_instructions": "You are Codex, an expert programming assistant. You help users write, edit, and debug code. You think step by step, write clean code, and explain your reasoning. When editing files, you make minimal, targeted changes. You always verify your work.",
+      "additional_speed_tiers": [
+        "fast"
+      ],
+      "service_tiers": [
+        {
+          "id": "priority",
+          "name": "Fast",
+          "description": "Faster processing through Aster Team"
+        }
+      ],
+      "experimental_supported_tools": []
+    },
+    {
+      "slug": "gpt-5.6-terra-fast",
+      "display_name": "GPT-5.6-Terra Fast Aster",
+      "description": "Balanced agentic coding model for everyday work. Fast processing through Aster Team.",
+      "default_reasoning_level": "medium",
+      "shell_type": "unified_exec",
+      "visibility": "list",
+      "supported_in_api": true,
+      "priority": 3,
+      "include_skills_usage_instructions": false,
+      "include_plugin_usage_instructions": true,
+      "include_apps_usage_instructions": true,
+      "default_reasoning_summary": "none",
+      "support_verbosity": true,
+      "default_verbosity": "low",
+      "apply_patch_tool_type": "freeform",
+      "web_search_tool_type": "text_and_image",
+      "truncation_policy": {
+        "mode": "tokens",
+        "limit": 10000
+      },
+      "supports_image_detail_original": true,
+      "context_window": 272000,
+      "max_context_window": 872000,
+      "comp_hash": "3000",
+      "effective_context_window_percent": 95,
+      "input_modalities": [
+        "text",
+        "image"
+      ],
+      "supports_search_tool": true,
+      "use_responses_lite": false,
+      "node_repl_auto_review_required": false,
+      "node_repl_disabled": false,
+      "tool_mode": "code_mode_only",
+      "multi_agent_version": "v1",
+      "supported_reasoning_levels": [
+        {
+          "effort": "low",
+          "description": "Fast responses with lighter reasoning"
+        },
+        {
+          "effort": "medium",
+          "description": "Balances speed and reasoning depth for everyday tasks"
+        },
+        {
+          "effort": "high",
+          "description": "Greater reasoning depth for complex problems"
+        },
+        {
+          "effort": "xhigh",
+          "description": "Extra high reasoning depth for complex problems"
+        },
+        {
+          "effort": "max",
+          "description": "Maximum reasoning depth for the hardest problems"
+        }
+      ],
+      "base_instructions": "You are Codex, an expert programming assistant. You help users write, edit, and debug code. You think step by step, write clean code, and explain your reasoning. When editing files, you make minimal, targeted changes. You always verify your work.",
+      "additional_speed_tiers": [
+        "fast"
+      ],
+      "service_tiers": [
+        {
+          "id": "priority",
+          "name": "Fast",
+          "description": "Faster processing through Aster Team"
+        }
+      ],
+      "experimental_supported_tools": []
+    },
+    {
+      "slug": "gpt-5.6-luna-fast",
+      "display_name": "GPT-5.6-Luna Fast Aster",
+      "description": "Fast and affordable agentic coding model. Fast processing through Aster Team.",
+      "default_reasoning_level": "medium",
+      "shell_type": "unified_exec",
+      "visibility": "list",
+      "supported_in_api": true,
+      "priority": 4,
+      "include_skills_usage_instructions": false,
+      "include_plugin_usage_instructions": true,
+      "include_apps_usage_instructions": true,
+      "default_reasoning_summary": "none",
+      "support_verbosity": true,
+      "default_verbosity": "low",
+      "apply_patch_tool_type": "freeform",
+      "web_search_tool_type": "text_and_image",
+      "truncation_policy": {
+        "mode": "tokens",
+        "limit": 10000
+      },
+      "supports_image_detail_original": true,
+      "context_window": 272000,
+      "max_context_window": 872000,
+      "comp_hash": "3000",
+      "effective_context_window_percent": 95,
+      "input_modalities": [
+        "text",
+        "image"
+      ],
+      "supports_search_tool": true,
+      "use_responses_lite": false,
+      "node_repl_auto_review_required": false,
+      "node_repl_disabled": false,
+      "tool_mode": "code_mode_only",
+      "multi_agent_version": "v1",
+      "supported_reasoning_levels": [
+        {
+          "effort": "low",
+          "description": "Fast responses with lighter reasoning"
+        },
+        {
+          "effort": "medium",
+          "description": "Balances speed and reasoning depth for everyday tasks"
+        },
+        {
+          "effort": "high",
+          "description": "Greater reasoning depth for complex problems"
+        },
+        {
+          "effort": "xhigh",
+          "description": "Extra high reasoning depth for complex problems"
+        },
+        {
+          "effort": "max",
+          "description": "Maximum reasoning depth for the hardest problems"
+        }
+      ],
+      "base_instructions": "You are Codex, an expert programming assistant. You help users write, edit, and debug code. You think step by step, write clean code, and explain your reasoning. When editing files, you make minimal, targeted changes. You always verify your work.",
+      "additional_speed_tiers": [
+        "fast"
+      ],
+      "service_tiers": [
+        {
+          "id": "priority",
+          "name": "Fast",
+          "description": "Faster processing through Aster Team"
+        }
+      ],
+      "experimental_supported_tools": []
+    }
+  ]
+}
