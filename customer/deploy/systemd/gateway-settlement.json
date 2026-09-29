@@ -1,0 +1,5 @@
+{
+  "schema": "aster.gateway-settlement-capability.v1",
+  "intent_schema": "aster.gateway-settlement.v1",
+  "request_lock_schema": "aster.gateway-request-lock.v1"
+}

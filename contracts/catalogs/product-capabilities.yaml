@@ -1,0 +1,57 @@
+# Available software capabilities, not commercial plans or authorization grants.
+# Keep IDs stable. New paid functionality receives its own capability ID.
+catalog_version: 1
+product: aster-team
+# Additive capabilities keep this contract version; IDs and membership are stable.
+feature_sets:
+  - id: standard
+    label: 标准功能
+    description: 订阅期间包含标准功能更新与升级
+capabilities:
+  - id: gateway
+    label: 模型接入
+    description: 模型兼容接口与上游接入管理
+    feature_set: standard
+    free_default: true
+    requires: []
+  - id: member
+    label: 成员协作
+    description: 成员控制台、席位与使用额度管理
+    feature_set: standard
+    free_default: true
+    requires: []
+  - id: runner
+    label: Runner 执行
+    description: 私有运行节点与任务执行
+    feature_set: standard
+    free_default: true
+    requires: []
+# Business requirements are software metadata, not new grants in a License.
+# Keep local gateway management independent from Runner execution.
+operations:
+  - id: upstream_authorize
+    label: 新增订阅/账号
+    requires: [gateway, runner]
+  - id: upstream_sync
+    label: 同步上游模型
+    requires: [gateway, runner]
+  - id: upstream_refresh
+    label: 人工刷新凭据
+    requires: [gateway, runner]
+quotas:
+  - id: member_seats
+    label: 成员席位
+    unit: 席位
+    scope: installation
+  - id: runners
+    label: Runner
+    unit: 个
+    scope: installation
+  - id: upstream_accounts
+    label: 订阅/账号
+    unit: 个
+    scope: installation
+  - id: api_keys_per_member
+    label: 每人 Key
+    unit: 个
+    scope: member

@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "domains": {
+    "customer": {
+      "sourceRoots": [
+        "customer/admin",
+        "customer/member",
+        "customer/backend/asterctl",
+        "customer/backend/cli",
+        "customer/backend/control",
+        "customer/backend/runner",
+        "customer/backend/crates/auth-core",
+        "customer/backend/crates/codex-config",
+        "customer/backend/crates/credential-vault",
+        "customer/backend/crates/error-catalog",
+        "customer/backend/crates/install-layout",
+        "packages/rust/license-core",
+        "customer/backend/crates/license-state",
+        "customer/backend/crates/machine-identity",
+        "customer/backend/crates/policy-core",
+        "customer/backend/crates/plugin-core",
+        "packages/rust/release-core",
+        "customer/backend/crates/routing",
+        "customer/backend/crates/runner-protocol",
+        "customer/backend/crates/storage",
+        "customer/backend/crates/upgrade-core",
+        "customer/backend/schema",
+        "customer/sdk",
+        "packages/ui",
+        "contracts/schemas",
+        "contracts/catalogs",
+        "contracts/test-vectors",
+        "customer/deploy",
+        "customer/plugins",
+        "scripts/build-linux-bundle.mjs",
+        "scripts/bundled-free-license.mjs",
+        "scripts/build-asterctl-windows.mjs",
+        "scripts/build-windows-bundle.mjs",
+        "scripts/build-macos-bundle.mjs",
+        "scripts/generate-customer-sbom.mjs",
+        "scripts/verify-customer-logging.mjs",
+        "scripts/customer-release-profile.mjs",
+        "scripts/official-plugin-release.mjs",
+        "scripts/release-archive.mjs",
+        "tools/caddy-runtime.json",
+        "docs/customer-guide.md"
+      ],
+      "forbiddenReferences": [
+        "operations/console",
+        "operations/backend/internal",
+        "contracts/openapi/operations.openapi.yaml",
+        "operations/deploy",
+        "docs/internal"
+      ],
+      "artifactTopLevel": ["README.md", "RELEASE.json", "SBOM.cdx.json", "THIRD_PARTY_LICENSES", "VERSION", "admin", "bin", "client-tools", "init.sh", "libexec", "member", "plugins", "systemd"],
+      "artifactProfiles": {
+        "linux": ["README.md", "RELEASE.json", "SBOM.cdx.json", "THIRD_PARTY_LICENSES", "VERSION", "admin", "bin", "client-tools", "init.sh", "libexec", "member", "plugins", "systemd"],
+        "windows": ["README.md", "RELEASE.json", "SBOM.cdx.json", "THIRD_PARTY_LICENSES", "VERSION", "admin", "bin", "client-tools", "init.ps1", "libexec", "member", "plugins", "windows"],
+        "macos": ["README.md", "RELEASE.json", "SBOM.cdx.json", "THIRD_PARTY_LICENSES", "VERSION", "admin", "bin", "init-macos.sh", "launchd", "libexec", "macos", "member", "plugins"]
+      },
+      "artifactOptionalGroups": {
+        "linux": {
+          "licenses": ["licenses/free-license.json"]
+        },
+        "windows": {
+          "licenses": ["licenses/free-license.json"]
+        }
+      },
+      "forbiddenArtifactFragments": [
+        "operations-console",
+        "operations-api",
+        "operations.env",
+        "docs/internal",
+        ".cjs",
+        ".map",
+        ".env",
+        "node_modules",
+        "runtime/node",
+        "runtime/caddy",
+        "server.cjs",
+        "license-guard",
+        "sqlcipher.node"
+      ],
+      "forbiddenArtifactContent": [
+        "operations/console",
+        "operations/backend/internal",
+        "docs/internal",
+        "ASTER_OPERATIONS_DATABASE_",
+        "ASTER_OPERATIONS_LICENSE_SIGNING_PRIVATE_KEY_PKCS8",
+        "ASTER_RELEASE_SIGNING_PRIVATE_KEY",
+        "BEGIN PRIVATE KEY",
+        "BEGIN RSA PRIVATE KEY",
+        "BEGIN EC PRIVATE KEY",
+        "BEGIN OPENSSH PRIVATE KEY",
+        "aster.local/team/operations/backend/internal"
+      ]
+    },
+    "operations": {
+      "sourceRoots": [
+        "contracts/openapi/operations.openapi.yaml",
+        "contracts/schemas",
+        "contracts/catalogs",
+        "contracts/test-vectors",
+        "operations/console",
+        "operations/backend/cmd/api",
+        "operations/backend/cmd/backup",
+        "operations/backend/cmd/webhost",
+        "operations/release-tool",
+        "packages/rust/license-core",
+        "packages/rust/release-core",
+        "operations/backend/internal",
+        "operations/backend/internal/licenseprotocol",
+        "operations/backend/schema",
+        "packages/ui",
+        "operations/deploy",
+        "scripts/build-operations-bundle.mjs"
+      ],
+      "forbiddenReferences": [
+        "customer/backend/control/src",
+        "customer/backend/runner/src",
+        "customer/admin/src",
+        "customer/member/src",
+        "customer/deploy"
+      ],
+      "artifactTopLevel": ["OPERATIONS-GUIDE.md", "VERSION", "README.md", "bin", "console", "install.sh", "operations.env.example", "systemd"],
+      "forbiddenArtifactFragments": [
+        "edge-control",
+        "aster-runner",
+        "admin/dist",
+        "member/dist",
+        ".env"
+      ]
+    },
+    "website": {
+      "sourceRoots": ["website", "packages/ui", "website/deploy", "scripts/build-website-bundle.mjs"],
+      "forbiddenReferences": ["operations/backend/internal", "customer/backend/control", "contracts/openapi", "database", "mariadb"],
+      "artifactTopLevel": ["assets", "index.html"],
+      "forbiddenArtifactFragments": ["operations", "license", "database", "mariadb", ".env"]
+    }
+  }
+}

@@ -1,0 +1,8 @@
+# Typography
+
+- Use the shared UI font family for every visible text surface. `--font-ui` is the single source of truth; code, commands, logs, form controls, teleported overlays, and third-party widgets must resolve to that same family. Font weight may vary for hierarchy and emphasis, but it does not create another typeface.
+- VitePress documentation code is the approved exception: define its system monospace stack once in the native `--vp-font-family-mono` token, used by fenced examples, inline code and model examples. Documentation prose and controls retain `--font-ui`; shared application tokens and other product surfaces keep the rule above. Code examples use `--font-size-body`, including custom model examples.
+- Use only the four shared font-size tokens: `--font-size-caption`, `--font-size-body`, `--font-size-title`, and `--font-size-display`. Do not add raw `px`, `rem`, `em`, `clamp()`, page-local type tokens, or a fifth size in a `font-size` declaration or `font` shorthand.
+- Use `--font-size-body` for tables, lists, buttons, tabs, inputs, selects, menu options, ordinary paragraphs, and primary field values. Do not reduce these interactive or data-dense surfaces to caption text to make content fit.
+- Reserve `--font-size-caption` for genuinely secondary metadata, annotations, timestamps, chart axes, and helper text. Use `--font-size-title` for card, section, dialog, and detail titles. Use `--font-size-display` only for page-level and major marketing headings.
+- Solve crowded layouts with spacing, width, truncation, wrapping, scrolling, or responsive reflow—not with one-off smaller font sizes. Run `npm run verify:typography` after changing frontend typography.

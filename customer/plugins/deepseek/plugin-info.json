@@ -1,0 +1,4 @@
+{
+  "zh-CN": { "name": "DeepSeek 上游适配插件", "description": "DeepSeek API 协议适配" },
+  "en-US": { "name": "DeepSeek upstream adapter", "description": "DeepSeek API protocol adapter" }
+}

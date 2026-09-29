@@ -1,0 +1,15 @@
+[package]
+name = "aster-routing"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+aster-error-catalog = { path = "../error-catalog" }
+thiserror.workspace = true
+time.workspace = true
+
+[dev-dependencies]
+time = { workspace = true, features = ["macros"] }

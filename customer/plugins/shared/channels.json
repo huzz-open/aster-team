@@ -1,0 +1,9 @@
+{
+  "openai.codex.subscription": { "provider": "openai", "profile": "openai.codex.subscription", "wire_protocol": "responses" },
+  "openai.api": { "provider": "openai", "profile": "openai.api", "wire_protocol": "responses" },
+  "deepseek.api": { "provider": "deepseek", "profile": "deepseek.api", "wire_protocol": "responses" },
+  "glm.bigmodel.general": { "provider": "glm", "profile": "glm.bigmodel.general", "wire_protocol": "chat" },
+  "glm.bigmodel.coding": { "provider": "glm", "profile": "glm.bigmodel.coding", "wire_protocol": "chat" },
+  "glm.zai.general": { "provider": "glm", "profile": "glm.zai.general", "wire_protocol": "chat" },
+  "glm.zai.coding": { "provider": "glm", "profile": "glm.zai.coding", "wire_protocol": "chat" }
+}

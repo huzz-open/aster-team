@@ -1,0 +1,4 @@
+{
+  "schema": "aster.local-slot-runtime.v1",
+  "active_slot_schema": "aster.active-release-slot.v2"
+}

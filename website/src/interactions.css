@@ -1,0 +1,183 @@
+/* Interaction layer: consistent pointer, keyboard and touch feedback for the public site. */
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  color: #fff;
+  background: #6f68d9;
+}
+
+a,
+button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid #918bff55;
+  outline-offset: 3px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: .48;
+}
+
+.header nav a {
+  position: relative;
+  padding-block: 10px;
+  transition: color .16s ease;
+}
+
+.header nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  content: '';
+  transform: scaleX(0);
+  transition: transform .16s ease;
+}
+
+.header nav a:hover::after,
+.header nav a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.button {
+  border: 1px solid transparent;
+  transition: transform .16s ease, box-shadow .16s ease, filter .16s ease, border-color .16s ease;
+}
+
+.button:hover {
+  filter: brightness(1.09);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 38px #6554e955;
+}
+
+.button:active {
+  filter: brightness(.97);
+  transform: translateY(1px) scale(.985);
+  box-shadow: 0 7px 20px #6554e930;
+}
+
+.button.ghost {
+  border-color: #30313e;
+}
+
+.button.ghost:hover {
+  border-color: #454759;
+  background: #1b1c28;
+  box-shadow: none;
+}
+
+.protocol-tabs button {
+  border: 1px solid transparent;
+  font-weight: 700;
+  transition: color .14s ease, background .14s ease, border-color .14s ease, transform .1s ease;
+}
+
+.protocol-tabs button:hover {
+  color: #d7d8e3;
+  background: #1a1b25;
+}
+
+.protocol-tabs button:active {
+  transform: scale(.975);
+}
+
+.protocol-tabs button.active {
+  border-color: #383a4b;
+  box-shadow: 0 1px 3px #0008;
+}
+
+.endpoint-row button {
+  position: relative;
+  transition: color .14s ease, border-color .14s ease, background .14s ease, transform .1s ease;
+}
+
+.endpoint-row button:hover {
+  color: #fff;
+  border-color: #575a73;
+  background: #242632;
+}
+
+.endpoint-row button:active {
+  background: #12131c;
+  transform: scale(.94);
+}
+
+.icon-action::after {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 9px);
+  z-index: 5;
+  width: max-content;
+  max-width: 170px;
+  padding: 7px 9px;
+  border: 1px solid #3c3e4c;
+  border-radius: 7px;
+  color: #f5f5f8;
+  background: #15161e;
+  box-shadow: 0 8px 24px #0009;
+  content: attr(data-tooltip);
+  font: 650 var(--font-size-body)/1.2 var(--font-ui);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(3px);
+  transition: opacity .14s ease, transform .14s ease;
+}
+
+.icon-action:hover::after,
+.icon-action:focus-visible::after {
+  opacity: 1;
+  transform: none;
+}
+
+.features a {
+  width: max-content;
+  padding-block: 5px;
+  font-weight: 700;
+  transition: color .15s ease, gap .15s ease;
+}
+
+.features a:hover {
+  gap: 9px;
+  color: #d0ccff;
+}
+
+.features a:active {
+  color: #817aed;
+}
+
+@media (hover: none) {
+  .button:hover {
+    filter: none;
+    transform: none;
+  }
+
+  .icon-action:active::after {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

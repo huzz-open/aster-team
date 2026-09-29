@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS commercial_paid_redeliveries (
+    id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL PRIMARY KEY,
+    operation_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    fulfillment_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    fulfillment_sha256 CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    order_id VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    customer_id VARCHAR(64) NOT NULL,
+    document_sha256 CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    environment VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    snapshot_json JSON NOT NULL,
+    content_sha256 CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    requested_by VARCHAR(64) NOT NULL,
+    requested_at DATETIME(6) NOT NULL,
+    UNIQUE KEY uq_paid_redelivery_operation (operation_id),
+    KEY ix_paid_redelivery_fulfillment (fulfillment_id),
+    KEY ix_paid_redelivery_order (order_id),
+    CONSTRAINT fk_paid_redelivery_fulfillment FOREIGN KEY (fulfillment_id) REFERENCES commercial_paid_fulfillments(id),
+    CONSTRAINT fk_paid_redelivery_order FOREIGN KEY (order_id) REFERENCES commercial_orders(id),
+    CONSTRAINT fk_paid_redelivery_customer FOREIGN KEY (customer_id) REFERENCES customers(id),
+    CONSTRAINT fk_paid_redelivery_actor FOREIGN KEY (requested_by) REFERENCES operators(id),
+    CONSTRAINT chk_paid_redelivery_environment CHECK (environment IN ('local', 'production'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

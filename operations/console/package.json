@@ -1,0 +1,26 @@
+{
+  "name": "@aster/operations-console",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "api:generate": "openapi-typescript ../../contracts/openapi/operations.openapi.yaml -o src/api/generated/schema.ts",
+    "dev": "vite --port 12080",
+    "build": "npm run api:generate && vue-tsc --noEmit && vite build",
+    "typecheck": "npm run api:generate && vue-tsc --noEmit",
+    "test": "vitest run --maxWorkers=2"
+  },
+  "dependencies": {
+    "@aster/ui": "*",
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.3",
+    "openapi-fetch": "^0.15.0",
+    "vue": "^3.5.18",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^20.11.6",
+    "vitest": "^4.1.11"
+  }
+}

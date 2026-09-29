@@ -1,0 +1,361 @@
+{
+  "schema": 1,
+  "revision": "official-rules-v5",
+  "image_models": {
+    "chatgpt-image-latest": {
+      "provider": "openai",
+      "generate": true,
+      "edit": true,
+      "output": "b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "supported",
+        "size": "supported",
+        "quality": "supported",
+        "background": "supported",
+        "output_format": "supported",
+        "output_compression": "supported",
+        "mask": "supported"
+      }
+    },
+    "cogview-4-250304": {
+      "provider": "glm",
+      "generate": true,
+      "edit": false,
+      "output": "url_to_b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "mapped",
+        "size": "supported",
+        "quality": "mapped",
+        "background": "unsupported",
+        "output_format": "unsupported",
+        "output_compression": "unsupported",
+        "mask": "unsupported"
+      },
+      "mappings": {
+        "quality": {
+          "high": "hd",
+          "medium": "standard"
+        },
+        "n": {
+          "2..10": "one upstream call per image"
+        }
+      }
+    },
+    "glm-image": {
+      "provider": "glm",
+      "generate": true,
+      "edit": false,
+      "output": "url_to_b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "mapped",
+        "size": "supported",
+        "quality": "mapped",
+        "background": "unsupported",
+        "output_format": "unsupported",
+        "output_compression": "unsupported",
+        "mask": "unsupported"
+      },
+      "mappings": {
+        "quality": {
+          "high": "hd",
+          "medium": "standard"
+        },
+        "n": {
+          "2..10": "one upstream call per image"
+        }
+      }
+    },
+    "gpt-image-1": {
+      "provider": "openai",
+      "generate": true,
+      "edit": true,
+      "output": "b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "supported",
+        "size": "supported",
+        "quality": "supported",
+        "background": "supported",
+        "output_format": "supported",
+        "output_compression": "supported",
+        "mask": "supported"
+      }
+    },
+    "gpt-image-1-mini": {
+      "provider": "openai",
+      "generate": true,
+      "edit": true,
+      "output": "b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "supported",
+        "size": "supported",
+        "quality": "supported",
+        "background": "supported",
+        "output_format": "supported",
+        "output_compression": "supported",
+        "mask": "supported"
+      }
+    },
+    "gpt-image-1.5": {
+      "provider": "openai",
+      "generate": true,
+      "edit": true,
+      "output": "b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "supported",
+        "size": "supported",
+        "quality": "supported",
+        "background": "supported",
+        "output_format": "supported",
+        "output_compression": "supported",
+        "mask": "supported"
+      }
+    },
+    "gpt-image-2": {
+      "provider": "openai",
+      "generate": true,
+      "edit": true,
+      "output": "b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "supported",
+        "size": "supported",
+        "quality": "supported",
+        "background": "supported",
+        "output_format": "supported",
+        "output_compression": "supported",
+        "mask": "supported"
+      }
+    },
+    "gpt-image-2-2026-04-21": {
+      "provider": "openai",
+      "generate": true,
+      "edit": true,
+      "output": "b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "supported",
+        "size": "supported",
+        "quality": "supported",
+        "background": "supported",
+        "output_format": "supported",
+        "output_compression": "supported",
+        "mask": "supported"
+      }
+    },
+    "gpt-image-2.5-flare": {
+      "provider": "openai",
+      "generate": true,
+      "edit": true,
+      "output": "b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "supported",
+        "size": "supported",
+        "quality": "supported",
+        "background": "supported",
+        "output_format": "supported",
+        "output_compression": "supported",
+        "mask": "supported"
+      }
+    },
+    "gpt-image-2.5-flare-2026-09-08": {
+      "provider": "openai",
+      "generate": true,
+      "edit": true,
+      "output": "b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "supported",
+        "size": "supported",
+        "quality": "supported",
+        "background": "supported",
+        "output_format": "supported",
+        "output_compression": "supported",
+        "mask": "supported"
+      }
+    },
+    "gpt-image-2.5-sunburst": {
+      "provider": "openai",
+      "generate": true,
+      "edit": true,
+      "output": "b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "supported",
+        "size": "supported",
+        "quality": "supported",
+        "background": "supported",
+        "output_format": "supported",
+        "output_compression": "supported",
+        "mask": "supported"
+      }
+    },
+    "gpt-image-2.5-sunburst-2026-09-08": {
+      "provider": "openai",
+      "generate": true,
+      "edit": true,
+      "output": "b64_json",
+      "fields": {
+        "prompt": "supported",
+        "n": "supported",
+        "size": "supported",
+        "quality": "supported",
+        "background": "supported",
+        "output_format": "supported",
+        "output_compression": "supported",
+        "mask": "supported"
+      }
+    }
+  },
+  "models": {
+    "deepseek-flash": {
+      "provider": "deepseek",
+      "upstream_protocol": "responses",
+      "wire_by_public_protocol": {
+        "responses": "responses",
+        "chat_completions": "chat",
+        "anthropic_messages": "chat"
+      },
+      "reasoning": {
+        "native": [
+          "none",
+          "low",
+          "high",
+          "max"
+        ],
+        "mapped": {
+          "minimal": "low",
+          "medium": "high",
+          "xhigh": "high",
+          "ultra": "max"
+        }
+      },
+      "fields": {
+        "input": "supported",
+        "max_output_tokens": "supported",
+        "reasoning_effort": "mapped",
+        "tools": "supported",
+        "parallel_tool_calls_false": "unsupported",
+        "temperature": "supported",
+        "top_p": "mapped",
+        "json_object": "supported",
+        "json_schema": "unsupported",
+        "image_input": "unsupported",
+        "image_generation": "unsupported"
+      },
+      "protocol_fields": {
+        "anthropic_messages": {
+          "reasoning_effort": "unsupported",
+          "json_object": "unsupported"
+        }
+      },
+      "field_notes": {
+        "temperature": {
+          "zh": "仅在 reasoning_effort=none（关闭思考）时生效；默认思考模式下显式传入会被拒绝。",
+          "en": "Effective only with reasoning_effort=none. An explicit value is rejected in the default thinking mode."
+        },
+        "top_p": {
+          "zh": "思考模式下低于 0.95 的值映射到 0.95；关闭思考时该字段无效，显式传入会被拒绝。",
+          "en": "Values below 0.95 map to 0.95 in thinking mode. An explicit value is rejected when thinking is disabled."
+        }
+      }
+    },
+    "deepseek-v4-pro": {
+      "provider": "deepseek",
+      "upstream_protocol": "responses",
+      "wire_by_public_protocol": {
+        "responses": "responses",
+        "chat_completions": "chat",
+        "anthropic_messages": "chat"
+      },
+      "reasoning": {
+        "native": [
+          "none",
+          "low",
+          "high",
+          "max"
+        ],
+        "mapped": {
+          "minimal": "low",
+          "medium": "high",
+          "xhigh": "high",
+          "ultra": "max"
+        }
+      },
+      "fields": {
+        "input": "supported",
+        "max_output_tokens": "supported",
+        "reasoning_effort": "mapped",
+        "tools": "supported",
+        "parallel_tool_calls_false": "unsupported",
+        "temperature": "supported",
+        "top_p": "mapped",
+        "json_object": "supported",
+        "json_schema": "unsupported",
+        "image_input": "unsupported",
+        "image_generation": "unsupported"
+      },
+      "protocol_fields": {
+        "anthropic_messages": {
+          "reasoning_effort": "unsupported",
+          "json_object": "unsupported"
+        }
+      },
+      "field_notes": {
+        "temperature": {
+          "zh": "仅在 reasoning_effort=none（关闭思考）时生效；默认思考模式下显式传入会被拒绝。",
+          "en": "Effective only with reasoning_effort=none. An explicit value is rejected in the default thinking mode."
+        },
+        "top_p": {
+          "zh": "思考模式下低于 0.95 的值映射到 0.95；关闭思考时该字段无效，显式传入会被拒绝。",
+          "en": "Values below 0.95 map to 0.95 in thinking mode. An explicit value is rejected when thinking is disabled."
+        }
+      }
+    },
+    "glm-5.2": {
+      "provider": "glm",
+      "upstream_protocol": "chat",
+      "wire_by_public_protocol": {
+        "responses": "chat",
+        "chat_completions": "chat",
+        "anthropic_messages": "chat"
+      },
+      "reasoning": {
+        "native": [
+          "high",
+          "max"
+        ],
+        "mapped": {
+          "low": "high",
+          "medium": "high",
+          "xhigh": "max"
+        }
+      },
+      "fields": {
+        "input": "supported",
+        "max_output_tokens": "mapped",
+        "reasoning_effort": "mapped",
+        "tools": "supported",
+        "parallel_tool_calls_false": "unsupported",
+        "temperature": "supported",
+        "top_p": "supported",
+        "json_object": "supported",
+        "json_schema": "unsupported",
+        "image_input": "unsupported",
+        "image_generation": "unsupported"
+      },
+      "protocol_fields": {
+        "anthropic_messages": {
+          "reasoning_effort": "unsupported",
+          "json_object": "unsupported"
+        }
+      }
+    }
+  }
+}

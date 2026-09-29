@@ -1,0 +1,201 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/paid-fulfillment.v1.schema.json
+title: Immutable initial paid fulfillment approval and issuance
+description: Internal contract. A structurally valid record is not approval authority. The transaction must verify original sources and permissions; application verification must check the trusted signature before delivery.
+$ref: "#/$defs/record"
+$defs:
+  input:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_order_sha256, expected_payment_sha256, license_request_json, reason]
+    properties:
+      operation_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      expected_order_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      expected_payment_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      license_request_json:
+        type: string
+        minLength: 1
+        maxLength: 16384
+        description: Original UTF-8 JSON text, at most 16384 bytes. Server must strictly parse these original bytes as license-request.v2 before generic JSON decoding can discard duplicate keys.
+      reason: { type: string, minLength: 1, maxLength: 2000 }
+  approval:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_order_sha256, expected_payment_sha256, license_request_json, reason, current_password]
+    properties:
+      operation_id: { $ref: "#/$defs/input/properties/operation_id" }
+      expected_order_sha256: { $ref: "#/$defs/input/properties/expected_order_sha256" }
+      expected_payment_sha256: { $ref: "#/$defs/input/properties/expected_payment_sha256" }
+      license_request_json: { $ref: "#/$defs/input/properties/license_request_json" }
+      reason: { $ref: "#/$defs/input/properties/reason" }
+      current_password: { type: string, minLength: 1, writeOnly: true }
+  redelivery_input:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_document_sha256, reason]
+    properties:
+      operation_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      expected_document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      reason: { type: string, minLength: 1, maxLength: 2000 }
+  redelivery_request:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_document_sha256, reason, current_password]
+    properties:
+      operation_id: { $ref: "#/$defs/redelivery_input/properties/operation_id" }
+      expected_document_sha256: { $ref: "#/$defs/redelivery_input/properties/expected_document_sha256" }
+      reason: { $ref: "#/$defs/redelivery_input/properties/reason" }
+      current_password: { type: string, minLength: 1, writeOnly: true }
+  redelivery_snapshot:
+    type: object
+    additionalProperties: false
+    required: [schema, id, fulfillment_id, fulfillment_sha256, order_id, customer_id, document_sha256, environment, request, requested_by, requested_at]
+    properties:
+      schema: { const: aster.paid-redelivery.v1 }
+      id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      fulfillment_id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      fulfillment_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      order_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      customer_id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      environment: { enum: [local, production] }
+      request: { $ref: "#/$defs/redelivery_input" }
+      requested_by: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      requested_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+  redelivery_record:
+    type: object
+    additionalProperties: false
+    required: [snapshot, sha256]
+    properties:
+      snapshot: { $ref: "#/$defs/redelivery_snapshot" }
+      sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+  transfer_input:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_current_document_sha256, license_request_json, reason]
+    properties:
+      operation_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      expected_current_document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      license_request_json:
+        type: string
+        minLength: 1
+        maxLength: 16384
+      reason: { type: string, minLength: 1, maxLength: 2000 }
+  transfer_request:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_current_document_sha256, license_request_json, reason, current_password]
+    properties:
+      operation_id: { $ref: "#/$defs/transfer_input/properties/operation_id" }
+      expected_current_document_sha256: { $ref: "#/$defs/transfer_input/properties/expected_current_document_sha256" }
+      license_request_json: { $ref: "#/$defs/transfer_input/properties/license_request_json" }
+      reason: { $ref: "#/$defs/transfer_input/properties/reason" }
+      current_password: { type: string, minLength: 1, writeOnly: true }
+  transfer_snapshot:
+    type: object
+    additionalProperties: false
+    required: [schema, id, fulfillment_id, fulfillment_sha256, customer_id, original_claims, transfer_limit, request, installation_request, request_sha256, previous_document_sha256, previous_binding, previous_issued_at, transfer_sequence, environment, approved_by, approved_at]
+    properties:
+      schema: { const: aster.paid-transfer.v1 }
+      id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      fulfillment_id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      fulfillment_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      customer_id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      original_claims: { $ref: "license.v2.schema.yaml#/$defs/claims" }
+      transfer_limit: { type: integer, minimum: 0, maximum: 10000 }
+      request: { $ref: "#/$defs/transfer_input" }
+      installation_request: { $ref: "license-request.v2.schema.yaml" }
+      request_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      previous_document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      previous_binding: { $ref: "license.v2.schema.yaml#/$defs/installation" }
+      previous_issued_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+      transfer_sequence: { type: integer, minimum: 1, maximum: 10000 }
+      environment: { enum: [local, production] }
+      approved_by: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      approved_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+  transfer_record:
+    type: object
+    additionalProperties: false
+    required: [snapshot, sha256, status]
+    properties:
+      snapshot: { $ref: "#/$defs/transfer_snapshot" }
+      sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      status: { enum: [approved, prepared, issued] }
+      claims: { $ref: "license.v2.schema.yaml#/$defs/claims" }
+      document: { $ref: "license.v2.schema.yaml#/$defs/document" }
+      document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+    oneOf:
+      - properties:
+          status: { const: approved }
+          claims: false
+          document: false
+          document_sha256: false
+      - properties:
+          status: { const: prepared }
+          document: false
+          document_sha256: false
+        required: [claims]
+      - properties:
+          status: { const: issued }
+        required: [claims, document, document_sha256]
+  context:
+    type: object
+    additionalProperties: false
+    required: [order_id, customer_id, order_sha256, payment_id, payment_sha256, plan, amount_minor, currency, starts_at, ends_at, status, source, environment, minimum_version, catalog_version, quota_policy_version]
+    properties:
+      order_id: { $ref: "payment.v1.schema.yaml#/$defs/context/properties/order_id" }
+      customer_id: { $ref: "payment.v1.schema.yaml#/$defs/context/properties/customer_id" }
+      order_sha256: { $ref: "payment.v1.schema.yaml#/$defs/context/properties/order_sha256" }
+      amount_minor: { $ref: "payment.v1.schema.yaml#/$defs/context/properties/amount_minor" }
+      currency: { $ref: "payment.v1.schema.yaml#/$defs/context/properties/currency" }
+      starts_at: { $ref: "payment.v1.schema.yaml#/$defs/context/properties/starts_at" }
+      ends_at: { $ref: "payment.v1.schema.yaml#/$defs/context/properties/ends_at" }
+      status: { $ref: "payment.v1.schema.yaml#/$defs/context/properties/status" }
+      source: { $ref: "payment.v1.schema.yaml#/$defs/context/properties/source" }
+      payment_id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      payment_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      plan: { $ref: "commercial.v1.schema.yaml#/$defs/plan" }
+      environment: { enum: ["", local, production] }
+      minimum_version: { type: string }
+      catalog_version: { type: integer, minimum: 1, maximum: 4294967295 }
+      quota_policy_version: { type: integer, minimum: 1, maximum: 4294967295 }
+  snapshot:
+    type: object
+    additionalProperties: false
+    required: [schema, id, payment, request, installation_request, request_sha256, customer_ref, environment, approved_by, approved_at]
+    properties:
+      schema: { const: aster.paid-fulfillment.v1 }
+      id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      payment: { $ref: "payment.v1.schema.yaml#/$defs/record" }
+      request: { $ref: "#/$defs/input" }
+      installation_request: { $ref: "license-request.v2.schema.yaml" }
+      request_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      customer_ref: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      environment: { enum: [local, production] }
+      approved_by: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      approved_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+  record:
+    type: object
+    additionalProperties: false
+    required: [snapshot, sha256, status]
+    properties:
+      snapshot: { $ref: "#/$defs/snapshot" }
+      sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      status: { enum: [approved, prepared, issued] }
+      claims: { $ref: "license.v2.schema.yaml#/$defs/claims" }
+      document: { $ref: "license.v2.schema.yaml#/$defs/document" }
+      document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+    oneOf:
+      - properties:
+          status: { const: approved }
+          claims: false
+          document: false
+          document_sha256: false
+      - properties:
+          status: { const: prepared }
+          document: false
+          document_sha256: false
+        required: [claims]
+      - properties:
+          status: { const: issued }
+        required: [claims, document, document_sha256]

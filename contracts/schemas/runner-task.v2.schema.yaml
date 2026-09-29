@@ -1,0 +1,54 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/runner-task.v2.schema.json
+title: Aster Team signed Runner task ticket v2
+type: object
+additionalProperties: false
+required:
+  - schema
+  - key_id
+  - task_id
+  - runner_id
+  - provider_id
+  - credential_instance_id
+  - credential_revision
+  - upstream_host
+  - command
+  - payload_sha256
+  - issued_at
+  - expires_at
+  - nonce
+  - signature
+properties:
+  schema: { const: aster.runner-task.v2 }
+  key_id: { $ref: '#/$defs/identifier' }
+  task_id: { $ref: '#/$defs/identifier' }
+  runner_id: { $ref: '#/$defs/identifier' }
+  provider_id: { $ref: '#/$defs/identifier' }
+  credential_instance_id:
+    oneOf:
+      - { $ref: '#/$defs/identifier' }
+      - { type: 'null' }
+  credential_revision:
+    oneOf:
+      - { type: integer, minimum: 0, maximum: 4294967295 }
+      - { type: 'null' }
+  upstream_host:
+    type: string
+    minLength: 1
+    maxLength: 253
+    pattern: '^(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(?:\.(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?))*$'
+  command:
+    enum: [execute, discover_models, refresh_credential, authorize_credential]
+  payload_sha256:
+    type: string
+    pattern: '^[A-Za-z0-9_-]{43}$'
+  issued_at: { type: integer }
+  expires_at: { type: integer }
+  nonce: { $ref: '#/$defs/identifier' }
+  signature:
+    type: string
+    pattern: '^[A-Za-z0-9_-]{86}$'
+$defs:
+  identifier:
+    type: string
+    pattern: '^[A-Za-z0-9_.:-]{3,128}$'

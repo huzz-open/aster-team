@@ -1,0 +1,25 @@
+{
+  "name": "@aster/admin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "node ../../scripts/build-documentation.mjs --target=customer --out-dir=.docs-public/docs",
+    "dev": "vite --port 11082",
+    "build": "vue-tsc --noEmit && vite build && node ../../scripts/build-documentation.mjs --target=customer --out-dir=dist/docs",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run --environment happy-dom --maxWorkers=2"
+  },
+  "dependencies": {
+    "@aster/sdk": "*",
+    "@aster/ui": "*",
+    "vue": "^3.5.18",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@aster/demo": "*",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^20.11.6",
+    "vitest": "^4.1.11"
+  }
+}

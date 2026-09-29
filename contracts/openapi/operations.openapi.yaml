@@ -1,0 +1,3288 @@
+openapi: 3.1.0
+info:
+  title: Aster Operations API
+  version: 0.1.0
+servers:
+  - url: /api/operations/v1
+paths:
+  /upgrade-environments:
+    get:
+      operationId: listUpgradeEnvironments
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Environment upgrade response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpgradeEnvironmentList"
+        "400":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createUpgradeEnvironment
+      security:
+        - sessionCookie: []
+      responses:
+        "201":
+          description: Environment upgrade response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpgradeEnvironment"
+        "400":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      parameters:
+        - $ref: "#/components/parameters/CSRFToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpgradeEnvironmentInput"
+  /upgrade-environments/{environmentID}/credentials:
+    put:
+      operationId: rotateUpgradeCredentials
+      security:
+        - sessionCookie: []
+      parameters:
+        - in: path
+          name: environmentID
+          required: true
+          schema: { type: string }
+        - $ref: '#/components/parameters/CSRFToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpgradeCredentials' }
+      responses:
+        '204':
+          description: Credentials rotated
+        '403':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /upgrade-environments/{environmentID}/inspect:
+    post:
+      operationId: inspectUpgradeEnvironment
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Environment upgrade response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TargetMaintenance"
+        "400":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      parameters:
+        - in: path
+          name: environmentID
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/CSRFToken"
+  /environment-upgrades:
+    get:
+      operationId: listEnvironmentUpgrades
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Environment upgrade response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvironmentUpgradeList"
+        "400":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createEnvironmentUpgrade
+      security:
+        - sessionCookie: []
+      responses:
+        "202":
+          description: Environment upgrade response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvironmentUpgrade"
+        "400":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      parameters:
+        - $ref: "#/components/parameters/CSRFToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnvironmentUpgradeInput"
+  /environment-upgrades/{upgradeID}:
+    get:
+      operationId: getEnvironmentUpgrade
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Environment upgrade response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvironmentUpgradeDetail"
+        "400":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      parameters:
+        - in: path
+          name: upgradeID
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: after
+          schema:
+            type: integer
+            minimum: 0
+  /commercial/publications/{publicationID}/failures:
+    parameters:
+      - { name: publicationID, in: path, required: true, schema: { type: string, minLength: 1, maxLength: 64 } }
+    get:
+      operationId: listPublicationFailures
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Most recent 100 unsuccessful attempts; previous failures remain after acceptance
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [items]
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/PublicationFailure' } }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+  /commercial/publications:
+    get:
+      operationId: listPublications
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100 } }
+      responses:
+        '200':
+          description: Publication reconciliation history
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [items]
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/PublicationRecord' } }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+    post:
+      operationId: preparePublication
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CSRFToken' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PreparePublicationRequest' }
+      responses:
+        '201':
+          description: Immutable candidate prepared; no deployment or acceptance performed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PublicationRecord' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+  /commercial/publications/{publicationID}:
+    parameters:
+      - { name: publicationID, in: path, required: true, schema: { type: string, minLength: 1, maxLength: 64 } }
+    get:
+      operationId: getPublication
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Original publication record
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PublicationRecord' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+  /commercial/publications/{publicationID}/accept:
+    parameters:
+      - { name: publicationID, in: path, required: true, schema: { type: string, minLength: 1, maxLength: 64 } }
+    post:
+      operationId: verifyAndAcceptPublication
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CSRFToken' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [current_password]
+              properties:
+                current_password: { type: string, minLength: 1, maxLength: 72 }
+      responses:
+        '200':
+          description: Controlled target verified and acceptance committed, or original receipt recovered
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PublicationRecord' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /commercial/publication-heads/{environment}:
+    parameters:
+      - { name: environment, in: path, required: true, schema: { type: string, enum: [local, production] } }
+    get:
+      operationId: getPublicationHead
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Last verified and accepted publication for this environment
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [active_id]
+                properties:
+                  active_id: { type: string, maxLength: 64 }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '500': { $ref: '#/components/responses/Error' }
+  /session:
+    post:
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+      responses:
+        '200':
+          description: Authenticated session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '401':
+          $ref: '#/components/responses/Error'
+    get:
+      operationId: getSession
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Current session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '401':
+          $ref: '#/components/responses/Error'
+    delete:
+      operationId: logout
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/CSRFToken'
+      responses:
+        '204':
+          description: Session deleted
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+  /overview:
+    get:
+      operationId: getOverview
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Operations overview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Overview'
+        '401':
+          $ref: '#/components/responses/Error'
+  /session/password:
+    put:
+      operationId: changePassword
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CSRFToken' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [current_password, new_password]
+              properties:
+                current_password: { type: string, format: password }
+                new_password: { type: string, format: password, minLength: 12, maxLength: 72 }
+      responses:
+        '204': { description: Password changed and other sessions revoked }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+  /customers:
+    get:
+      operationId: listCustomers
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: after
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        '200':
+          description: Customer page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerList'
+        '401':
+          $ref: '#/components/responses/Error'
+    post:
+      operationId: createCustomer
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/CSRFToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerInput'
+      responses:
+        '201':
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '403':
+          $ref: '#/components/responses/Error'
+  /customers/{customerID}:
+    get:
+      operationId: getCustomerProfile
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CustomerID' }]
+      responses:
+        '200': { description: Customer, contacts and billing profile, content: { application/json: { schema: { $ref: '#/components/schemas/CustomerProfile' } } } }
+        '404': { $ref: '#/components/responses/Error' }
+    patch:
+      operationId: updateCustomer
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CustomerID' }, { $ref: '#/components/parameters/CSRFToken' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/CustomerInput' } } } }
+      responses:
+        '200': { description: Audited customer update, content: { application/json: { schema: { $ref: '#/components/schemas/Customer' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /customers/{customerID}/contacts:
+    post:
+      operationId: createContact
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CustomerID' }, { $ref: '#/components/parameters/CSRFToken' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ContactInput' } } } }
+      responses:
+        '201': { description: Contact created, content: { application/json: { schema: { $ref: '#/components/schemas/Contact' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+  /customers/{customerID}/billing-profile:
+    put:
+      operationId: upsertBillingProfile
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CustomerID' }, { $ref: '#/components/parameters/CSRFToken' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/BillingProfileInput' } } } }
+      responses:
+        '200': { description: Billing profile created or updated, content: { application/json: { schema: { $ref: '#/components/schemas/BillingProfile' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+  /backup-history:
+    get:
+      operationId: listBackupHistory
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/ListLimit' }]
+      responses:
+        '200': { description: Backup and verification history, content: { application/json: { schema: { type: object, required: [items], properties: { items: { type: array, items: { $ref: '#/components/schemas/BackupRecord' } } } } } } }
+  /exports:
+    post:
+      operationId: exportOperations
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CSRFToken' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, additionalProperties: false, required: [current_password], properties: { current_password: { type: string, format: password } } } } }
+      responses:
+        '200': { description: Redacted local business export without credentials or signing secrets, content: { application/json: { schema: { $ref: '#/components/schemas/OperationsExport' } } } }
+        '401': { $ref: '#/components/responses/Error' }
+  /audit-events:
+    get:
+      operationId: listAuditEvents
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/ListLimit' }]
+      responses:
+        '200':
+          description: Append-only local audit events
+          content: { application/json: { schema: { type: object, required: [items], properties: { items: { type: array, items: { $ref: '#/components/schemas/AuditEvent' } } } } } }
+  /release-artifacts:
+    get:
+      operationId: listReleaseArtifacts
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/ListLimit' }]
+      responses:
+        '200': { description: Immutable release artifact list, content: { application/json: { schema: { type: object, required: [items], properties: { items: { type: array, items: { $ref: '#/components/schemas/ReleaseArtifact' } } } } } } }
+    post:
+      operationId: importReleaseArtifact
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CSRFToken' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ReleaseArtifactInput' } } } }
+      responses:
+        '201': { description: Release imported from the controlled inbox after SHA-256 verification, content: { application/json: { schema: { $ref: '#/components/schemas/ReleaseArtifact' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+  /release-tasks:
+    get:
+      operationId: listReleaseTasks
+      description: Requires the release.read permission. Returns persisted release orchestration tasks; it never infers state from log text.
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/ListLimit' }]
+      responses:
+        '200': { description: Release task list, content: { application/json: { schema: { type: object, required: [items], properties: { items: { type: array, items: { $ref: '#/components/schemas/ReleaseTask' } } } } } } }
+        '403': { $ref: '#/components/responses/Error' }
+    post:
+      operationId: createReleaseTask
+      description: Requires release.build. Runs fixed preflight checks and dispatches the server-configured no-tag customer release workflow.
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CSRFToken' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ReleaseTaskInput' } } } }
+      responses:
+        '201': { description: Release task created and bound to its GitHub workflow run, content: { application/json: { schema: { $ref: '#/components/schemas/ReleaseTaskDetail' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '502': { $ref: '#/components/responses/Error' }
+  /release-artifacts/{artifactID}/download:
+    get:
+      operationId: downloadReleaseArtifact
+      description: Requires release.download. Streams the immutable Customer tar.gz after rechecking its content-addressed object hash.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - name: artifactID
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Verified immutable Customer release archive
+          headers:
+            Content-Disposition: { description: 'Attachment filename derived from the selected package version, platform and architecture.', schema: { type: string } }
+            Content-Length: { description: Original tar.gz archive size in bytes., schema: { type: integer, format: int64 } }
+            ETag: { schema: { type: string } }
+          content:
+            application/gzip:
+              schema: { type: string, format: binary }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /release-tasks/{taskID}:
+    get:
+      operationId: getReleaseTask
+      description: Requires the release.read permission. Returns the persisted task, runs, jobs, steps and artifact verification metadata.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - name: taskID
+          in: path
+          required: true
+          schema: { type: string, pattern: '^release_task_[A-Za-z0-9_.-]+$' }
+      responses:
+        '200': { description: Release task detail, content: { application/json: { schema: { $ref: '#/components/schemas/ReleaseTaskDetail' } } } }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /release-tasks/{taskID}/sync:
+    post:
+      operationId: syncReleaseTask
+      description: Requires release.build. Re-reads the bound GitHub Run, Jobs, Steps, sanitized failure excerpts and artifact metadata.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/CSRFToken' }
+        - name: taskID
+          in: path
+          required: true
+          schema: { type: string, pattern: '^release_task_[A-Za-z0-9_.-]+$' }
+      responses:
+        '200': { description: Synchronized release task, content: { application/json: { schema: { $ref: '#/components/schemas/ReleaseTaskDetail' } } } }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '502': { $ref: '#/components/responses/Error' }
+  /release-tasks/{taskID}/retry:
+    post:
+      operationId: retryReleaseTask
+      description: Requires release.build. Creates a new task from the same immutable version and source commit after repeating preflight checks.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/CSRFToken' }
+        - name: taskID
+          in: path
+          required: true
+          schema: { type: string, pattern: '^release_task_[A-Za-z0-9_.-]+$' }
+      responses:
+        '201': { description: Retry task created, content: { application/json: { schema: { $ref: '#/components/schemas/ReleaseTaskDetail' } } } }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '502': { $ref: '#/components/responses/Error' }
+  /release-tasks/{taskID}/artifacts/{artifactID}/reverify:
+    post:
+      operationId: reverifyReleaseTask
+      description: Requires release.build. Queues independent verification of the selected Linux or Windows package from a successful GitHub run. Other packages retain their status. The verifier reuses a content-addressed local cache when present, but always repeats the complete package, signature, manifest, checksum and runtime verification flow.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/CSRFToken' }
+        - name: taskID
+          in: path
+          required: true
+          schema: { type: string, pattern: '^release_task_[A-Za-z0-9_.-]+$' }
+        - name: artifactID
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '202': { description: Artifact reverification queued on the existing release task, content: { application/json: { schema: { $ref: '#/components/schemas/ReleaseTaskDetail' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+  /release-capabilities:
+    get:
+      operationId: getReleaseCapabilities
+      description: Returns only fixed, non-secret release-center configuration and whether GitHub App orchestration is configured.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200': { description: Release center capabilities, content: { application/json: { schema: { $ref: '#/components/schemas/ReleaseCapabilities' } } } }
+        '403': { $ref: '#/components/responses/Error' }
+  /release-publish-requests:
+    get:
+      operationId: listReleasePublishRequests
+      description: Requires release.read. Lists the append-only formal publish approval state.
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/ListLimit' }]
+      responses:
+        '200': { description: Formal publish requests, content: { application/json: { schema: { type: object, required: [items], properties: { items: { type: array, items: { $ref: '#/components/schemas/ReleasePublishRequest' } } } } } } }
+        '403': { $ref: '#/components/responses/Error' }
+  /release-artifacts/{artifactID}/publish-requests:
+    post:
+      operationId: requestReleasePublish
+      description: Requires release.publish.request. Creates an approval request for bytes already independently verified and stored by Operations.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/CSRFToken' }
+        - name: artifactID
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, additionalProperties: false } } }
+      responses:
+        '201': { description: Publish request created, content: { application/json: { schema: { $ref: '#/components/schemas/ReleasePublishRequest' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+  /release-publish-requests/{requestID}/decision:
+    post:
+      operationId: decideReleasePublish
+      description: Requires release.publish.approve and reauthentication. The original requester is forbidden from deciding.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/CSRFToken' }
+        - name: requestID
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/ReleasePublishDecisionInput' } } }
+      responses:
+        '200': { description: Publish request approved or rejected, content: { application/json: { schema: { $ref: '#/components/schemas/ReleasePublishRequest' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+  /release-publish-requests/{requestID}/execute:
+    post:
+      operationId: executeReleasePublish
+      description: Requires release.publish.execute and reauthentication. Publishes the previously verified object without rebuilding it.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/CSRFToken' }
+        - name: requestID
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [current_password]
+              properties:
+                current_password: { type: string, format: password }
+      responses:
+        '200': { description: Exact approved release bytes published, content: { application/json: { schema: { $ref: '#/components/schemas/ReleasePublishRequest' } } } }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '502': { $ref: '#/components/responses/Error' }
+  /commercial/catalogs:
+    get:
+      operationId: listCatalogApprovals
+      description: Requires commercial.catalog.read. Internal approval records; never a public API or deployment proof.
+      security: [{ sessionCookie: [] }]
+      parameters: [{ name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100 } }]
+      responses:
+        '200':
+          description: Approved catalog records
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [items]
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/CatalogApprovalRecord' } }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+    post:
+      operationId: approvePublicCatalog
+      description: Requires commercial.catalog.approve, CSRF and current password. Fixes exactly the reviewed public collection. Does not deploy or authorize order intake.
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CSRFToken' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ApprovePublicCatalogInput' }
+      responses:
+        '201':
+          description: Original fixed approval, including idempotent retry
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CatalogApprovalRecord' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /commercial/catalogs/preview:
+    post:
+      operationId: previewPublicCatalog
+      description: Requires commercial.catalog.read and CSRF. Reads all selected fixed versions in one consistent transaction; saves nothing.
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CSRFToken' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PublicCatalogRequest' }
+      responses:
+        '200':
+          description: Exact public projection and canonical digest
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PublicCatalogPreview' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+  /commercial/catalogs/{catalogID}:
+    get:
+      operationId: getCatalogApproval
+      description: Requires commercial.catalog.read.
+      security: [{ sessionCookie: [] }]
+      parameters: [{ name: catalogID, in: path, required: true, schema: { type: string } }]
+      responses:
+        '200':
+          description: Fixed approval and public projection
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CatalogApprovalRecord' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /commercial/catalogs/{catalogID}/export:
+    post:
+      operationId: exportPublicCatalog
+      description: Requires commercial.catalog.export, CSRF and current password. Writes only approved bytes to configured local root/environment/revision/plans.json, verifies the file and records exported. Never deploys or activates.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: catalogID, in: path, required: true, schema: { type: string } }
+        - { $ref: '#/components/parameters/CSRFToken' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [current_password]
+              properties:
+                current_password: { type: string, minLength: 1, maxLength: 1024 }
+      responses:
+        '200':
+          description: Exported approval
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CatalogApprovalRecord' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /commercial/catalogs/{catalogID}/download:
+    get:
+      operationId: downloadPublicCatalog
+      description: Requires commercial.catalog.read and a prior export. Verifies the actual fixed file against the approved public bytes on every download.
+      security: [{ sessionCookie: [] }]
+      parameters: [{ name: catalogID, in: path, required: true, schema: { type: string } }]
+      responses:
+        '200':
+          description: Exact public plans.json bytes
+          headers:
+            X-Content-SHA256: { schema: { type: string } }
+            X-Catalog-Revision: { schema: { type: string } }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PublicCatalog' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /commercial/plan-drafts:
+    get:
+      operationId: listPlanDrafts
+      description: Requires commercial.plan.read. Returns the latest saved revision of each internal draft.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100 } }
+      responses:
+        '200':
+          description: Current drafts
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [items]
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/PlanDraftRecord' } }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+    post:
+      operationId: savePlanDraft
+      description: Requires commercial.plan.write and CSRF. Appends an immutable draft revision with optimistic concurrency and durable operation recovery. Does not publish or sign.
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CSRFToken' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SavePlanDraftInput' }
+      responses:
+        '201':
+          description: Original stored revision including idempotent retry
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlanDraftRecord' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /commercial/plan-drafts/{draftID}:
+    get:
+      operationId: getPlanDraft
+      description: Requires commercial.plan.read. Omit revision to read the current head.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - { name: draftID, in: path, required: true, schema: { type: string } }
+        - { name: revision, in: query, schema: { type: integer, minimum: 1, maximum: 4294967295 } }
+      responses:
+        '200':
+          description: Stored draft revision
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlanDraftRecord' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /commercial/plan-drafts/freeze:
+    post:
+      operationId: freezePlanDraft
+      description: Requires commercial.plan.write and CSRF. Uses only the selected server draft. Atomically checks its head, digest and target plan head. Does not publish or sign.
+      security: [{ sessionCookie: [] }]
+      parameters: [{ $ref: '#/components/parameters/CSRFToken' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FreezePlanDraftInput' }
+      responses:
+        '201':
+          description: Immutable plan version
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CommercialPlanRecord' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /commercial/plans:
+    get:
+      operationId: listCommercialPlans
+      description: Requires commercial.plan.read. Full internal snapshots; not a public website catalog.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: Snapshot response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CommercialPlanRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/plans/versions:
+    post:
+      operationId: freezeCommercialPlan
+      description: Requires commercial.plan.write. Full internal snapshots; not a public website catalog.
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: "#/components/parameters/CSRFToken"
+      responses:
+        "201":
+          description: Immutable snapshot stored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommercialPlanRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FreezeCommercialPlanInput"
+  /commercial/plans/{planID}/versions/{version}:
+    get:
+      operationId: getCommercialPlan
+      description: Requires commercial.plan.read. Full internal snapshots; not a public website catalog.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: planID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 4294967295
+      responses:
+        "200":
+          description: Snapshot response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommercialPlanRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/plans/{planID}:
+    get:
+      operationId: getCurrentCommercialPlan
+      description: Requires commercial.plan.read. Returns the current fixed version for explicit conflict recovery; does not approve publishing or signing.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: planID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Current complete snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommercialPlanRecord"
+        "400": { $ref: "#/components/responses/Error" }
+        "401": { $ref: "#/components/responses/Error" }
+        "403": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+  /commercial/orders:
+    get:
+      operationId: listCommercialOrders
+      description: Requires commercial.order.read. Full internal snapshots; not a public website catalog.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 10000000
+        - name: keyword
+          in: query
+          description: Search order ID, customer ID, customer name, or legal name.
+          schema:
+            type: string
+            maxLength: 160
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending_payment, fulfillment_pending, fulfilled, cancelled, refunded]
+        - name: stage
+          in: query
+          description: Operator-facing paid authorization workflow stage.
+          schema:
+            type: string
+            enum: [all, pending_payment, pending_approval, pending_issue, issued]
+      responses:
+        "200":
+          description: Snapshot response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - items
+                  - total
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/CommercialOrderRecord"
+                  total:
+                    type: integer
+                    minimum: 0
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createCommercialOrder
+      description: Requires commercial.order.write. Full internal snapshots; not a public website catalog.
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: "#/components/parameters/CSRFToken"
+      responses:
+        "201":
+          description: Immutable snapshot stored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommercialOrderRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCommercialOrderInput"
+  /commercial/quotation-sources/{reference}:
+    get:
+      operationId: getQuotationSource
+      summary: Resolve an exact catalog revision or publication for order entry
+      security:
+        - sessionCookie: []
+      parameters:
+        - in: path
+          name: reference
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Minimal accepted quotation source in the configured sales channel
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuotationSource"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+  /commercial/quotation-orders:
+    post:
+      operationId: createQuotationOrder
+      description: Requires commercial.order.write. Full internal snapshots; not a public website catalog.
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: "#/components/parameters/CSRFToken"
+      responses:
+        "201":
+          description: Immutable snapshot stored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommercialOrderRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateQuotationOrderInput"
+  /commercial/orders/{orderID}:
+    get:
+      operationId: getCommercialOrder
+      description: Requires commercial.order.read. Full internal snapshots; not a public website catalog.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: orderID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Snapshot response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommercialOrderRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/orders/{orderID}/payment-context:
+    get:
+      operationId: getCommercialPaymentContext
+      description: Requires commercial.payment.confirm. Narrow immutable order projection, without other administration permissions.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: orderID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Original payment operation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommercialPaymentContext"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/orders/{orderID}/payment:
+    get:
+      operationId: getCommercialPayment
+      description: Requires commercial.order.read or commercial.payment.confirm. Reads the original payment receipt.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: orderID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Original payment operation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommercialPaymentRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: confirmCommercialPayment
+      description: Requires commercial.payment.confirm and current password. Records full receipt, without charging a payment provider. Retries preserve the original operation and all inputs.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: orderID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        - $ref: "#/components/parameters/CSRFToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmCommercialPaymentInput"
+      responses:
+        "200":
+          description: Original payment operation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommercialPaymentRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/orders/{orderID}/fulfillment-context:
+    get:
+      operationId: getPaidFulfillmentContext
+      description: Requires commercial.fulfillment.approve. Minimal original order and payment projection; unrelated administration permissions are not required.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: orderID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Verified original fulfillment result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidFulfillmentContext"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/orders/{orderID}/fulfillment:
+    get:
+      operationId: getPaidFulfillmentForOrder
+      description: Requires commercial.fulfillment.read, commercial.fulfillment.approve or commercial.license.issue. Verifies original source and any issued signature.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: orderID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Verified original fulfillment result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidFulfillmentRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: approvePaidFulfillment
+      description: Requires commercial.fulfillment.approve and current password. Preserves original request JSON text; same operation restores the original immutable approval.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: orderID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        - $ref: "#/components/parameters/CSRFToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApprovePaidFulfillmentInput"
+      responses:
+        "200":
+          description: Verified original fulfillment result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidFulfillmentRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/paid-lifecycle-sources/{kind}/{sourceID}:
+    get:
+      operationId: getPaidLifecycleSource
+      description: Requires commercial.fulfillment.approve. Resolves the current signed paid license and rejects a source already frozen by another successor.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: kind
+          in: path
+          required: true
+          schema: { type: string, enum: [renewal, upgrade] }
+        - name: sourceID
+          in: path
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 64 }
+      responses:
+        "200":
+          description: Current immutable lifecycle source preview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidLifecycleSource"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/paid-fulfillments/{fulfillmentID}:
+    get:
+      operationId: getPaidFulfillment
+      description: Requires commercial.fulfillment.read, commercial.fulfillment.approve or commercial.license.issue. Verifies original source and any issued signature.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: fulfillmentID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Verified original fulfillment result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidFulfillmentRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/paid-fulfillments/{fulfillmentID}/issue:
+    post:
+      operationId: issuePaidFulfillment
+      description: Requires commercial.license.issue and current password. Freezes one key and complete claims, then atomically stores the document and completes the order. Issued recovery only needs retained trusted public keys.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: fulfillmentID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        - $ref: "#/components/parameters/CSRFToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IssueFreeDistributionInput"
+      responses:
+        "200":
+          description: Verified original fulfillment result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidFulfillmentRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/paid-fulfillments/{fulfillmentID}/license:
+    get:
+      operationId: downloadPaidFulfillment
+      description: Requires commercial.fulfillment.read, commercial.fulfillment.approve or commercial.license.issue. Returns exact persisted issued document bytes after source and trusted signature verification.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: fulfillmentID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Verified original fulfillment result
+          headers:
+            X-Content-SHA256:
+              schema: { type: string, pattern: "^[a-f0-9]{64}$" }
+            Content-Disposition:
+              schema: { type: string }
+            Content-Length:
+              schema: { type: integer }
+            Cache-Control:
+              schema: { const: no-store }
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/license.v2.schema.yaml#/$defs/document
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "422":
+          $ref: "#/components/responses/Error"
+        "500":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+  /commercial/paid-fulfillments/{fulfillmentID}/redeliveries:
+    post:
+      operationId: recordPaidRedelivery
+      description: Requires commercial.fulfillment.approve, CSRF protection and current password. Records an immutable, idempotent audit snapshot for re-delivery of the exact already-issued document. It never signs or changes claims, dates, binding, transfer sequence, environment or document bytes.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: fulfillmentID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        - $ref: "#/components/parameters/CSRFToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecordPaidRedeliveryInput"
+      responses:
+        "200":
+          description: Verified immutable re-delivery audit record. Download the original fulfillment license endpoint for the exact bytes.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidRedeliveryRecord"
+        "400": { $ref: "#/components/responses/Error" }
+        "401": { $ref: "#/components/responses/Error" }
+        "403": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+        "422": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+  /commercial/paid-redeliveries/{redeliveryID}:
+    get:
+      operationId: getPaidRedelivery
+      description: Requires commercial.fulfillment.read, commercial.fulfillment.approve or commercial.license.issue. Revalidates the immutable original fulfillment and trusted issued signature before returning the audit record.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: redeliveryID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Verified immutable re-delivery audit record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidRedeliveryRecord"
+        "400": { $ref: "#/components/responses/Error" }
+        "401": { $ref: "#/components/responses/Error" }
+        "403": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+        "422": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+  /commercial/paid-fulfillments/{fulfillmentID}/transfers:
+    post:
+      operationId: approvePaidTransfer
+      description: Requires commercial.fulfillment.approve, CSRF protection and current password. Approves one idempotent move from the exact current issued license to a different installation without changing the original commercial terms or expiry.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: fulfillmentID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        - $ref: "#/components/parameters/CSRFToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApprovePaidTransferInput"
+      responses:
+        "200":
+          description: Approved or recovered transfer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidTransferRecord"
+        "400": { $ref: "#/components/responses/Error" }
+        "401": { $ref: "#/components/responses/Error" }
+        "403": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+        "422": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+  /commercial/paid-fulfillments/{fulfillmentID}/transfers/latest:
+    get:
+      operationId: getLatestPaidTransfer
+      description: Returns the highest transfer sequence after validating the complete immutable source chain and trusted signatures.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: fulfillmentID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Latest verified transfer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidTransferRecord"
+        "400": { $ref: "#/components/responses/Error" }
+        "401": { $ref: "#/components/responses/Error" }
+        "403": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+  /commercial/paid-transfers/{transferID}:
+    get:
+      operationId: getPaidTransfer
+      description: Returns a transfer after revalidating its immutable source chain and every available trusted signature.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: transferID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Verified transfer record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidTransferRecord"
+        "400": { $ref: "#/components/responses/Error" }
+        "401": { $ref: "#/components/responses/Error" }
+        "403": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+  /commercial/paid-transfers/{transferID}/issue:
+    post:
+      operationId: issuePaidTransfer
+      description: Requires commercial.license.issue, CSRF protection and current password. Prepares, signs and atomically completes the approved transfer with recovery of the same frozen claims.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: transferID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        - $ref: "#/components/parameters/CSRFToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IssueFreeDistributionInput"
+      responses:
+        "200":
+          description: Issued or recovered transfer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaidTransferRecord"
+        "400": { $ref: "#/components/responses/Error" }
+        "401": { $ref: "#/components/responses/Error" }
+        "403": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+        "422": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+  /commercial/paid-transfers/{transferID}/license:
+    get:
+      operationId: downloadPaidTransfer
+      description: Returns the exact persisted transfer document bytes only after immutable source-chain and trusted signature verification.
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: transferID
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+      responses:
+        "200":
+          description: Verified transferred license document
+          headers:
+            X-Content-SHA256:
+              schema: { type: string, pattern: "^[a-f0-9]{64}$" }
+            Content-Disposition:
+              schema: { type: string }
+            Content-Length:
+              schema: { type: integer }
+            Cache-Control:
+              schema: { const: no-store }
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/license.v2.schema.yaml#/$defs/document
+        "400": { $ref: "#/components/responses/Error" }
+        "401": { $ref: "#/components/responses/Error" }
+        "403": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+        "500": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+  /commercial/distributions:
+    get:
+      operationId: listFreeDistributions
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Distribution operation result
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FreeDistributionRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      parameters: []
+    post:
+      operationId: approveFreeDistribution
+      security:
+        - sessionCookie: []
+      responses:
+        "201":
+          description: Distribution operation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FreeDistributionRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      parameters:
+        - $ref: "#/components/parameters/CSRFToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApproveFreeDistributionInput"
+  /commercial/distributions/{distributionID}:
+    get:
+      operationId: getFreeDistribution
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Distribution operation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FreeDistributionRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      parameters:
+        - name: distributionID
+          in: path
+          required: true
+          schema:
+            type: string
+  /commercial/distributions/{distributionID}/issue:
+    post:
+      operationId: issueFreeDistribution
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Distribution operation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FreeDistributionRecord"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      parameters:
+        - name: distributionID
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: "#/components/parameters/CSRFToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IssueFreeDistributionInput"
+  /commercial/environment:
+    get:
+      operationId: getCommercialEnvironment
+      summary: Read the trusted fulfillment environment before local development writes
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Server configuration only, never a request-supplied environment
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [fulfillment_environment]
+                properties:
+                  fulfillment_environment: { enum: ['', local, production] }
+        '401': { $ref: '#/components/responses/Error' }
+        '403': { $ref: '#/components/responses/Error' }
+  /commercial/issuers:
+    get:
+      operationId: listV2IssuerProfiles
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Distribution operation result
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/V2IssuerProfile"
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      parameters: []
+  /commercial/distributions/{distributionID}/download:
+    get:
+      operationId: downloadFreeDistribution
+      security:
+        - sessionCookie: []
+      responses:
+        "200":
+          description: Exact stored signed document; SHA-256 in X-Content-SHA256
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/license.v2.schema.yaml
+        "400":
+          $ref: "#/components/responses/Error"
+        "401":
+          $ref: "#/components/responses/Error"
+        "403":
+          $ref: "#/components/responses/Error"
+        "404":
+          $ref: "#/components/responses/Error"
+        "409":
+          $ref: "#/components/responses/Error"
+        "503":
+          $ref: "#/components/responses/Error"
+      parameters:
+        - name: distributionID
+          in: path
+          required: true
+          schema:
+            type: string
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: aster_operations_session
+  parameters:
+    CSRFToken:
+      name: X-CSRF-Token
+      in: header
+      required: true
+      schema:
+        type: string
+    LicenseID:
+      name: licenseID
+      in: path
+      required: true
+      schema: { type: string, minLength: 3, maxLength: 128 }
+    CustomerID:
+      name: customerID
+      in: path
+      required: true
+      schema: { type: string, minLength: 3, maxLength: 64 }
+    OrderID:
+      name: orderID
+      in: path
+      required: true
+      schema: { type: string, minLength: 3, maxLength: 64 }
+    PlanID:
+      name: planID
+      in: path
+      required: true
+      schema: { type: string, minLength: 3, maxLength: 64 }
+    TrialID:
+      name: trialID
+      in: path
+      required: true
+      schema: { type: string, minLength: 3, maxLength: 64 }
+    ListLimit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 50 }
+  responses:
+    Error:
+      description: Request failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    PaidFulfillmentRecord:
+      oneOf:
+        - $ref: ../schemas/paid-fulfillment.v1.schema.yaml#/$defs/record
+        - $ref: ../schemas/paid-lifecycle.v1.schema.yaml#/$defs/record
+    PaidFulfillmentContext:
+      $ref: ../schemas/paid-fulfillment.v1.schema.yaml#/$defs/context
+    PaidLifecycleSource:
+      $ref: ../schemas/paid-lifecycle.v1.schema.yaml#/$defs/source
+    ApprovePaidFulfillmentInput:
+      $ref: ../schemas/paid-lifecycle.v1.schema.yaml#/$defs/approval
+    RecordPaidRedeliveryInput:
+      $ref: ../schemas/paid-fulfillment.v1.schema.yaml#/$defs/redelivery_request
+    PaidRedeliveryRecord:
+      $ref: ../schemas/paid-fulfillment.v1.schema.yaml#/$defs/redelivery_record
+    ApprovePaidTransferInput:
+      $ref: ../schemas/paid-fulfillment.v1.schema.yaml#/$defs/transfer_request
+    PaidTransferRecord:
+      $ref: ../schemas/paid-fulfillment.v1.schema.yaml#/$defs/transfer_record
+    CommercialPaymentRecord:
+      $ref: ../schemas/payment.v1.schema.yaml#/$defs/record
+    CommercialPaymentContext:
+      $ref: ../schemas/payment.v1.schema.yaml#/$defs/context
+    ConfirmCommercialPaymentInput:
+      $ref: ../schemas/payment.v1.schema.yaml#/$defs/confirmation
+    FreeDistributionRecord:
+      $ref: ../schemas/free-distribution.v1.schema.yaml#/$defs/record
+    ApproveFreeDistributionInput:
+      $ref: ../schemas/free-distribution.v1.schema.yaml#/$defs/approval_input
+    IssueFreeDistributionInput:
+      type: object
+      additionalProperties: false
+      required:
+        - key_id
+        - current_password
+      properties:
+        key_id:
+          $ref: ../schemas/license.v2.schema.yaml#/$defs/identifier
+        current_password:
+          type: string
+          minLength: 1
+          writeOnly: true
+    V2IssuerProfile:
+      $ref: ../schemas/free-distribution.v1.schema.yaml#/$defs/issuer_profile
+    LoginInput:
+      type: object
+      additionalProperties: false
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    Operator:
+      type: object
+      additionalProperties: false
+      required: [id, email, display_name, status, password_change_required, created_at]
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        display_name: { type: string }
+        status: { type: string, enum: [active, disabled] }
+        password_change_required: { type: boolean }
+        created_at: { type: string, format: date-time }
+    SessionResponse:
+      type: object
+      additionalProperties: false
+      required: [operator, expires_at]
+      properties:
+        operator:
+          $ref: '#/components/schemas/Operator'
+        expires_at: { type: string, format: date-time }
+    CustomerInput:
+      type: object
+      additionalProperties: false
+      required: [name, legal_name, status, contact_name, contact_email, contact_phone, contact_wechat, notes]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 160 }
+        legal_name: { type: string, maxLength: 200 }
+        status: { type: string, enum: [lead, active, inactive] }
+        contact_name: { type: string, maxLength: 120 }
+        contact_email: { type: string, maxLength: 320 }
+        contact_phone: { type: string, maxLength: 64 }
+        contact_wechat: { type: string, maxLength: 120 }
+        notes: { type: string, maxLength: 4000 }
+    Customer:
+      allOf:
+        - $ref: '#/components/schemas/CustomerInput'
+        - type: object
+          additionalProperties: false
+          required: [id, created_at, updated_at]
+          properties:
+            id: { type: string }
+            created_at: { type: string, format: date-time }
+            updated_at: { type: string, format: date-time }
+    CustomerList:
+      type: object
+      additionalProperties: false
+      required: [items, next]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Customer'
+        next: { type: string }
+    ContactInput:
+      type: object
+      additionalProperties: false
+      required: [name, email, phone, wechat, role_title, is_primary]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        email: { type: string, maxLength: 320 }
+        phone: { type: string, maxLength: 64 }
+        wechat: { type: string, maxLength: 120 }
+        role_title: { type: string, maxLength: 120 }
+        is_primary: { type: boolean }
+    Contact:
+      allOf:
+        - { $ref: '#/components/schemas/ContactInput' }
+        - type: object
+          required: [id, customer_id, created_at, updated_at]
+          properties:
+            id: { type: string }
+            customer_id: { type: string }
+            created_at: { type: string, format: date-time }
+            updated_at: { type: string, format: date-time }
+    BillingProfileInput:
+      type: object
+      additionalProperties: false
+      required: [invoice_title, tax_identifier, billing_email, address]
+      properties:
+        invoice_title: { type: string, minLength: 1, maxLength: 200 }
+        tax_identifier: { type: string, maxLength: 80 }
+        billing_email: { type: string, maxLength: 320 }
+        address: { type: string, maxLength: 4000 }
+    BillingProfile:
+      allOf:
+        - { $ref: '#/components/schemas/BillingProfileInput' }
+        - type: object
+          required: [id, customer_id, created_at, updated_at]
+          properties:
+            id: { type: string }
+            customer_id: { type: string }
+            created_at: { type: string, format: date-time }
+            updated_at: { type: string, format: date-time }
+    CustomerProfile:
+      type: object
+      additionalProperties: false
+      required: [customer, contacts, billing_profile]
+      properties:
+        customer: { $ref: '#/components/schemas/Customer' }
+        contacts: { type: array, items: { $ref: '#/components/schemas/Contact' } }
+        billing_profile: { oneOf: [{ $ref: '#/components/schemas/BillingProfile' }, { type: 'null' }] }
+    Overview:
+      type: object
+      additionalProperties: false
+      required: [customers_total, customers_active, customers_leads, plans_total, orders_pending, free_distributions_issued, paid_fulfillments_pending, paid_licenses_issued, release_artifacts_total, backups_failed]
+      properties:
+        customers_total: { type: integer, format: int64 }
+        customers_active: { type: integer, format: int64 }
+        customers_leads: { type: integer, format: int64 }
+        plans_total: { type: integer, format: int64 }
+        orders_pending: { type: integer, format: int64 }
+        free_distributions_issued: { type: integer, format: int64 }
+        paid_fulfillments_pending: { type: integer, format: int64 }
+        paid_licenses_issued: { type: integer, format: int64 }
+        release_artifacts_total: { type: integer, format: int64 }
+        backups_failed: { type: integer, format: int64 }
+    PlanInput:
+      type: object
+      additionalProperties: false
+      required: [code, name, edition, features, transfer_limit, member_seats_limit, seat_over_limit_grace_days, minimum_version, currency, billing_cycle, base_amount_minor, included_member_seats, additional_member_seat_minor, tax_mode]
+      properties:
+        code: { type: string }
+        name: { type: string }
+        edition: { type: string }
+        features: { type: array, items: { type: string } }
+        transfer_limit: { type: integer, minimum: 0, maximum: 100 }
+        member_seats_limit: { type: integer, minimum: 0 }
+        seat_over_limit_grace_days: { type: integer, minimum: 0, maximum: 90 }
+        minimum_version: { type: string }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        billing_cycle: { type: string, enum: [month, year, one_time] }
+        base_amount_minor: { type: integer, format: int64, minimum: 0 }
+        included_member_seats: { type: integer, minimum: 0 }
+        additional_member_seat_minor: { type: integer, format: int64, minimum: 0 }
+        tax_mode: { type: string, enum: [inclusive, exclusive, none] }
+    Plan:
+      allOf:
+        - { $ref: '#/components/schemas/PlanInput' }
+        - type: object
+          required: [id, product_code, status, price_version_id, created_at, updated_at]
+          properties:
+            id: { type: string }
+            product_code: { type: string }
+            status: { type: string, enum: [draft, active, archived] }
+            price_version_id: { type: string }
+            created_at: { type: string, format: date-time }
+            updated_at: { type: string, format: date-time }
+    OrderInput:
+      type: object
+      additionalProperties: false
+      required: [customer_id, plan_id, contract_ref, starts_at, ends_at, notes]
+      properties:
+        customer_id: { type: string }
+        plan_id: { type: string }
+        contract_ref: { type: string, minLength: 1, maxLength: 128 }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time }
+        notes: { type: string }
+    Order:
+      type: object
+      additionalProperties: false
+      required: [id, customer_id, customer_name, plan_id, plan_name, price_version_id, contract_ref, status, amount_minor, currency, starts_at, ends_at, notes, created_at, updated_at, paid_at]
+      properties:
+        id: { type: string }
+        customer_id: { type: string }
+        customer_name: { type: string }
+        plan_id: { type: string }
+        plan_name: { type: string }
+        price_version_id: { type: string }
+        contract_ref: { type: string }
+        status: { type: string, enum: [draft, pending_payment, fulfillment_pending, fulfilled, cancelled, refunded] }
+        amount_minor: { type: integer, format: int64 }
+        currency: { type: string }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time }
+        notes: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        paid_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+    OfflinePaymentInput:
+      type: object
+      additionalProperties: false
+      required: [operation_id, payment_reference, notes, current_password]
+      properties:
+        operation_id: { type: string }
+        payment_reference: { type: string }
+        notes: { type: string }
+        current_password: { type: string, format: password }
+    RefundNoteInput:
+      type: object
+      additionalProperties: false
+      required: [amount_minor, reason, current_password]
+      properties:
+        amount_minor: { type: integer, format: int64, minimum: 1 }
+        reason: { type: string, minLength: 1, maxLength: 4000 }
+        current_password: { type: string, format: password }
+    RefundNote:
+      type: object
+      additionalProperties: false
+      required: [id, order_id, amount_minor, reason, operator_id, created_at]
+      properties:
+        id: { type: string }
+        order_id: { type: string }
+        amount_minor: { type: integer, format: int64 }
+        reason: { type: string }
+        operator_id: { type: string }
+        created_at: { type: string, format: date-time }
+    FulfillmentInput:
+      type: object
+      additionalProperties: false
+      required: [operation_id, license_id]
+      properties:
+        operation_id: { type: string, pattern: '^[A-Za-z0-9_.:-]{3,128}$' }
+        license_id: { type: string, pattern: '^[A-Za-z0-9_.:-]{3,128}$' }
+    TrialInput:
+      type: object
+      additionalProperties: false
+      required: [customer_id, plan_id, starts_at, ends_at, member_seats, transfer_limit, approval_reason]
+      properties:
+        customer_id: { type: string }
+        plan_id: { type: string }
+        starts_at: { type: string, format: date-time }
+        ends_at: { type: string, format: date-time }
+        member_seats: { type: integer, minimum: 0 }
+        transfer_limit: { type: integer, minimum: 0, maximum: 100 }
+        approval_reason: { type: string }
+    Trial:
+      allOf:
+        - { $ref: '#/components/schemas/TrialInput' }
+        - type: object
+          required: [id, customer_name, plan_name, status, created_at, updated_at]
+          properties:
+            id: { type: string }
+            customer_name: { type: string }
+            plan_name: { type: string }
+            status: { type: string, enum: [approved, active, expired, converted, rejected] }
+            created_at: { type: string, format: date-time }
+            updated_at: { type: string, format: date-time }
+    PriceVersionInput:
+      type: object
+      additionalProperties: false
+      required: [currency, billing_cycle, base_amount_minor, included_member_seats, additional_member_seat_minor, tax_mode]
+      properties:
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        billing_cycle: { type: string, enum: [month, year, one_time] }
+        base_amount_minor: { type: integer, format: int64, minimum: 0 }
+        included_member_seats: { type: integer, minimum: 0 }
+        additional_member_seat_minor: { type: integer, format: int64, minimum: 0 }
+        tax_mode: { type: string, enum: [inclusive, exclusive, none] }
+    TrialExtensionInput:
+      type: object
+      additionalProperties: false
+      required: [ends_at, reason, current_password]
+      properties:
+        ends_at: { type: string, format: date-time }
+        reason: { type: string, minLength: 1, maxLength: 1000 }
+        current_password: { type: string, format: password }
+    RiskNoteInput:
+      type: object
+      additionalProperties: false
+      required: [risk_level, note]
+      properties:
+        risk_level: { type: string, enum: [low, medium, high] }
+        note: { type: string, minLength: 1, maxLength: 4000 }
+    RiskNote:
+      allOf:
+        - { $ref: '#/components/schemas/RiskNoteInput' }
+        - type: object
+          required: [id, trial_id, operator_id, created_at]
+          properties:
+            id: { type: string }
+            trial_id: { type: string }
+            operator_id: { type: string }
+            created_at: { type: string, format: date-time }
+    BackupRecord:
+      type: object
+      additionalProperties: false
+      required: [id, kind, object_ref, sha256, size_bytes, status, operator_id, created_at, verified_at]
+      properties:
+        id: { type: string }
+        kind: { type: string }
+        object_ref: { type: string }
+        sha256: { type: string }
+        size_bytes: { type: integer, format: int64 }
+        status: { type: string }
+        operator_id: { type: string }
+        created_at: { type: string, format: date-time }
+        verified_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+    OperationsExport:
+      type: object
+      additionalProperties: false
+      description: Current v2 business report with immutable snapshots and workflow states; not a database backup or License import
+      required: [schema_version, exported_at, customers, contacts, billing_profiles, commercial_records, release_artifacts, audit_events, backup_history]
+      properties:
+        schema_version: { type: string, const: aster.operations-export.v2 }
+        exported_at: { type: string, format: date-time }
+        customers: { type: array, items: { $ref: '#/components/schemas/Customer' } }
+        contacts: { type: array, items: { $ref: '#/components/schemas/Contact' } }
+        billing_profiles: { type: array, items: { $ref: '#/components/schemas/BillingProfile' } }
+        commercial_records: { type: array, items: { $ref: '#/components/schemas/OperationsCommercialRecord' } }
+        release_artifacts: { type: array, items: { $ref: '#/components/schemas/ReleaseArtifact' } }
+        audit_events: { type: array, items: { $ref: '#/components/schemas/AuditEvent' } }
+        backup_history: { type: array, items: { $ref: '#/components/schemas/BackupRecord' } }
+    OperationsCommercialRecord:
+      type: object
+      additionalProperties: false
+      required: [kind, id, status, snapshot, source_snapshot_sha256]
+      properties:
+        kind: { type: string, enum: [plan_draft, plan_version, order, payment, free_distribution, paid_fulfillment, paid_redelivery, paid_transfer, paid_lifecycle, catalog, publication, publication_failure] }
+        id: { type: string }
+        status: { type: string }
+        snapshot: { type: object, additionalProperties: true, description: Business snapshot projection with nested License documents removed }
+        source_snapshot_sha256: { description: Digest of the original stored snapshot before redaction, type: string, pattern: '^[0-9a-f]{64}$' }
+        document_sha256: { type: string, pattern: '^[0-9a-f]{64}$' }
+    ProductRecord:
+      type: object
+      required: [id, code, name, status, created_at, updated_at]
+      properties: { id: { type: string }, code: { type: string }, name: { type: string }, status: { type: string }, created_at: { type: string, format: date-time }, updated_at: { type: string, format: date-time } }
+    PriceVersionRecord:
+      type: object
+      required: [id, plan_id, version_no, currency, billing_cycle, base_amount_minor, included_member_seats, additional_member_seat_minor, tax_mode, published_at, created_at]
+      properties: { id: { type: string }, plan_id: { type: string }, version_no: { type: integer }, currency: { type: string }, billing_cycle: { type: string }, base_amount_minor: { type: integer, format: int64 }, included_member_seats: { type: integer }, additional_member_seat_minor: { type: integer, format: int64 }, tax_mode: { type: string }, published_at: { type: string, format: date-time }, created_at: { type: string, format: date-time } }
+    OrderItemRecord:
+      type: object
+      required: [id, order_id, description, quantity, unit_amount_minor, price_snapshot, created_at]
+      properties: { id: { type: string }, order_id: { type: string }, description: { type: string }, quantity: { type: integer }, unit_amount_minor: { type: integer, format: int64 }, price_snapshot: { type: object, additionalProperties: true }, created_at: { type: string, format: date-time } }
+    OfflinePaymentConfirmation:
+      type: object
+      required: [id, operation_id, order_id, payment_reference, amount_minor, currency, confirmed_by, reviewed_by, confirmed_at, notes]
+      properties: { id: { type: string }, operation_id: { type: string }, order_id: { type: string }, payment_reference: { type: string }, amount_minor: { type: integer, format: int64 }, currency: { type: string }, confirmed_by: { type: string }, reviewed_by: { type: string }, confirmed_at: { type: string, format: date-time }, notes: { type: string } }
+    LocalLicenseRecord:
+      type: object
+      required: [license_id, customer_id, source_type, source_id, customer_ref, policy, status, transfer_limit, transfer_count, created_at, updated_at]
+      properties: { license_id: { type: string }, customer_id: { type: string }, source_type: { type: string, enum: [order, trial] }, source_id: { type: string }, customer_ref: { type: string }, policy: { type: object, additionalProperties: true }, status: { type: string, enum: [active, expired] }, transfer_limit: { type: integer }, transfer_count: { type: integer }, created_at: { type: string, format: date-time }, updated_at: { type: string, format: date-time } }
+    AuditEvent:
+      type: object
+      additionalProperties: false
+      required: [id, operator_id, action, resource_type, resource_id, payload, created_at]
+      properties:
+        id: { type: string }
+        operator_id: { type: string }
+        action: { type: string }
+        resource_type: { type: string }
+        resource_id: { type: string }
+        payload: { type: object, additionalProperties: true }
+        created_at: { type: string, format: date-time }
+    ReleaseArtifactInput:
+      type: object
+      additionalProperties: false
+      required: [inbox_filename, version, platform, architecture, expected_sha256, release_manifest_sha256, signature_ref]
+      properties:
+        inbox_filename: { type: string }
+        version: { type: string }
+        platform: { type: string, enum: [linux] }
+        architecture: { type: string, enum: [amd64] }
+        expected_sha256: { type: string, pattern: '^[0-9a-f]{64}$' }
+        release_manifest_sha256: { type: string, pattern: '^[0-9a-f]{64}$' }
+        signature_ref: { type: string }
+    ReleaseArtifact:
+      type: object
+      additionalProperties: false
+      required: [id, version, platform, architecture, object_key, sha256, release_manifest_sha256, size_bytes, signature_ref, source_commit_sha, github_run_id, runtime_linkage, created_at]
+      properties:
+        id: { type: string }
+        version: { type: string }
+        platform: { type: string }
+        architecture: { type: string }
+        object_key: { type: string }
+        sha256: { type: string }
+        release_manifest_sha256: { type: string }
+        size_bytes: { type: integer, format: int64 }
+        signature_ref: { type: string }
+        source_commit_sha: { oneOf: [{ type: string, pattern: '^[0-9a-f]{40,64}$' }, { type: 'null' }] }
+        github_run_id: { oneOf: [{ type: integer, format: int64 }, { type: 'null' }] }
+        runtime_linkage: { type: string, enum: [musl-static, msvc, unverified] }
+        created_at: { type: string, format: date-time }
+    ReleaseTask:
+      type: object
+      additionalProperties: false
+      required: [id, version, mode, free_distribution_id, free_license_sha256, github_repository, workflow_file, source_ref, source_commit_sha, phase, status, error_code, retry_of_task_id, created_by, created_at, updated_at, started_at, completed_at, github_run_url, github_conclusion, packages]
+      properties:
+        packages: { type: array, items: { $ref: '#/components/schemas/ReleaseTaskArtifact' } }
+        id: { type: string }
+        version:
+          type: string
+          minLength: 5
+          maxLength: 64
+          pattern: '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?(\+([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
+        mode: { type: string, enum: [verification, release] }
+        free_distribution_id: { type: string, description: Issued free-distribution record frozen into this release task; empty only for historical tasks }
+        free_license_sha256: { type: string, pattern: '^(?:[0-9a-f]{64})?$', description: SHA-256 of the exact signed free license bundled into every package; empty only for historical tasks }
+        github_repository: { type: string }
+        workflow_file: { type: string }
+        source_ref: { type: string }
+        source_commit_sha: { type: string, pattern: '^[0-9a-f]{40,64}$' }
+        phase: { type: string }
+        status: { type: string, enum: [pending_approval, queued, dispatching, in_progress, verifying, completed, failed, cancelled] }
+        error_code: { oneOf: [{ type: string }, { type: 'null' }] }
+        retry_of_task_id: { oneOf: [{ type: string }, { type: 'null' }] }
+        created_by: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        started_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        completed_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        github_run_url: { type: string }
+        github_conclusion: { oneOf: [{ type: string }, { type: 'null' }] }
+    ReleaseTaskInput:
+      type: object
+      additionalProperties: false
+      required: [version, source_ref, free_distribution_id]
+      properties:
+        version:
+          type: string
+          minLength: 5
+          maxLength: 64
+          pattern: '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?(\+([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
+        source_ref: { type: string, description: main or a 40-character commit that is an ancestor of main }
+        free_distribution_id: { type: string, description: Issued free-distribution record to bundle }
+    ReleaseTarget:
+      type: object
+      additionalProperties: false
+      required: [platform, architecture]
+      properties:
+        platform: { type: string, enum: [linux, windows] }
+        architecture: { type: string, enum: [amd64] }
+    ReleaseCapabilities:
+      type: object
+      additionalProperties: false
+      required: [configured, repository, workflow_file, environment, default_source_ref, targets, publishing_configured]
+      properties:
+        targets: { type: array, items: { $ref: '#/components/schemas/ReleaseTarget' } }
+        configured: { type: boolean }
+        repository: { type: string }
+        workflow_file: { type: string }
+        environment: { type: string }
+        default_source_ref: { type: string }
+        publishing_configured: { type: boolean }
+    ReleasePublishRequest:
+      type: object
+      additionalProperties: false
+      required: [id, release_artifact_id, version, source_commit_sha, tag_name, status, error_code, requested_by, approved_by, executed_by, approval_comment, github_release_id, html_url, created_at, updated_at, approved_at, published_at]
+      properties:
+        id: { type: string }
+        release_artifact_id: { type: string }
+        version: { type: string }
+        source_commit_sha: { type: string, pattern: '^[0-9a-f]{40}$' }
+        tag_name: { type: string }
+        status: { type: string, enum: [requested, approved, rejected, publishing, published, failed] }
+        error_code: { oneOf: [{ type: string }, { type: 'null' }] }
+        requested_by: { type: string }
+        approved_by: { oneOf: [{ type: string }, { type: 'null' }] }
+        executed_by: { oneOf: [{ type: string }, { type: 'null' }] }
+        approval_comment: { type: string }
+        github_release_id: { oneOf: [{ type: integer, format: int64 }, { type: 'null' }] }
+        html_url: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        approved_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        published_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+    ReleasePublishDecisionInput:
+      type: object
+      additionalProperties: false
+      required: [decision, comment, current_password]
+      properties:
+        decision: { type: string, enum: [approved, rejected] }
+        comment: { type: string, maxLength: 1000 }
+        current_password: { type: string, format: password }
+    ReleaseRun:
+      type: object
+      additionalProperties: false
+      required: [id, release_task_id, attempt, github_run_id, github_run_number, workflow_name, head_branch, head_sha, status, conclusion, html_url, started_at, completed_at, synced_at, created_at, jobs]
+      properties:
+        id: { type: string }
+        release_task_id: { type: string }
+        attempt: { type: integer, minimum: 1 }
+        github_run_id: { oneOf: [{ type: integer, format: int64 }, { type: 'null' }] }
+        github_run_number: { oneOf: [{ type: integer, format: int64 }, { type: 'null' }] }
+        workflow_name: { type: string }
+        head_branch: { type: string }
+        head_sha: { type: string }
+        status: { type: string, enum: [requested, waiting, pending, queued, in_progress, completed] }
+        conclusion: { oneOf: [{ type: string }, { type: 'null' }] }
+        html_url: { type: string }
+        started_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        completed_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        synced_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        created_at: { type: string, format: date-time }
+        jobs: { type: array, items: { $ref: '#/components/schemas/ReleaseJob' } }
+    ReleaseJob:
+      type: object
+      additionalProperties: false
+      required: [id, release_run_id, github_job_id, sequence_no, name, runner_name, status, conclusion, html_url, started_at, completed_at, steps]
+      properties:
+        id: { type: string }
+        release_run_id: { type: string }
+        github_job_id: { type: integer, format: int64 }
+        sequence_no: { type: integer, minimum: 0 }
+        name: { type: string }
+        runner_name: { type: string }
+        status: { type: string }
+        conclusion: { oneOf: [{ type: string }, { type: 'null' }] }
+        html_url: { type: string }
+        started_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        completed_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        steps: { type: array, items: { $ref: '#/components/schemas/ReleaseStep' } }
+    ReleaseStep:
+      type: object
+      additionalProperties: false
+      required: [id, release_run_job_id, github_step_number, sequence_no, name, status, conclusion, failure_summary, log_ref, started_at, completed_at]
+      properties:
+        id: { type: string }
+        release_run_job_id: { type: string }
+        github_step_number: { type: integer }
+        sequence_no: { type: integer, minimum: 0 }
+        name: { type: string }
+        status: { type: string }
+        conclusion: { oneOf: [{ type: string }, { type: 'null' }] }
+        failure_summary: { type: string }
+        log_ref: { type: string }
+        started_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        completed_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+    ReleaseTaskArtifact:
+      type: object
+      additionalProperties: false
+      required: [id, release_task_id, release_run_id, github_artifact_id, name, file_name, platform, architecture, size_bytes, expires_at, download_ref, github_digest_sha256, sha256, release_manifest_sha256, signature_key_id, runtime_linkage, verification_status, verification_error_code, release_artifact_id, verified_at, created_at]
+      properties:
+        platform: { type: string, enum: ['', linux, windows], description: Empty for auxiliary GitHub artifacts. }
+        architecture: { type: string, enum: ['', amd64] }
+        id: { type: string }
+        release_task_id: { type: string }
+        release_run_id: { type: string }
+        github_artifact_id: { type: integer, format: int64 }
+        name: { type: string }
+        file_name: { type: string }
+        size_bytes: { type: integer, format: int64 }
+        expires_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        download_ref: { type: string }
+        github_digest_sha256: { oneOf: [{ type: string, pattern: '^[0-9a-f]{64}$' }, { type: 'null' }] }
+        sha256: { oneOf: [{ type: string, pattern: '^[0-9a-f]{64}$' }, { type: 'null' }] }
+        release_manifest_sha256: { oneOf: [{ type: string, pattern: '^[0-9a-f]{64}$' }, { type: 'null' }] }
+        signature_key_id: { type: string }
+        runtime_linkage: { type: string, enum: ['', musl-static, msvc] }
+        verification_status: { type: string, enum: [pending, queued, verified, failed, unavailable] }
+        verification_error_code: { oneOf: [{ type: string }, { type: 'null' }] }
+        release_artifact_id: { oneOf: [{ type: string }, { type: 'null' }] }
+        verified_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+        created_at: { type: string, format: date-time }
+    ReleaseTaskDetail:
+      type: object
+      additionalProperties: false
+      required: [task, runs, artifacts]
+      properties:
+        task: { $ref: '#/components/schemas/ReleaseTask' }
+        runs: { type: array, items: { $ref: '#/components/schemas/ReleaseRun' } }
+        artifacts: { type: array, items: { $ref: '#/components/schemas/ReleaseTaskArtifact' } }
+    DeliveryInput:
+      type: object
+      additionalProperties: false
+      required: [customer_id, order_id, trial_id, license_id, release_artifact_id, channel, recipient]
+      properties:
+        customer_id: { type: string }
+        order_id: { oneOf: [{ type: string }, { type: 'null' }] }
+        trial_id: { oneOf: [{ type: string }, { type: 'null' }] }
+        license_id: { type: string }
+        release_artifact_id: { type: string }
+        channel: { type: string }
+        recipient: { type: string }
+    DeliveryRecord:
+      allOf:
+        - { $ref: '#/components/schemas/DeliveryInput' }
+        - type: object
+          required: [id, receipt_object_key, receipt_sha256, delivered_at, created_at]
+          properties:
+            id: { type: string }
+            receipt_object_key: { type: string }
+            receipt_sha256: { type: string }
+            delivered_at: { oneOf: [{ type: string, format: date-time }, { type: 'null' }] }
+            created_at: { type: string, format: date-time }
+    LicenseLimits:
+      $ref: '../schemas/license.v1.schema.yaml#/$defs/license_limits'
+    License:
+      type: object
+      additionalProperties: false
+      required: [operation_id, license_id, customer_ref, source_type, source_id, product, edition, features, limits, minimum_version, valid_until, transfer_limit, status, transfer_count, created_at, updated_at]
+      properties:
+        operation_id: { type: string }
+        license_id: { type: string }
+        customer_ref: { type: string }
+        source_type: { type: string, enum: [order, trial] }
+        source_id: { type: string }
+        product: { type: string, const: aster-team }
+        edition: { type: string }
+        features: { type: array, items: { type: string } }
+        limits: { $ref: '#/components/schemas/LicenseLimits' }
+        minimum_version: { type: string }
+        valid_until: { type: string, format: date-time }
+        transfer_limit: { type: integer, minimum: 0, maximum: 100 }
+        status: { type: string, enum: [active, expired] }
+        transfer_count: { type: integer, minimum: 0 }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    LicenseRequest:
+      $ref: '../schemas/license-request.v1.schema.yaml'
+    LicenseDocument:
+      $ref: '../schemas/license.v1.schema.yaml'
+    LicenseIssuance:
+      type: object
+      additionalProperties: false
+      required: [id, license_id, request_id, installation_id, machine_fingerprint_sha256, transfer_sequence, document, sha256, issued_at, expires_at]
+      properties:
+        id: { type: string }
+        license_id: { type: string }
+        request_id: { type: string }
+        installation_id: { type: string }
+        machine_fingerprint_sha256: { type: string }
+        transfer_sequence: { type: integer, minimum: 0 }
+        document: { $ref: '#/components/schemas/LicenseDocument' }
+        sha256: { type: string }
+        issued_at: { type: string, format: date-time }
+        expires_at: { type: string, format: date-time }
+    ErrorResponse:
+      $ref: '../schemas/error-response.v1.schema.yaml'
+    UpgradeCredentials:
+      type: object
+      additionalProperties: false
+      required:
+        - admin_email
+        - admin_password
+        - api_key
+      properties:
+        admin_email:
+          type: string
+          writeOnly: true
+        admin_password:
+          type: string
+          writeOnly: true
+        api_key:
+          type: string
+          writeOnly: true
+    UpgradeEnvironment:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - installation_id
+        - admin_url
+        - member_url
+        - api_url
+        - ca_pem
+        - model
+        - credential_version
+        - created_at
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        installation_id:
+          type: string
+        admin_url:
+          type: string
+        member_url:
+          type: string
+        api_url:
+          type: string
+        ca_pem:
+          type: string
+        model:
+          type: string
+        credential_version:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+    UpgradeEnvironmentInput:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - installation_id
+        - admin_url
+        - member_url
+        - api_url
+        - ca_pem
+        - model
+        - credentials
+      properties:
+        name:
+          type: string
+        installation_id:
+          type: string
+        admin_url:
+          type: string
+        member_url:
+          type: string
+        api_url:
+          type: string
+        ca_pem:
+          type: string
+        model:
+          type: string
+        credentials:
+          $ref: "#/components/schemas/UpgradeCredentials"
+    EnvironmentUpgrade:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - environment_id
+        - artifact_id
+        - target_version
+        - created_by
+        - mode
+        - phase
+        - target_job_id
+        - upgrade_result
+        - continuity_result
+        - recovery_result
+        - error_code
+        - coverage_gap
+        - model_requests
+        - created_at
+        - updated_at
+        - baseline_until
+        - observe_until
+        - probe_until
+        - baseline_failed
+        - post_failed
+      properties:
+        summary:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpgradeProbeSummary"
+        id:
+          type: string
+        environment_id:
+          type: string
+        artifact_id:
+          type: string
+        target_version:
+          type: string
+        created_by:
+          type: string
+        mode:
+          type: string
+        phase:
+          type: string
+        target_job_id:
+          type: string
+        upgrade_result:
+          type: string
+        continuity_result:
+          type: string
+        recovery_result:
+          type: string
+        error_code:
+          type: string
+        coverage_gap:
+          type: boolean
+        model_requests:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        baseline_until:
+          type: string
+          format: date-time
+        observe_until:
+          type: string
+          format: date-time
+        probe_until:
+          type: string
+          format: date-time
+        baseline_failed:
+          type: boolean
+        post_failed:
+          type: boolean
+    UpgradeProbeSample:
+      type: object
+      additionalProperties: false
+      required:
+        - sequence
+        - kind
+        - phase
+        - at
+        - duration_ms
+        - status
+        - ok
+        - error_code
+        - request_id
+        - output_events
+      properties:
+        sequence:
+          type: integer
+        kind:
+          type: string
+        phase:
+          type: string
+        at:
+          type: string
+          format: date-time
+        duration_ms:
+          type: integer
+        status:
+          type: integer
+        ok:
+          type: boolean
+        error_code:
+          type: string
+        request_id:
+          type: string
+        output_events:
+          type: integer
+    EnvironmentUpgradeDetail:
+      type: object
+      additionalProperties: false
+      required:
+        - task
+        - samples
+      properties:
+        task:
+          $ref: "#/components/schemas/EnvironmentUpgrade"
+        samples:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpgradeProbeSample"
+    TargetUpgradeJob:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - status
+        - target_version
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        target_version:
+          type: string
+    UpgradeCapabilities:
+      type: object
+      required:
+        - database_driver
+        - supported_modes
+        - unavailable_reason
+      properties:
+        database_driver:
+          type: string
+        supported_modes:
+          type: array
+          items:
+            type: string
+        unavailable_reason:
+          type: string
+    TargetMaintenance:
+      type: object
+      required:
+        - installation_id
+        - platform
+        - architecture
+        - current_version
+        - busy
+        - correlated_upgrades
+        - upgrade_capabilities
+      properties:
+        installation_id:
+          type: string
+        platform:
+          type: string
+        architecture:
+          type: string
+        current_version:
+          type: string
+        busy:
+          type: boolean
+        correlated_upgrades:
+          type: boolean
+        upgrade_capabilities:
+          $ref: "#/components/schemas/UpgradeCapabilities"
+    EnvironmentUpgradeInput:
+      type: object
+      additionalProperties: false
+      required:
+        - environment_id
+        - artifact_id
+      properties:
+        environment_id:
+          type: string
+        artifact_id:
+          type: string
+    UpgradeEnvironmentList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpgradeEnvironment"
+    EnvironmentUpgradeList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/EnvironmentUpgrade"
+    UpgradeProbeSummary:
+      type: object
+      required: [kind, attempts, failures, longest_failure_ms, failure_since, last_recovery_at]
+      properties:
+        kind: { type: string }
+        attempts: { type: integer }
+        failures: { type: integer }
+        longest_failure_ms: { type: integer }
+        failure_since: { type: string, format: date-time }
+        last_recovery_at: { type: string, format: date-time }
+    PlanDraftSnapshot:
+      type: object
+      additionalProperties: false
+      required: [schema, draft_id, revision, plan_id, expected_version, definition]
+      properties:
+        schema: { type: string, enum: [aster.plan-draft.v1] }
+        draft_id: { type: string }
+        revision: { type: integer, minimum: 1, maximum: 4294967295 }
+        plan_id: { type: string }
+        expected_version: { type: integer, minimum: 0, maximum: 4294967294 }
+        definition: { $ref: '#/components/schemas/CommercialPlanDefinition' }
+    PlanDraftRecord:
+      type: object
+      additionalProperties: false
+      required: [snapshot, sha256, operation_id, created_by, created_at]
+      properties:
+        snapshot: { $ref: '#/components/schemas/PlanDraftSnapshot' }
+        sha256: { type: string, pattern: '^[a-f0-9]{64}$' }
+        operation_id: { type: string }
+        created_by: { type: string }
+        created_at: { type: string, format: date-time }
+    SavePlanDraftInput:
+      type: object
+      additionalProperties: false
+      required: [operation_id, draft_id, expected_revision, plan_id, expected_version, definition]
+      properties:
+        operation_id: { type: string, minLength: 1, maxLength: 128 }
+        draft_id: { type: string, maxLength: 64 }
+        expected_revision: { type: integer, minimum: 0, maximum: 4294967294 }
+        plan_id: { type: string, maxLength: 64 }
+        expected_version: { type: integer, minimum: 0, maximum: 4294967294 }
+        definition: { $ref: '#/components/schemas/CommercialPlanDefinition' }
+    FreezePlanDraftInput:
+      type: object
+      additionalProperties: false
+      required: [operation_id, draft_id, revision, expected_sha256]
+      properties:
+        operation_id: { type: string, minLength: 1, maxLength: 128 }
+        draft_id: { type: string, minLength: 1, maxLength: 64 }
+        revision: { type: integer, minimum: 1, maximum: 4294967295 }
+        expected_sha256: { type: string, pattern: '^[a-f0-9]{64}$' }
+    PublicCatalog:
+      $ref: ../schemas/public-catalog.v1.schema.yaml#/$defs/catalog
+    PublicationFailure:
+      $ref: ../schemas/catalog-publication.v1.schema.yaml#/$defs/failure
+    PreparePublicationRequest:
+      $ref: ../schemas/catalog-publication.v1.schema.yaml#/$defs/prepare_request
+    PublicationRecord:
+      $ref: ../schemas/catalog-publication.v1.schema.yaml#/$defs/record
+    PublicCatalogRequest:
+      $ref: ../schemas/public-catalog.v1.schema.yaml#/$defs/request
+    PublicCatalogPreview:
+      $ref: ../schemas/public-catalog.v1.schema.yaml#/$defs/preview
+    ApprovePublicCatalogInput:
+      $ref: ../schemas/public-catalog.v1.schema.yaml#/$defs/approval_input
+    CatalogApprovalRecord:
+      $ref: ../schemas/public-catalog.v1.schema.yaml#/$defs/record
+    CommercialPlanDefinition:
+      $ref: ../schemas/commercial.v1.schema.yaml#/$defs/definition
+    CommercialPlanSnapshot:
+      $ref: ../schemas/commercial.v1.schema.yaml#/$defs/plan
+    CommercialOrderSnapshot:
+      $ref: ../schemas/commercial.v1.schema.yaml#/$defs/order
+    CommercialPlanRecord:
+      type: object
+      additionalProperties: false
+      required:
+        - snapshot
+        - sha256
+        - operation_id
+        - created_by
+        - created_at
+      properties:
+        snapshot:
+          $ref: "#/components/schemas/CommercialPlanSnapshot"
+        sha256:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/digest
+        operation_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/id
+        created_by:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        created_at:
+          type: string
+          format: date-time
+    CommercialOrderRecord:
+      type: object
+      additionalProperties: false
+      required:
+        - snapshot
+        - sha256
+        - operation_id
+        - created_by
+        - created_at
+        - status
+      properties:
+        snapshot:
+          $ref: "#/components/schemas/CommercialOrderSnapshot"
+        sha256:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/digest
+        operation_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/id
+        created_by:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        created_at:
+          type: string
+          format: date-time
+        status:
+          enum:
+            - pending_payment
+            - fulfillment_pending
+            - fulfilled
+            - cancelled
+            - refunded
+        customer_name:
+          type: string
+        fulfillment_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        fulfillment_status:
+          enum:
+            - approved
+            - prepared
+            - issued
+    FreezeCommercialPlanInput:
+      type: object
+      additionalProperties: false
+      required:
+        - operation_id
+        - plan_id
+        - expected_version
+        - definition
+      properties:
+        operation_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/id
+        plan_id:
+          type: string
+          pattern: ^[A-Za-z0-9._:@+/-]{0,64}$
+        expected_version:
+          type: integer
+          minimum: 0
+          maximum: 4294967294
+        definition:
+          $ref: "#/components/schemas/CommercialPlanDefinition"
+    CreateCommercialOrderInput:
+      type: object
+      additionalProperties: false
+      required:
+        - operation_id
+        - customer_id
+        - plan_id
+        - plan_version
+        - years
+        - starts_at
+      properties:
+        operation_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/id
+        customer_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        plan_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        plan_version:
+          type: integer
+          minimum: 1
+          maximum: 4294967295
+        years:
+          type: integer
+          minimum: 1
+          maximum: 5
+        starts_at:
+          type: string
+          format: date-time
+          description: Explicit contract start with at most millisecond precision; retries preserve the same
+            instant.
+    QuotationSource:
+      type: object
+      additionalProperties: false
+      required: [publication_id, catalog_revision, environment, accept_until, plans]
+      properties:
+        publication_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        catalog_revision:
+          type: string
+          pattern: ^catalog_[0-9a-f]{48}$
+        environment:
+          enum: [local, production]
+        accept_until:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/exact_time
+        plans:
+          type: array
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/CommercialPlanSnapshot"
+    CreateQuotationOrderInput:
+      type: object
+      additionalProperties: false
+      required:
+        - operation_id
+        - customer_id
+        - publication_id
+        - catalog_revision
+        - plan_id
+        - plan_version
+        - years
+        - starts_at
+      properties:
+        operation_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/id
+        customer_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        publication_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        catalog_revision:
+          type: string
+          pattern: ^catalog_[0-9a-f]{48}$
+        plan_id:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/resource_id
+        plan_version:
+          type: integer
+          minimum: 1
+          maximum: 4294967295
+        years:
+          type: integer
+          minimum: 1
+          maximum: 5
+        starts_at:
+          $ref: ../schemas/commercial.v1.schema.yaml#/$defs/exact_time

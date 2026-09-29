@@ -1,0 +1,12 @@
+{
+  "name": "@aster/demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./browser": "./src/browser.ts"
+  },
+  "dependencies": {
+    "msw": "^2.15.0"
+  }
+}

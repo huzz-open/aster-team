@@ -1,0 +1,110 @@
+name: ${ASTER_E2E_PROJECT_NAME:-aster-system-e2e}
+
+x-customer: &customer
+  image: ${ASTER_E2E_RUNTIME_IMAGE:?Resolve the pinned runtime image before starting E2E}
+  privileged: true
+  cgroup: host
+  tmpfs:
+    - /run
+    - /run/lock
+    - /sys:rw
+  volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    - ${ASTER_E2E_CUSTOMER_ARCHIVE}:/workspace/customer-bundle.tar.gz:ro
+    - ${ASTER_E2E_RUN_ROOT}/certs:/e2e-certs:ro
+
+services:
+  mariadb:
+    image: mariadb:11.8.6
+    environment:
+      MARIADB_DATABASE: aster_operations
+      MARIADB_USER: aster_operations
+      MARIADB_PASSWORD: ${ASTER_E2E_DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${ASTER_E2E_DB_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+    networks: [aster-e2e]
+
+  operations-api:
+    image: debian:12-slim
+    command: ["/bin/sh", "-ec", "/opt/operations/bin/aster-operations-api --env-file=/e2e/operations.env --migrate-only && exec /opt/operations/bin/aster-operations-api --env-file=/e2e/operations.env"]
+    volumes:
+      - ${ASTER_E2E_OPERATIONS_BUNDLE}:/opt/operations:ro
+      - ${ASTER_E2E_RUN_ROOT}:/e2e:rw
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks: [aster-e2e]
+
+  operations-web:
+    image: debian:12-slim
+    command: ["/opt/operations/bin/aster-webhost", "--addr", "0.0.0.0:12080", "--dir", "/opt/operations/console", "--api", "http://operations-api:12090"]
+    volumes:
+      - ${ASTER_E2E_OPERATIONS_BUNDLE}:/opt/operations:ro
+    depends_on: [operations-api]
+    ports:
+      - "127.0.0.1:${ASTER_E2E_OPERATIONS_PORT:-12080}:12080"
+    networks: [aster-e2e]
+
+  fake-upstream:
+    build:
+      context: ../..
+      dockerfile: tests/system-e2e/fake-upstream.Dockerfile
+    environment:
+      ASTER_E2E_UPSTREAM_EMAIL: ${ASTER_E2E_UPSTREAM_EMAIL}
+      ASTER_E2E_UPSTREAM_PASSWORD: ${ASTER_E2E_UPSTREAM_PASSWORD}
+      ASTER_E2E_FAKE_CONTROL_TOKEN: ${ASTER_E2E_FAKE_CONTROL_TOKEN}
+      ASTER_E2E_DIAGNOSTIC_CANARY: ${ASTER_E2E_DIAGNOSTIC_CANARY}
+    volumes:
+      - ${ASTER_E2E_RUN_ROOT}/certs:/certs:rw
+    ports:
+      - "127.0.0.1:${ASTER_E2E_UPSTREAM_PORT:-14443}:443"
+    networks:
+      aster-e2e:
+        aliases: [auth.openai.com, chatgpt.com, api.openai.com]
+
+  customer-json:
+    <<: *customer
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ${ASTER_E2E_CUSTOMER_ARCHIVE}:/workspace/customer-bundle.tar.gz:ro
+      - ${ASTER_E2E_RUN_ROOT}/certs:/e2e-certs:ro
+      - ${ASTER_E2E_RUN_ROOT}/customer-json:/e2e:rw
+    ports:
+      - "127.0.0.1:${ASTER_E2E_JSON_API_PORT:-11180}:11080"
+      - "127.0.0.1:${ASTER_E2E_JSON_MEMBER_PORT:-11181}:11081"
+      - "127.0.0.1:${ASTER_E2E_JSON_ADMIN_PORT:-11182}:11082"
+    networks: [aster-e2e]
+
+  customer-qr:
+    <<: *customer
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ${ASTER_E2E_CUSTOMER_ARCHIVE}:/workspace/customer-bundle.tar.gz:ro
+      - ${ASTER_E2E_RUN_ROOT}/certs:/e2e-certs:ro
+      - ${ASTER_E2E_RUN_ROOT}/customer-qr:/e2e:rw
+    ports:
+      - "127.0.0.1:${ASTER_E2E_QR_API_PORT:-11280}:11080"
+      - "127.0.0.1:${ASTER_E2E_QR_MEMBER_PORT:-11281}:11081"
+      - "127.0.0.1:${ASTER_E2E_QR_ADMIN_PORT:-11282}:11082"
+    networks: [aster-e2e]
+
+  customer-terminal:
+    <<: *customer
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+      - ${ASTER_E2E_CUSTOMER_ARCHIVE}:/workspace/customer-bundle.tar.gz:ro
+      - ${ASTER_E2E_RUN_ROOT}/certs:/e2e-certs:ro
+      - ${ASTER_E2E_RUN_ROOT}/customer-terminal:/e2e:rw
+    ports:
+      - "127.0.0.1:${ASTER_E2E_TERMINAL_API_PORT:-11380}:11080"
+      - "127.0.0.1:${ASTER_E2E_TERMINAL_MEMBER_PORT:-11381}:11081"
+      - "127.0.0.1:${ASTER_E2E_TERMINAL_ADMIN_PORT:-11382}:11082"
+    networks: [aster-e2e]
+
+networks:
+  aster-e2e:
+    driver: bridge

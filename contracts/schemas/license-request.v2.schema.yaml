@@ -1,0 +1,76 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/license-request.v2.schema.json
+title: Aster Team offline license request v2
+type: object
+additionalProperties: false
+required:
+  - schema
+  - request_id
+  - product
+  - product_version
+  - platform
+  - architecture
+  - installation_id
+  - machine_fingerprint_sha256
+  - machine_factors
+  - generated_at
+  - license_schema
+  - capability_catalog_version
+  - quota_policy_version
+properties:
+  schema:
+    const: aster.license-request.v2
+  request_id:
+    type: string
+    pattern: '^[A-Za-z0-9._:@+/-]{8,128}$'
+  product:
+    const: aster-team
+  product_version:
+    type: string
+    $ref: './license.v2.schema.yaml#/$defs/claims/properties/minimum_version'
+  platform:
+    enum: [linux, windows, macos]
+  architecture:
+    enum: [amd64, arm64]
+  installation_id:
+    type: string
+    pattern: '^[A-Za-z0-9._:@+/-]{8,128}$'
+  machine_fingerprint_sha256:
+    type: string
+    pattern: '^[A-Za-z0-9_-]{43}$'
+  machine_factors:
+    type: array
+    minItems: 2
+    maxItems: 2
+    items:
+      type: object
+      additionalProperties: false
+      required: [kind, sha256]
+      properties:
+        kind:
+          enum: [dmi_product_uuid, machine_id]
+        sha256:
+          type: string
+          pattern: '^[A-Za-z0-9_-]{43}$'
+    allOf:
+      - contains:
+          type: object
+          properties: { kind: { const: dmi_product_uuid } }
+          required: [kind]
+        minContains: 1
+        maxContains: 1
+      - contains:
+          type: object
+          properties: { kind: { const: machine_id } }
+          required: [kind]
+        minContains: 1
+        maxContains: 1
+  generated_at:
+    type: string
+    pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$'
+  license_schema:
+    $ref: './license.v2.schema.yaml#/$defs/claims/properties/schema'
+  capability_catalog_version:
+    $ref: './entitlements.v1.schema.yaml#/$defs/entitlement_payload/properties/catalog_version'
+  quota_policy_version:
+    $ref: './license.v2.schema.yaml#/$defs/claims/properties/quota_policy_version'

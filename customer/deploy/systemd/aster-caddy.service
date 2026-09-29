@@ -1,0 +1,35 @@
+[Unit]
+Description=Aster Team stable HTTP/HTTPS entry
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=notify
+User=aster-caddy
+Group=aster-caddy
+Environment=HOME=@ASTER_ROOT@/data/caddy
+Environment=XDG_DATA_HOME=@ASTER_ROOT@/data/caddy
+Environment=XDG_CONFIG_HOME=@ASTER_ROOT@/config/caddy
+ExecStart=@ASTER_ROOT@/current/bin/caddy run --environ --config @ASTER_ROOT@/config/caddy/Caddyfile --adapter caddyfile
+ExecReload=@ASTER_ROOT@/current/bin/caddy reload --config @ASTER_ROOT@/config/caddy/Caddyfile --adapter caddyfile --force
+TimeoutStopSec=5s
+LimitNOFILE=1048576
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+SystemCallArchitectures=native
+ReadOnlyPaths=@ASTER_ROOT@/config/caddy @ASTER_ROOT@/config/tls @ASTER_ROOT@/releases @ASTER_ROOT@/current
+ReadWritePaths=@ASTER_ROOT@/data/caddy
+
+[Install]
+WantedBy=multi-user.target

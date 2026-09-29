@@ -1,0 +1,10 @@
+[Unit]
+Description=Watch for queued Aster Team upgrade jobs
+
+[Path]
+PathExistsGlob=@ASTER_ROOT@/state/upgrades/queued/*.json
+PathExistsGlob=@ASTER_ROOT@/state/upgrades/running/*.json
+Unit=aster-upgrade.service
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+# Public Cloudflare test credential. Never use it in production.
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA
+RATE_LIMIT_SALT=local-development-only
+
+# Create website/.dev.vars locally and add your own SMTP credentials if needed.
+SMTP_PASSWORD=
+
+# Optional GitHub read-only token for release metadata. Configure as a Pages Secret in production.
+GITHUB_RELEASES_TOKEN=
+
+ALLOWED_ORIGINS=http://127.0.0.1:14080,http://localhost:14080,http://127.0.0.1:8788,http://localhost:8788
+TURNSTILE_ACTION=trial_request
+TURNSTILE_HOSTNAMES=127.0.0.1,localhost
+TURNSTILE_TEST_MODE=true
+LEAD_NOTIFICATION_TO=contact@example.com
+LEAD_NOTIFICATION_FROM=sender@example.com
+SMTP_HOST=smtp.example.com
+SMTP_PORT=465
+SMTP_USERNAME=sender@example.com
+RATE_LIMIT_WINDOW_SECONDS=600
+RATE_LIMIT_MAX_SUBMISSIONS=100

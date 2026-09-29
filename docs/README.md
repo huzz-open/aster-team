@@ -2,6 +2,8 @@
 
 [简体中文](zh-CN/README.md) · [Project home](../README.md) · [Releases](https://github.com/huzz-open/aster-team/releases)
 
+[MIT License](../LICENSE) · [Disclaimer](../DISCLAIMER.md) · [Third-party notices](../THIRD_PARTY_NOTICES.md)
+
 These guides are written for developers and administrators deploying or consuming Aster Team. Start with the role that matches your work.
 
 ## Deploy and administer

@@ -1,0 +1,249 @@
+{
+  "note": "Protocol fixtures only; this does not select a supported product release or authorize an installation",
+  "request": {
+    "schema": "aster.license-request.v2",
+    "request_id": "request_test_only_001",
+    "product": "aster-team",
+    "product_version": "1.2.3+local",
+    "platform": "linux",
+    "architecture": "amd64",
+    "installation_id": "installation_test_only_001",
+    "machine_fingerprint_sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "machine_factors": [
+      {
+        "kind": "dmi_product_uuid",
+        "sha256": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      },
+      {
+        "kind": "machine_id",
+        "sha256": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+      }
+    ],
+    "generated_at": "2026-09-06T00:00:00.000Z",
+    "license_schema": "aster.license.v2",
+    "capability_catalog_version": 1,
+    "quota_policy_version": 1
+  },
+  "canonical_request": "{\"architecture\":\"amd64\",\"capability_catalog_version\":1,\"generated_at\":\"2026-09-06T00:00:00.000Z\",\"installation_id\":\"installation_test_only_001\",\"license_schema\":\"aster.license.v2\",\"machine_factors\":[{\"kind\":\"dmi_product_uuid\",\"sha256\":\"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"},{\"kind\":\"machine_id\",\"sha256\":\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}],\"machine_fingerprint_sha256\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"platform\":\"linux\",\"product\":\"aster-team\",\"product_version\":\"1.2.3+local\",\"quota_policy_version\":1,\"request_id\":\"request_test_only_001\",\"schema\":\"aster.license-request.v2\"}",
+  "compact_qr_v3": {
+    "request": {
+      "schema": "aster.license-request.v2",
+      "request_id": "request_0uTL4YW_I-t6LFy8KTd9J891",
+      "product": "aster-team",
+      "product_version": "2.0.0",
+      "platform": "linux",
+      "architecture": "amd64",
+      "installation_id": "installation_Dmz9pQ4AVs6kzaRgM79_8JDJ",
+      "machine_fingerprint_sha256": "UJn2n58Eq5N9_d_VDYJbTKdRpvH9fCQReCSPXs8iBx8",
+      "machine_factors": [
+        {
+          "kind": "dmi_product_uuid",
+          "sha256": "u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7s"
+        },
+        {
+          "kind": "machine_id",
+          "sha256": "zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMw"
+        }
+      ],
+      "generated_at": "2026-08-29T13:32:20.000Z",
+      "license_schema": "aster.license.v2",
+      "capability_catalog_version": 1,
+      "quota_policy_version": 1
+    },
+    "payload_base64url": "QUxSAwEBBQAAAAEAAAABAAABoE24nqDS5Mvhhb8j63osXLwpN30nz3UObP2lDgBWzqTNpGAzv3_wkMm7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMMi4wLjA"
+  },
+  "invalid_raw": [
+    {
+      "name": "trailing text",
+      "raw": "{\"schema\":\"aster.license-request.v2\",\"request_id\":\"request_test_only_001\",\"product\":\"aster-team\",\"product_version\":\"1.2.3+local\",\"platform\":\"linux\",\"architecture\":\"amd64\",\"installation_id\":\"installation_test_only_001\",\"machine_fingerprint_sha256\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"machine_factors\":[{\"kind\":\"dmi_product_uuid\",\"sha256\":\"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"},{\"kind\":\"machine_id\",\"sha256\":\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}],\"generated_at\":\"2026-09-06T00:00:00.000Z\",\"license_schema\":\"aster.license.v2\",\"capability_catalog_version\":1,\"quota_policy_version\":1}x",
+      "schema_invalid": false
+    },
+    {
+      "name": "trailing JSON",
+      "raw": "{\"schema\":\"aster.license-request.v2\",\"request_id\":\"request_test_only_001\",\"product\":\"aster-team\",\"product_version\":\"1.2.3+local\",\"platform\":\"linux\",\"architecture\":\"amd64\",\"installation_id\":\"installation_test_only_001\",\"machine_fingerprint_sha256\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"machine_factors\":[{\"kind\":\"dmi_product_uuid\",\"sha256\":\"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"},{\"kind\":\"machine_id\",\"sha256\":\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}],\"generated_at\":\"2026-09-06T00:00:00.000Z\",\"license_schema\":\"aster.license.v2\",\"capability_catalog_version\":1,\"quota_policy_version\":1}{}",
+      "schema_invalid": false
+    },
+    {
+      "name": "duplicate ID",
+      "raw": "{\"schema\":\"aster.license-request.v2\",\"request_id\":\"replacement\",\"request_id\":\"request_test_only_001\",\"product\":\"aster-team\",\"product_version\":\"1.2.3+local\",\"platform\":\"linux\",\"architecture\":\"amd64\",\"installation_id\":\"installation_test_only_001\",\"machine_fingerprint_sha256\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"machine_factors\":[{\"kind\":\"dmi_product_uuid\",\"sha256\":\"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"},{\"kind\":\"machine_id\",\"sha256\":\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}],\"generated_at\":\"2026-09-06T00:00:00.000Z\",\"license_schema\":\"aster.license.v2\",\"capability_catalog_version\":1,\"quota_policy_version\":1}",
+      "schema_invalid": false
+    },
+    {
+      "name": "duplicate nested kind",
+      "raw": "{\"schema\":\"aster.license-request.v2\",\"request_id\":\"request_test_only_001\",\"product\":\"aster-team\",\"product_version\":\"1.2.3+local\",\"platform\":\"linux\",\"architecture\":\"amd64\",\"installation_id\":\"installation_test_only_001\",\"machine_fingerprint_sha256\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"machine_factors\":[{\"kind\":\"machine_id\",\"kind\":\"dmi_product_uuid\",\"sha256\":\"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"},{\"kind\":\"machine_id\",\"sha256\":\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}],\"generated_at\":\"2026-09-06T00:00:00.000Z\",\"license_schema\":\"aster.license.v2\",\"capability_catalog_version\":1,\"quota_policy_version\":1}",
+      "schema_invalid": false
+    },
+    {
+      "name": "invalid schema",
+      "raw": "{\"schema\": \"aster.license-request.v1\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1}",
+      "schema_invalid": true
+    },
+    {
+      "name": "invalid license_schema",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v1\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1}",
+      "schema_invalid": true
+    },
+    {
+      "name": "invalid capability_catalog_version",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 2, \"quota_policy_version\": 1}",
+      "schema_invalid": true
+    },
+    {
+      "name": "invalid quota_policy_version",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 2}",
+      "schema_invalid": true
+    },
+    {
+      "name": "invalid machine_factors",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": null, \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1}",
+      "schema_invalid": true
+    },
+    {
+      "name": "invalid product_version",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.02.3\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1}",
+      "schema_invalid": true
+    },
+    {
+      "name": "enum object",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": {\"dmi_product_uuid\": null}, \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1}",
+      "schema_invalid": true
+    },
+    {
+      "name": "nested alias",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\", \"Kind\": \"dmi_product_uuid\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1}",
+      "schema_invalid": true
+    },
+    {
+      "name": "alias",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1, \"Request_ID\": \"request_test_only_001\"}",
+      "schema_invalid": true
+    },
+    {
+      "name": "unknown field",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1, \"rights\": \"all\"}",
+      "schema_invalid": true
+    },
+    {
+      "name": "missing protocol",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1}",
+      "schema_invalid": true
+    },
+    {
+      "name": "runtime generated_at 2026-02-30T00:00:00.000Z",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-02-30T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1}",
+      "schema_invalid": false
+    },
+    {
+      "name": "runtime generated_at 2026-09-06t00:00:00.000Z",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"1.2.3+local\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06t00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1}",
+      "schema_invalid": false
+    },
+    {
+      "name": "runtime product_version 18446744073709551616.0.0",
+      "raw": "{\"schema\": \"aster.license-request.v2\", \"request_id\": \"request_test_only_001\", \"product\": \"aster-team\", \"product_version\": \"18446744073709551616.0.0\", \"platform\": \"linux\", \"architecture\": \"amd64\", \"installation_id\": \"installation_test_only_001\", \"machine_fingerprint_sha256\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"machine_factors\": [{\"kind\": \"dmi_product_uuid\", \"sha256\": \"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\"}, {\"kind\": \"machine_id\", \"sha256\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"}], \"generated_at\": \"2026-09-06T00:00:00.000Z\", \"license_schema\": \"aster.license.v2\", \"capability_catalog_version\": 1, \"quota_policy_version\": 1}",
+      "schema_invalid": false
+    }
+  ],
+  "versions": [
+    {
+      "actual": "1.2.3+a",
+      "minimum": "1.2.3+z",
+      "expected": true
+    },
+    {
+      "actual": "1.2.3+z",
+      "minimum": "1.2.3+a",
+      "expected": true
+    },
+    {
+      "actual": "1.2.3",
+      "minimum": "1.2.3+z",
+      "expected": true
+    },
+    {
+      "actual": "1.2.3-rc.1",
+      "minimum": "1.2.3",
+      "expected": false
+    },
+    {
+      "actual": "1.2.3",
+      "minimum": "1.2.3-rc.1",
+      "expected": true
+    },
+    {
+      "actual": "1.2.3-alpha.9",
+      "minimum": "1.2.3-alpha.10",
+      "expected": false
+    },
+    {
+      "actual": "1.2.3-alpha.10",
+      "minimum": "1.2.3-alpha.9",
+      "expected": true
+    },
+    {
+      "actual": "1.2.3-9",
+      "minimum": "1.2.3-a",
+      "expected": false
+    },
+    {
+      "actual": "1.2.3-a",
+      "minimum": "1.2.3-9",
+      "expected": true
+    },
+    {
+      "actual": "1.2.3-a",
+      "minimum": "1.2.3-a.1",
+      "expected": false
+    },
+    {
+      "actual": "1.2.3-a.1",
+      "minimum": "1.2.3-a",
+      "expected": true
+    },
+    {
+      "actual": "1.2.3-9999999999999999999999",
+      "minimum": "1.2.3-9999999999999999999998",
+      "expected": true
+    },
+    {
+      "actual": "2.0.0",
+      "minimum": "1.99.99",
+      "expected": true
+    },
+    {
+      "actual": "1.9.0",
+      "minimum": "1.10.0",
+      "expected": false
+    },
+    {
+      "actual": "1.2.3+build",
+      "minimum": "1.2.3+build",
+      "expected": true
+    },
+    {
+      "actual": "18446744073709551615.0.0",
+      "minimum": "1.0.0",
+      "expected": true
+    },
+    {
+      "actual": "18446744073709551616.0.0",
+      "minimum": "1.0.0",
+      "expected": false
+    },
+    {
+      "actual": "1.02.3",
+      "minimum": "1.0.0",
+      "expected": false
+    },
+    {
+      "actual": "1.0.0",
+      "minimum": "unknown",
+      "expected": false
+    },
+    {
+      "actual": "1.0.0-01",
+      "minimum": "1.0.0",
+      "expected": false
+    }
+  ]
+}

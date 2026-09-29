@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.aster-team.caddy</string>
+  <key>ProgramArguments</key><array><string>@ASTER_ROOT@/config/services/service-launch.sh</string><string>--service</string><string>caddy</string></array>
+  <key>RunAtLoad</key><false/>
+  <key>KeepAlive</key><dict><key>SuccessfulExit</key><false/></dict>
+  <key>ThrottleInterval</key><integer>5</integer>
+  <key>StandardOutPath</key><string>@ASTER_ROOT@/logs/caddy.log</string>
+  <key>StandardErrorPath</key><string>@ASTER_ROOT@/logs/caddy.log</string>
+</dict></plist>

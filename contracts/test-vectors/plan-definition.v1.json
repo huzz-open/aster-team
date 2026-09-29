@@ -1,0 +1,76 @@
+{
+  "product": "aster-team",
+  "code": "test_annual",
+  "name": "测试套餐",
+  "description": "仅用于快照与计算测试",
+  "edition": "test-commercial",
+  "entitlements": {
+    "catalog_version": 1,
+    "features": [
+      "gateway",
+      "member",
+      "runner"
+    ],
+    "quotas": [
+      {
+        "id": "member_seats",
+        "limit": {
+          "mode": "limited",
+          "value": 20
+        }
+      },
+      {
+        "id": "runners",
+        "limit": {
+          "mode": "unlimited"
+        }
+      },
+      {
+        "id": "upstream_accounts",
+        "limit": {
+          "mode": "unlimited"
+        }
+      },
+      {
+        "id": "api_keys_per_member",
+        "limit": {
+          "mode": "unlimited"
+        }
+      }
+    ]
+  },
+  "quota_policy_version": 1,
+  "minimum_version": "1.2.3-test.1",
+  "transfer_limit": 2,
+  "support_terms_version": "test-support-v1",
+  "offer": {
+    "kind": "annual",
+    "currency": "CNY",
+    "annual_amount_minor": 599900,
+    "tax_mode": "inclusive",
+    "terms": [
+      {
+        "years": 1,
+        "discount_basis_points": 10000
+      },
+      {
+        "years": 2,
+        "discount_basis_points": 9000
+      },
+      {
+        "years": 3,
+        "discount_basis_points": 8500
+      },
+      {
+        "years": 4,
+        "discount_basis_points": 8000
+      },
+      {
+        "years": 5,
+        "discount_basis_points": 7000
+      }
+    ],
+    "term_rule": "calendar_years_clamp_day",
+    "term_timezone": "Asia/Shanghai"
+  }
+}

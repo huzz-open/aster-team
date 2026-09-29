@@ -1,0 +1,65 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/free-distribution.v1.schema.json
+title: Approved free distribution and persisted issuance
+description: Internal wire format. Approval permissions, snapshot integrity, trusted signatures and transactional transitions also require server validation.
+$ref: "#/$defs/record"
+$defs:
+  approval_input:
+    type: object
+    additionalProperties: false
+    required: [operation_id, plan_id, plan_version, expected_sha256, not_before, reason, current_password]
+    properties:
+      operation_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      plan_id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      plan_version: { type: integer, minimum: 1, maximum: 4294967295 }
+      expected_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      not_before: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+      reason: { type: string, minLength: 1, maxLength: 2000 }
+      current_password: { type: string, minLength: 1, writeOnly: true }
+  snapshot:
+    type: object
+    additionalProperties: false
+    required: [schema, id, plan, plan_sha256, not_before, reason, approved_by, approved_at]
+    properties:
+      schema: { const: aster.free-distribution.v1 }
+      id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      plan: { $ref: "commercial.v1.schema.yaml#/$defs/plan" }
+      plan_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      not_before: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+      reason: { type: string, minLength: 1, maxLength: 2000 }
+      approved_by: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      approved_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+  record:
+    type: object
+    additionalProperties: false
+    required: [snapshot, sha256, operation_id, status]
+    properties:
+      snapshot: { $ref: "#/$defs/snapshot" }
+      sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      operation_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      status: { enum: [approved, prepared, issued] }
+      claims: { $ref: "license.v2.schema.yaml#/$defs/claims" }
+      document: { $ref: "license.v2.schema.yaml#/$defs/document" }
+      document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+    oneOf:
+      - properties:
+          status: { const: approved }
+          claims: false
+          document: false
+          document_sha256: false
+      - properties:
+          status: { const: prepared }
+          claims: { $ref: "license.v2.schema.yaml#/$defs/claims" }
+          document: false
+          document_sha256: false
+        required: [claims]
+      - properties:
+          status: { const: issued }
+          claims: { $ref: "license.v2.schema.yaml#/$defs/claims" }
+          document: { $ref: "license.v2.schema.yaml#/$defs/document" }
+          document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+        required: [claims, document, document_sha256]
+  issuer_policy:
+    $ref: "license-trust.v1.schema.yaml#/$defs/issuer_policy"
+  issuer_profile:
+    $ref: "license-trust.v1.schema.yaml#/$defs/issuer_profile"

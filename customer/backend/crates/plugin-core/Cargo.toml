@@ -1,0 +1,27 @@
+[package]
+name = "aster-plugin-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+signing = []
+
+[[bin]]
+name = "aster-sign-plugin"
+path = "src/bin/sign_plugin.rs"
+required-features = ["signing"]
+
+[dependencies]
+base64.workspace = true
+ed25519-dalek.workspace = true
+mlua = { version = "=0.12.1", default-features = false, features = ["lua54", "vendored", "serde"] }
+serde.workspace = true
+serde_json.workspace = true
+semver.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+zeroize.workspace = true
+zip = { version = "=8.6.0", default-features = false, features = ["deflate"] }

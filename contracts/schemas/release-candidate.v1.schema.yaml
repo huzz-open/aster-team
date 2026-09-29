@@ -1,0 +1,48 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/release-candidate.v1.schema.json
+title: Aster release candidate manifest v1
+type: object
+additionalProperties: false
+required: [schema, candidate_id, trust, source, built_at, test_matrix_version, artifact_root, artifacts, customer_release, required_capabilities]
+properties:
+  schema: { const: aster.release-candidate.v1 }
+  candidate_id: { type: string, minLength: 3, maxLength: 128 }
+  trust: { enum: [release-candidate, test-build] }
+  source:
+    type: object
+    additionalProperties: false
+    required: [commit]
+    properties:
+      commit: { type: string, pattern: '^[0-9a-f]{40}$' }
+  built_at: { type: string, format: date-time }
+  test_matrix_version: { type: string, minLength: 1 }
+  artifact_root: { type: string, minLength: 1 }
+  artifacts:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required: [component, path, sha256]
+      properties:
+        component: { type: string, minLength: 1 }
+        path: { type: string, minLength: 1 }
+        sha256: { type: string, pattern: '^[0-9a-f]{64}$' }
+  customer_release:
+    type: object
+    additionalProperties: false
+    required: [sha256, key_id, signature]
+    properties:
+      sha256: { type: string, pattern: '^[0-9a-f]{64}$' }
+      key_id: { type: string, minLength: 1 }
+      signature: { type: string, minLength: 1 }
+  required_capabilities:
+    type: object
+    additionalProperties: false
+    required: [schema, providers, operations, streaming, runner_protocol]
+    properties:
+      schema: { const: aster.required-capabilities.v1 }
+      providers: { type: array, minItems: 1, items: { type: string, minLength: 1 } }
+      operations: { type: array, minItems: 1, items: { enum: [text, image_generation, image_edit] } }
+      streaming: { type: boolean }
+      runner_protocol: { const: 4 }

@@ -1,0 +1,112 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/paid-lifecycle.v1.schema.json
+title: Immutable paid renewal and upgrade fulfillment
+description: Internal v2 successor contract. Operations locks and freezes the current signed paid license before approval and preserves its recorded environment.
+$ref: "#/$defs/record"
+$defs:
+  lifecycle_request:
+    type: object
+    additionalProperties: false
+    required: [kind, source_id, expected_document_sha256]
+    properties:
+      kind: { enum: [renewal, upgrade] }
+      source_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      expected_document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+  input_any:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_order_sha256, expected_payment_sha256, license_request_json, reason]
+    properties:
+      operation_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      expected_order_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      expected_payment_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      license_request_json:
+        type: string
+        minLength: 1
+        maxLength: 16384
+      reason: { type: string, minLength: 1, maxLength: 2000 }
+      lifecycle: { $ref: "#/$defs/lifecycle_request" }
+  input:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_order_sha256, expected_payment_sha256, license_request_json, reason, lifecycle]
+    properties:
+      operation_id: { $ref: "#/$defs/input_any/properties/operation_id" }
+      expected_order_sha256: { $ref: "#/$defs/input_any/properties/expected_order_sha256" }
+      expected_payment_sha256: { $ref: "#/$defs/input_any/properties/expected_payment_sha256" }
+      license_request_json: { $ref: "#/$defs/input_any/properties/license_request_json" }
+      reason: { $ref: "#/$defs/input_any/properties/reason" }
+      lifecycle: { $ref: "#/$defs/lifecycle_request" }
+  approval:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_order_sha256, expected_payment_sha256, license_request_json, reason, current_password]
+    properties:
+      operation_id: { $ref: "#/$defs/input_any/properties/operation_id" }
+      expected_order_sha256: { $ref: "#/$defs/input_any/properties/expected_order_sha256" }
+      expected_payment_sha256: { $ref: "#/$defs/input_any/properties/expected_payment_sha256" }
+      license_request_json: { $ref: "#/$defs/input_any/properties/license_request_json" }
+      reason: { $ref: "#/$defs/input_any/properties/reason" }
+      lifecycle: { $ref: "#/$defs/lifecycle_request" }
+      current_password: { type: string, minLength: 1, writeOnly: true }
+  source:
+    type: object
+    additionalProperties: false
+    required: [schema, kind, source_id, source_record_kind, source_record_id, source_record_sha256, customer_id, customer_ref, license_id, environment, document_sha256, document, binding, valid_from, valid_until]
+    properties:
+      schema: { const: aster.paid-lifecycle-source.v1 }
+      kind: { $ref: "#/$defs/lifecycle_request/properties/kind" }
+      source_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      source_record_kind: { enum: [paid_fulfillment, paid_transfer] }
+      source_record_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      source_record_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      customer_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      customer_ref: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      license_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      environment: { enum: [local, production] }
+      document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      document: { $ref: "license.v2.schema.yaml#/$defs/document" }
+      binding: { $ref: "license.v2.schema.yaml#/$defs/installation" }
+      valid_from: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+      valid_until: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+  snapshot:
+    type: object
+    additionalProperties: false
+    required: [schema, id, payment, request, installation_request, request_sha256, customer_ref, environment, approved_by, approved_at, lifecycle]
+    properties:
+      schema: { const: aster.paid-fulfillment.v2 }
+      id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      payment: { $ref: "payment.v1.schema.yaml#/$defs/record" }
+      request: { $ref: "#/$defs/input" }
+      installation_request: { $ref: "license-request.v2.schema.yaml" }
+      request_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      customer_ref: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      environment: { enum: [local, production] }
+      approved_by: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      approved_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+      lifecycle: { $ref: "#/$defs/source" }
+  record:
+    type: object
+    additionalProperties: false
+    required: [snapshot, sha256, status]
+    properties:
+      snapshot: { $ref: "#/$defs/snapshot" }
+      sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      status: { enum: [approved, prepared, issued] }
+      claims: { $ref: "license.v2.schema.yaml#/$defs/claims" }
+      document: { $ref: "license.v2.schema.yaml#/$defs/document" }
+      document_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+    oneOf:
+      - properties:
+          status: { const: approved }
+          claims: false
+          document: false
+          document_sha256: false
+      - properties:
+          status: { const: prepared }
+          document: false
+          document_sha256: false
+        required: [claims]
+      - properties:
+          status: { const: issued }
+        required: [claims, document, document_sha256]

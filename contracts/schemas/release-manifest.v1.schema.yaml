@@ -1,0 +1,71 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/release-manifest.v1.schema.json
+title: Aster Team signed Customer release manifest v1
+type: object
+additionalProperties: false
+required:
+  - schema
+  - key_id
+  - product
+  - version
+  - platform
+  - architecture
+  - runtime
+  - created_at
+  - files
+  - signature
+properties:
+  schema: { const: aster.release-manifest.v1 }
+  key_id:
+    type: string
+    pattern: '^[A-Za-z0-9_.:-]{3,128}$'
+  product: { const: aster-team }
+  version:
+    type: string
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$'
+  platform: { enum: [linux, windows, macos] }
+  architecture: { enum: [amd64, arm64] }
+  runtime: { enum: [musl-static, msvc, native] }
+  created_at:
+    type: string
+    pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$'
+  files:
+    type: array
+    minItems: 1
+    maxItems: 10000
+    items:
+      type: object
+      additionalProperties: false
+      required: [path, size, sha256, executable]
+      properties:
+        path:
+          type: string
+          minLength: 1
+          maxLength: 512
+          pattern: '^(?!/)(?!.*(?:^|/)\.\.?(?:/|$))(?!.*//)(?!.*\\)[^\x00-\x1F\x7F]+[^/]$|^[^/\\]$'
+        size: { type: integer, minimum: 0 }
+        sha256:
+          type: string
+          pattern: '^[0-9a-f]{64}$'
+        executable: { type: boolean }
+  signature:
+    type: string
+    pattern: '^[A-Za-z0-9_-]{86}$'
+allOf:
+  - if:
+      properties: { platform: { const: linux } }
+      required: [platform]
+    then:
+      properties: { runtime: { const: musl-static } }
+  - if:
+      properties: { platform: { const: windows } }
+      required: [platform]
+    then:
+      properties:
+        architecture: { const: amd64 }
+        runtime: { const: msvc }
+  - if:
+      properties: { platform: { const: macos } }
+      required: [platform]
+    then:
+      properties: { runtime: { const: native } }

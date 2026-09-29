@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Aster Team product icon</title>
+  <desc id="desc">A blue and mint geometric A gateway mark on a square navy background.</desc>
+  <defs>
+    <linearGradient id="leftMark" x1="470" y1="230" x2="210" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B7E8FF"/>
+      <stop offset="0.5" stop-color="#72ADFF"/>
+      <stop offset="1" stop-color="#327CFF"/>
+    </linearGradient>
+    <linearGradient id="rightMark" x1="554" y1="230" x2="820" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B8FFE8"/>
+      <stop offset="0.5" stop-color="#77ECCA"/>
+      <stop offset="1" stop-color="#35DDBB"/>
+    </linearGradient>
+    <linearGradient id="gatewayMark" x1="512" y1="620" x2="512" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A8F8DF"/>
+      <stop offset="1" stop-color="#5BE4C7"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="#061D3D"/>
+
+  <path
+    fill="url(#leftMark)"
+    d="M485 226c-18 0-34 10-43 27L151 790c-12 23 5 50 31 50h126c16 0 31-7 41-20l72-89c9-11 14-25 14-39v-67c0-14 5-27 15-37l35-36c10-10 15-23 15-37V241c0-8-7-15-15-15Z"
+  />
+  <path
+    fill="url(#rightMark)"
+    d="M539 226c18 0 34 10 43 27l291 537c12 23-5 50-31 50H716c-16 0-31-7-41-20l-72-89c-9-11-14-25-14-39v-67c0-14-5-27-15-37l-35-36c-10-10-15-23-15-37V241c0-8 7-15 15-15Z"
+  />
+  <path
+    fill="url(#gatewayMark)"
+    d="M512 634c-20 0-36 16-36 36v170h72V670c0-20-16-36-36-36Z"
+  />
+</svg>

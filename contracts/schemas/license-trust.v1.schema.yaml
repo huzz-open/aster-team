@@ -1,0 +1,70 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/license-trust.v1.schema.json
+title: Trusted Customer license keys
+description: Build-time v2 trust configuration, never supplied by a License or
+  customer database. Every issuer requires an explicit policy. Cryptographic key
+  uniqueness and canonical SPKI also require implementation validation.
+type: array
+minItems: 1
+maxItems: 8
+items: { $ref: "#/$defs/issuer_profile" }
+$defs:
+  key_id: { type: string, pattern: '^[A-Za-z0-9_.:@+/-]{1,128}$' }
+  public_key_spki: { type: string, pattern: '^[A-Za-z0-9_-]{32,4096}$' }
+  issuer_profile:
+    type: object
+    additionalProperties: false
+    required: [ key_id, public_key_spki, policy ]
+    properties:
+      key_id: { $ref: "#/$defs/key_id" }
+      public_key_spki: { $ref: "#/$defs/public_key_spki" }
+      policy: { $ref: "#/$defs/issuer_policy" }
+  issuer_policy:
+    type: object
+    additionalProperties: false
+    required: [ sources, bindings, expiries, entitlement_ceiling ]
+    allOf:
+      - if:
+          properties:
+            sources:
+              type: array
+              contains: { const: free_distribution }
+          required: [ sources ]
+        then:
+          properties:
+            sources: { type: array, maxItems: 1 }
+      - if:
+          required:
+            - sources
+          properties:
+            sources:
+              type: array
+              contains:
+                enum:
+                  - free_distribution
+                  - approved_trial
+        then:
+          properties:
+            entitlement_ceiling:
+              type: object
+              properties:
+                feature_sets:
+                  type: array
+                  maxItems: 0
+    properties:
+      sources:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items: { enum: [ free_distribution, commercial_order, approved_trial ] }
+      bindings:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items: { enum: [ unbound, installation ] }
+      expiries:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items: { enum: [ fixed, none ] }
+      entitlement_ceiling: { $ref: "entitlements.v1.schema.yaml#/$defs/entitlement_payload" }

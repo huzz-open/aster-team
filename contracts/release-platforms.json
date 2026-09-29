@@ -1,0 +1,112 @@
+{
+  "schema_version": 2,
+  "platforms": [
+    {
+      "id": "linux-amd64",
+      "os": "linux",
+      "architecture": "amd64",
+      "rust_target": "x86_64-unknown-linux-musl",
+      "runtime": "musl-static",
+      "archive_name": "aster-team-{version}-linux-amd64.tar.gz",
+      "build_runner": "ubuntu-22.04",
+      "smoke_targets": [
+        {
+          "id": "ubuntu-20.04",
+          "runner": "ubuntu-24.04",
+          "mode": "container",
+          "image": "ubuntu:20.04",
+          "package_family": "apt"
+        },
+        {
+          "id": "ubuntu-22.04",
+          "runner": "ubuntu-22.04",
+          "mode": "host"
+        },
+        {
+          "id": "ubuntu-24.04",
+          "runner": "ubuntu-24.04",
+          "mode": "host"
+        },
+        {
+          "id": "debian-12",
+          "runner": "ubuntu-24.04",
+          "mode": "container",
+          "image": "debian:12",
+          "package_family": "apt"
+        },
+        {
+          "id": "debian-13",
+          "runner": "ubuntu-24.04",
+          "mode": "container",
+          "image": "debian:13",
+          "package_family": "apt"
+        },
+        {
+          "id": "rocky-linux-9",
+          "runner": "ubuntu-24.04",
+          "mode": "container",
+          "image": "rockylinux:9",
+          "package_family": "dnf"
+        }
+      ],
+      "roles": [
+        "customer",
+        "runner"
+      ],
+      "offline": true
+    },
+    {
+      "id": "windows-amd64",
+      "os": "windows",
+      "architecture": "amd64",
+      "rust_target": "x86_64-pc-windows-msvc",
+      "runtime": "msvc",
+      "archive_name": "aster-team-{version}-windows-amd64.tar.gz",
+      "build_runner": "windows-2025",
+      "smoke_targets": [
+        {
+          "id": "windows-2025",
+          "runner": "windows-2025",
+          "mode": "host"
+        }
+      ],
+      "roles": [
+        "customer",
+        "runner"
+      ],
+      "offline": true
+    },
+    {
+      "id": "macos-amd64",
+      "os": "macos",
+      "architecture": "amd64",
+      "rust_target": "x86_64-apple-darwin",
+      "runtime": "native",
+      "archive_name": "aster-team-{version}-macos-amd64.tar.gz",
+      "build_runner": "macos-15-intel",
+      "smoke_targets": [],
+      "roles": [
+        "customer",
+        "runner"
+      ],
+      "offline": true,
+      "verification_status": "implementation-only"
+    },
+    {
+      "id": "macos-arm64",
+      "os": "macos",
+      "architecture": "arm64",
+      "rust_target": "aarch64-apple-darwin",
+      "runtime": "native",
+      "archive_name": "aster-team-{version}-macos-arm64.tar.gz",
+      "build_runner": "macos-15",
+      "smoke_targets": [],
+      "roles": [
+        "customer",
+        "runner"
+      ],
+      "offline": true,
+      "verification_status": "implementation-only"
+    }
+  ]
+}

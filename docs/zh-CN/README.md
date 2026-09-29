@@ -2,6 +2,8 @@
 
 [English](../README.md) · [项目首页](../../README.zh-CN.md) · [下载](https://github.com/huzz-open/aster-team/releases)
 
+[MIT 许可](../../LICENSE) · [免责声明](../../DISCLAIMER.md) · [第三方声明](../../THIRD_PARTY_NOTICES.md)
+
 文档面向部署 Aster Team 的管理员以及通过 Aster 接入模型的开发者。可以按自己的角色开始阅读。
 
 ## 部署与管理

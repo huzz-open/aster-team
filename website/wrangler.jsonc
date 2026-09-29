@@ -1,0 +1,28 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "aster-team-website",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-08-29",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "LEADS_DB",
+      "database_name": "aster-team-website-leads",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "./server/schema"
+    }
+  ],
+  "vars": {
+    "ALLOWED_ORIGINS": "https://www.example.com",
+    "TURNSTILE_ACTION": "trial_request",
+    "TURNSTILE_HOSTNAMES": "www.example.com",
+    "TURNSTILE_TEST_MODE": "false",
+    "LEAD_NOTIFICATION_TO": "contact@example.com",
+    "LEAD_NOTIFICATION_FROM": "sender@example.com",
+    "SMTP_HOST": "smtp.example.com",
+    "SMTP_PORT": "465",
+    "SMTP_USERNAME": "sender@example.com",
+    "RATE_LIMIT_WINDOW_SECONDS": "600",
+    "RATE_LIMIT_MAX_SUBMISSIONS": "3"
+  }
+}

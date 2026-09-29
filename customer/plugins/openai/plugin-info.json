@@ -1,0 +1,10 @@
+{
+  "zh-CN": {
+    "name": "OpenAI 上游适配插件",
+    "description": "OpenAI API 与 Codex 订阅协议适配"
+  },
+  "en-US": {
+    "name": "OpenAI upstream adapter",
+    "description": "OpenAI API and Codex subscription protocol adapters"
+  }
+}

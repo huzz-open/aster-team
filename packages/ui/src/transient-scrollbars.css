@@ -1,0 +1,7 @@
+*{scrollbar-width:none}
+*::-webkit-scrollbar{width:0;height:0;display:none}
+.a-transient-scrollbar{position:fixed;z-index:2147483646;border-radius:999px;background:color-mix(in srgb,var(--text-soft,#667085) 58%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--surface,#fff) 35%,transparent);opacity:0;pointer-events:none;transition:opacity .14s ease}
+.a-transient-scrollbar.is-visible{opacity:.72}
+.a-transient-scrollbar.is-vertical{width:3px}
+.a-transient-scrollbar.is-horizontal{height:3px}
+@media(prefers-reduced-motion:reduce){.a-transient-scrollbar{transition:none}}

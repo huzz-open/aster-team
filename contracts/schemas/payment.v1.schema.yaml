@@ -1,0 +1,59 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/payment.v1.schema.json
+title: Immutable full payment confirmation
+$ref: "#/$defs/record"
+$defs:
+  input:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_order_sha256, payment_reference, received_at, notes]
+    properties:
+      operation_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      expected_order_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      payment_reference: { type: string, minLength: 1, maxLength: 256 }
+      received_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+      notes: { type: string, maxLength: 2000 }
+  confirmation:
+    type: object
+    additionalProperties: false
+    required: [operation_id, expected_order_sha256, payment_reference, received_at, notes, current_password]
+    properties:
+      operation_id: { $ref: "commercial.v1.schema.yaml#/$defs/id" }
+      expected_order_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      payment_reference: { type: string, minLength: 1, maxLength: 256 }
+      received_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+      notes: { type: string, maxLength: 2000 }
+      current_password: { type: string, minLength: 1, writeOnly: true }
+  snapshot:
+    type: object
+    additionalProperties: false
+    required: [schema, id, order, order_sha256, request, confirmed_by, confirmed_at]
+    properties:
+      schema: { const: aster.payment-confirmation.v1 }
+      id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      order: { $ref: "commercial.v1.schema.yaml#/$defs/order" }
+      order_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      request: { $ref: "#/$defs/input" }
+      confirmed_by: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      confirmed_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+  record:
+    type: object
+    additionalProperties: false
+    required: [snapshot, sha256]
+    properties:
+      snapshot: { $ref: "#/$defs/snapshot" }
+      sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+  context:
+    type: object
+    additionalProperties: false
+    required: [order_id, customer_id, order_sha256, amount_minor, currency, starts_at, ends_at, status, source]
+    properties:
+      order_id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      customer_id: { $ref: "commercial.v1.schema.yaml#/$defs/resource_id" }
+      order_sha256: { $ref: "commercial.v1.schema.yaml#/$defs/digest" }
+      amount_minor: { type: integer, minimum: 1, maximum: 9000000000000 }
+      currency: { type: string, pattern: "^[A-Z]{3}$" }
+      starts_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+      ends_at: { $ref: "commercial.v1.schema.yaml#/$defs/exact_time" }
+      status: { type: string }
+      source: { enum: [manual, local, production] }

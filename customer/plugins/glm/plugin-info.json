@@ -1,0 +1,4 @@
+{
+  "zh-CN": { "name": "GLM 上游适配插件", "description": "BigModel 与 Z.AI 通用 API、Coding Plan 协议适配" },
+  "en-US": { "name": "GLM upstream adapter", "description": "BigModel and Z.AI general API and Coding Plan protocol adapters" }
+}

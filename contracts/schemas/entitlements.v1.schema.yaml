@@ -1,0 +1,112 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/entitlements.v1.schema.json
+title: Aster explicit entitlement payload
+description: Generated from product-capabilities.yaml; describes rights but does
+  not authenticate or grant them.
+$ref: "#/$defs/entitlement_payload"
+$defs:
+  entitlement_payload:
+    type: object
+    additionalProperties: false
+    required:
+      - catalog_version
+      - features
+      - quotas
+    properties:
+      catalog_version:
+        const: 1
+      feature_sets:
+        type: array
+        uniqueItems: true
+        maxItems: 1
+        items:
+          enum:
+            - standard
+      features:
+        type: array
+        uniqueItems: true
+        maxItems: 3
+        items:
+          enum:
+            - gateway
+            - member
+            - runner
+      quotas:
+        type: array
+        minItems: 4
+        maxItems: 4
+        items:
+          $ref: "#/$defs/quota"
+        allOf:
+          - contains:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  const: member_seats
+            minContains: 1
+            maxContains: 1
+          - contains:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  const: runners
+            minContains: 1
+            maxContains: 1
+          - contains:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  const: upstream_accounts
+            minContains: 1
+            maxContains: 1
+          - contains:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  const: api_keys_per_member
+            minContains: 1
+            maxContains: 1
+  quota:
+    type: object
+    additionalProperties: false
+    required:
+      - id
+      - limit
+    properties:
+      id:
+        enum:
+          - member_seats
+          - runners
+          - upstream_accounts
+          - api_keys_per_member
+      limit:
+        $ref: "#/$defs/limit"
+  limit:
+    oneOf:
+      - type: object
+        additionalProperties: false
+        required:
+          - mode
+          - value
+        properties:
+          mode:
+            const: limited
+          value:
+            type: integer
+            minimum: 0
+            maximum: 4294967295
+      - type: object
+        additionalProperties: false
+        required:
+          - mode
+        properties:
+          mode:
+            const: unlimited

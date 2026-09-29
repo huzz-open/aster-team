@@ -1,0 +1,373 @@
+{
+  "note": "TEST ONLY deterministic seed [42; 32]. These vectors do not choose commercial defaults or authorize production.",
+  "public_key_spki": "MCowBQYDK2VwAyEAGX9rI-FshTLGq8g4-s1ep4m-DHaykgM0A5v6iz02jWE",
+  "cases": [
+    {
+      "name": "free_fixed",
+      "canonical_claims": "{\"binding\":{\"mode\":\"unbound\"},\"edition\":\"test-only\",\"entitlements\":{\"catalog_version\":1,\"features\":[\"gateway\",\"member\",\"runner\"],\"quotas\":[{\"id\":\"member_seats\",\"limit\":{\"mode\":\"limited\",\"value\":3}},{\"id\":\"runners\",\"limit\":{\"mode\":\"limited\",\"value\":1}},{\"id\":\"upstream_accounts\",\"limit\":{\"mode\":\"limited\",\"value\":1}},{\"id\":\"api_keys_per_member\",\"limit\":{\"mode\":\"limited\",\"value\":2}}]},\"issued_at\":\"2026-09-01T00:00:00.000Z\",\"key_id\":\"test-only-v2\",\"license_id\":\"test_free_fixed\",\"minimum_version\":\"1.2.3-test.1\",\"plan_id\":\"test_plan\",\"plan_version\":1,\"product\":\"aster-team\",\"quota_policy_version\":1,\"schema\":\"aster.license.v2\",\"serial\":\"TEST-V2\",\"source\":{\"distribution_id\":\"test_distribution\",\"kind\":\"free_distribution\"},\"validity\":{\"expiry\":{\"expires_at\":\"2027-09-01T00:00:00.000Z\",\"mode\":\"fixed\"},\"not_before\":\"2026-09-01T00:00:00.000Z\"}}",
+      "document": {
+        "claims": {
+          "schema": "aster.license.v2",
+          "key_id": "test-only-v2",
+          "license_id": "test_free_fixed",
+          "serial": "TEST-V2",
+          "product": "aster-team",
+          "edition": "test-only",
+          "plan_id": "test_plan",
+          "plan_version": 1,
+          "source": {
+            "kind": "free_distribution",
+            "distribution_id": "test_distribution"
+          },
+          "entitlements": {
+            "catalog_version": 1,
+            "features": [
+              "gateway",
+              "member",
+              "runner"
+            ],
+            "quotas": [
+              {
+                "id": "member_seats",
+                "limit": {
+                  "mode": "limited",
+                  "value": 3
+                }
+              },
+              {
+                "id": "runners",
+                "limit": {
+                  "mode": "limited",
+                  "value": 1
+                }
+              },
+              {
+                "id": "upstream_accounts",
+                "limit": {
+                  "mode": "limited",
+                  "value": 1
+                }
+              },
+              {
+                "id": "api_keys_per_member",
+                "limit": {
+                  "mode": "limited",
+                  "value": 2
+                }
+              }
+            ]
+          },
+          "quota_policy_version": 1,
+          "binding": {
+            "mode": "unbound"
+          },
+          "validity": {
+            "not_before": "2026-09-01T00:00:00.000Z",
+            "expiry": {
+              "mode": "fixed",
+              "expires_at": "2027-09-01T00:00:00.000Z"
+            }
+          },
+          "issued_at": "2026-09-01T00:00:00.000Z",
+          "minimum_version": "1.2.3-test.1"
+        },
+        "signature": "xlxDRT1gJYe7W6etZPaSY36eVsXSGAk8W9mKaM3TRQphrvyeGuQXlxYD7UhULMETAKr-lVcJfuxOQVoCGTp_Aw"
+      }
+    },
+    {
+      "name": "free_no_expiry",
+      "canonical_claims": "{\"binding\":{\"mode\":\"unbound\"},\"edition\":\"test-only\",\"entitlements\":{\"catalog_version\":1,\"features\":[\"gateway\",\"member\",\"runner\"],\"quotas\":[{\"id\":\"member_seats\",\"limit\":{\"mode\":\"limited\",\"value\":3}},{\"id\":\"runners\",\"limit\":{\"mode\":\"limited\",\"value\":1}},{\"id\":\"upstream_accounts\",\"limit\":{\"mode\":\"limited\",\"value\":1}},{\"id\":\"api_keys_per_member\",\"limit\":{\"mode\":\"limited\",\"value\":2}}]},\"issued_at\":\"2026-09-01T00:00:00.000Z\",\"key_id\":\"test-only-v2\",\"license_id\":\"test_free_no_expiry\",\"minimum_version\":\"1.2.3-test.1\",\"plan_id\":\"test_plan\",\"plan_version\":1,\"product\":\"aster-team\",\"quota_policy_version\":1,\"schema\":\"aster.license.v2\",\"serial\":\"TEST-V2\",\"source\":{\"distribution_id\":\"test_distribution\",\"kind\":\"free_distribution\"},\"validity\":{\"expiry\":{\"mode\":\"none\"},\"not_before\":\"2026-09-01T00:00:00.000Z\"}}",
+      "document": {
+        "claims": {
+          "schema": "aster.license.v2",
+          "key_id": "test-only-v2",
+          "license_id": "test_free_no_expiry",
+          "serial": "TEST-V2",
+          "product": "aster-team",
+          "edition": "test-only",
+          "plan_id": "test_plan",
+          "plan_version": 1,
+          "source": {
+            "kind": "free_distribution",
+            "distribution_id": "test_distribution"
+          },
+          "entitlements": {
+            "catalog_version": 1,
+            "features": [
+              "gateway",
+              "member",
+              "runner"
+            ],
+            "quotas": [
+              {
+                "id": "member_seats",
+                "limit": {
+                  "mode": "limited",
+                  "value": 3
+                }
+              },
+              {
+                "id": "runners",
+                "limit": {
+                  "mode": "limited",
+                  "value": 1
+                }
+              },
+              {
+                "id": "upstream_accounts",
+                "limit": {
+                  "mode": "limited",
+                  "value": 1
+                }
+              },
+              {
+                "id": "api_keys_per_member",
+                "limit": {
+                  "mode": "limited",
+                  "value": 2
+                }
+              }
+            ]
+          },
+          "quota_policy_version": 1,
+          "binding": {
+            "mode": "unbound"
+          },
+          "validity": {
+            "not_before": "2026-09-01T00:00:00.000Z",
+            "expiry": {
+              "mode": "none"
+            }
+          },
+          "issued_at": "2026-09-01T00:00:00.000Z",
+          "minimum_version": "1.2.3-test.1"
+        },
+        "signature": "4rTiHzbyJeBI7sqEGQGL-XjfrtVED1mKIFfd1ePdX6_8cQy4rnv0OI2k7F6FCK8OixCgkWOLxQJQgQQ5kn7BDQ"
+      }
+    },
+    {
+      "name": "commercial",
+      "canonical_claims": "{\"binding\":{\"installation_id\":\"test_installation\",\"machine_fingerprint_sha256\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"mode\":\"installation\",\"transfer_sequence\":0},\"edition\":\"test-only\",\"entitlements\":{\"catalog_version\":1,\"features\":[\"gateway\",\"member\",\"runner\"],\"quotas\":[{\"id\":\"member_seats\",\"limit\":{\"mode\":\"limited\",\"value\":20}},{\"id\":\"runners\",\"limit\":{\"mode\":\"unlimited\"}},{\"id\":\"upstream_accounts\",\"limit\":{\"mode\":\"unlimited\"}},{\"id\":\"api_keys_per_member\",\"limit\":{\"mode\":\"unlimited\"}}]},\"issued_at\":\"2026-09-01T00:00:00.000Z\",\"key_id\":\"test-only-v2\",\"license_id\":\"test_commercial\",\"minimum_version\":\"1.2.3-test.1\",\"plan_id\":\"test_plan\",\"plan_version\":1,\"product\":\"aster-team\",\"quota_policy_version\":1,\"schema\":\"aster.license.v2\",\"serial\":\"TEST-V2\",\"source\":{\"customer_ref\":\"test_customer\",\"kind\":\"commercial_order\",\"order_id\":\"test_source\",\"request_id\":\"test_request\"},\"validity\":{\"expiry\":{\"expires_at\":\"2027-09-01T00:00:00.000Z\",\"mode\":\"fixed\"},\"not_before\":\"2026-09-01T00:00:00.000Z\"}}",
+      "document": {
+        "claims": {
+          "schema": "aster.license.v2",
+          "key_id": "test-only-v2",
+          "license_id": "test_commercial",
+          "serial": "TEST-V2",
+          "product": "aster-team",
+          "edition": "test-only",
+          "plan_id": "test_plan",
+          "plan_version": 1,
+          "source": {
+            "kind": "commercial_order",
+            "order_id": "test_source",
+            "customer_ref": "test_customer",
+            "request_id": "test_request"
+          },
+          "entitlements": {
+            "catalog_version": 1,
+            "features": [
+              "gateway",
+              "member",
+              "runner"
+            ],
+            "quotas": [
+              {
+                "id": "member_seats",
+                "limit": {
+                  "mode": "limited",
+                  "value": 20
+                }
+              },
+              {
+                "id": "runners",
+                "limit": {
+                  "mode": "unlimited"
+                }
+              },
+              {
+                "id": "upstream_accounts",
+                "limit": {
+                  "mode": "unlimited"
+                }
+              },
+              {
+                "id": "api_keys_per_member",
+                "limit": {
+                  "mode": "unlimited"
+                }
+              }
+            ]
+          },
+          "quota_policy_version": 1,
+          "binding": {
+            "mode": "installation",
+            "installation_id": "test_installation",
+            "machine_fingerprint_sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "transfer_sequence": 0
+          },
+          "validity": {
+            "not_before": "2026-09-01T00:00:00.000Z",
+            "expiry": {
+              "mode": "fixed",
+              "expires_at": "2027-09-01T00:00:00.000Z"
+            }
+          },
+          "issued_at": "2026-09-01T00:00:00.000Z",
+          "minimum_version": "1.2.3-test.1"
+        },
+        "signature": "dBBuzMEiqK_y_fKMXZEdEsDacFESCaT8zEk9sV06FNif4cFTV2zpgvX-QKiZqJOU1nVItl9o7vxO8yCSamCUCA"
+      }
+    },
+    {
+      "name": "trial",
+      "canonical_claims": "{\"binding\":{\"installation_id\":\"test_installation\",\"machine_fingerprint_sha256\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"mode\":\"installation\",\"transfer_sequence\":0},\"edition\":\"test-only\",\"entitlements\":{\"catalog_version\":1,\"features\":[\"gateway\",\"member\",\"runner\"],\"quotas\":[{\"id\":\"member_seats\",\"limit\":{\"mode\":\"limited\",\"value\":3}},{\"id\":\"runners\",\"limit\":{\"mode\":\"limited\",\"value\":1}},{\"id\":\"upstream_accounts\",\"limit\":{\"mode\":\"limited\",\"value\":1}},{\"id\":\"api_keys_per_member\",\"limit\":{\"mode\":\"limited\",\"value\":2}}]},\"issued_at\":\"2026-09-01T00:00:00.000Z\",\"key_id\":\"test-only-v2\",\"license_id\":\"test_trial\",\"minimum_version\":\"1.2.3-test.1\",\"plan_id\":\"test_plan\",\"plan_version\":1,\"product\":\"aster-team\",\"quota_policy_version\":1,\"schema\":\"aster.license.v2\",\"serial\":\"TEST-V2\",\"source\":{\"customer_ref\":\"test_customer\",\"kind\":\"approved_trial\",\"request_id\":\"test_request\",\"trial_id\":\"test_source\"},\"validity\":{\"expiry\":{\"expires_at\":\"2027-09-01T00:00:00.000Z\",\"mode\":\"fixed\"},\"not_before\":\"2026-09-01T00:00:00.000Z\"}}",
+      "document": {
+        "claims": {
+          "schema": "aster.license.v2",
+          "key_id": "test-only-v2",
+          "license_id": "test_trial",
+          "serial": "TEST-V2",
+          "product": "aster-team",
+          "edition": "test-only",
+          "plan_id": "test_plan",
+          "plan_version": 1,
+          "source": {
+            "kind": "approved_trial",
+            "trial_id": "test_source",
+            "customer_ref": "test_customer",
+            "request_id": "test_request"
+          },
+          "entitlements": {
+            "catalog_version": 1,
+            "features": [
+              "gateway",
+              "member",
+              "runner"
+            ],
+            "quotas": [
+              {
+                "id": "member_seats",
+                "limit": {
+                  "mode": "limited",
+                  "value": 3
+                }
+              },
+              {
+                "id": "runners",
+                "limit": {
+                  "mode": "limited",
+                  "value": 1
+                }
+              },
+              {
+                "id": "upstream_accounts",
+                "limit": {
+                  "mode": "limited",
+                  "value": 1
+                }
+              },
+              {
+                "id": "api_keys_per_member",
+                "limit": {
+                  "mode": "limited",
+                  "value": 2
+                }
+              }
+            ]
+          },
+          "quota_policy_version": 1,
+          "binding": {
+            "mode": "installation",
+            "installation_id": "test_installation",
+            "machine_fingerprint_sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "transfer_sequence": 0
+          },
+          "validity": {
+            "not_before": "2026-09-01T00:00:00.000Z",
+            "expiry": {
+              "mode": "fixed",
+              "expires_at": "2027-09-01T00:00:00.000Z"
+            }
+          },
+          "issued_at": "2026-09-01T00:00:00.000Z",
+          "minimum_version": "1.2.3-test.1"
+        },
+        "signature": "zDGolDSHcMToRaUH4h6tBVbMx26GvAFjN80rb4hu5sP3C9VastNnTzvrXscEM5x4W94SF41bmRxoBuQByYXSAA"
+      }
+    },
+    {
+      "name": "commercial_standard_feature_set",
+      "canonical_claims": "{\"binding\":{\"installation_id\":\"test_installation\",\"machine_fingerprint_sha256\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"mode\":\"installation\",\"transfer_sequence\":0},\"edition\":\"test-only\",\"entitlements\":{\"catalog_version\":1,\"feature_sets\":[\"standard\"],\"features\":[],\"quotas\":[{\"id\":\"member_seats\",\"limit\":{\"mode\":\"limited\",\"value\":20}},{\"id\":\"runners\",\"limit\":{\"mode\":\"unlimited\"}},{\"id\":\"upstream_accounts\",\"limit\":{\"mode\":\"unlimited\"}},{\"id\":\"api_keys_per_member\",\"limit\":{\"mode\":\"unlimited\"}}]},\"issued_at\":\"2026-09-01T00:00:00.000Z\",\"key_id\":\"test-only-v2\",\"license_id\":\"test_commercial\",\"minimum_version\":\"1.2.3-test.1\",\"plan_id\":\"test_plan\",\"plan_version\":1,\"product\":\"aster-team\",\"quota_policy_version\":1,\"schema\":\"aster.license.v2\",\"serial\":\"TEST-V2\",\"source\":{\"customer_ref\":\"test_customer\",\"kind\":\"commercial_order\",\"order_id\":\"test_source\",\"request_id\":\"test_request\"},\"validity\":{\"expiry\":{\"expires_at\":\"2027-09-01T00:00:00.000Z\",\"mode\":\"fixed\"},\"not_before\":\"2026-09-01T00:00:00.000Z\"}}",
+      "document": {
+        "claims": {
+          "schema": "aster.license.v2",
+          "key_id": "test-only-v2",
+          "license_id": "test_commercial",
+          "serial": "TEST-V2",
+          "product": "aster-team",
+          "edition": "test-only",
+          "plan_id": "test_plan",
+          "plan_version": 1,
+          "source": {
+            "kind": "commercial_order",
+            "order_id": "test_source",
+            "customer_ref": "test_customer",
+            "request_id": "test_request"
+          },
+          "entitlements": {
+            "catalog_version": 1,
+            "features": [],
+            "quotas": [
+              {
+                "id": "member_seats",
+                "limit": {
+                  "mode": "limited",
+                  "value": 20
+                }
+              },
+              {
+                "id": "runners",
+                "limit": {
+                  "mode": "unlimited"
+                }
+              },
+              {
+                "id": "upstream_accounts",
+                "limit": {
+                  "mode": "unlimited"
+                }
+              },
+              {
+                "id": "api_keys_per_member",
+                "limit": {
+                  "mode": "unlimited"
+                }
+              }
+            ],
+            "feature_sets": [
+              "standard"
+            ]
+          },
+          "quota_policy_version": 1,
+          "binding": {
+            "mode": "installation",
+            "installation_id": "test_installation",
+            "machine_fingerprint_sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "transfer_sequence": 0
+          },
+          "validity": {
+            "not_before": "2026-09-01T00:00:00.000Z",
+            "expiry": {
+              "mode": "fixed",
+              "expires_at": "2027-09-01T00:00:00.000Z"
+            }
+          },
+          "issued_at": "2026-09-01T00:00:00.000Z",
+          "minimum_version": "1.2.3-test.1"
+        },
+        "signature": "wbhl03SAJczAzi_5xk0KfCgVYUCLEy_qNnEPR7MhJlQUaHxA8Po-HprUrIxcnITx_7yzzuI5Xkg2RP2jyK4fAg"
+      }
+    }
+  ]
+}

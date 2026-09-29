@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "platform": "linux/amd64",
+  "images": [
+    {
+      "target": "ubuntu-20.04",
+      "image": "ghcr.io/huzz-open/aster-team-ci-ubuntu-20.04@sha256:fb65d3bf251aacba279a15afd7f119280bb4c3bddad3415692e6ba3556e97843",
+      "base": "ubuntu@sha256:8feb4d8ca5354def3d8fce243717141ce31e2c428701f6682bd2fafe15388214",
+      "recipe": "58c123f119f4ae4b90f8fc3830397526fe341b061730f99e011ba56a49459ff3",
+      "image_id": "sha256:fb65d3bf251aacba279a15afd7f119280bb4c3bddad3415692e6ba3556e97843"
+    },
+    {
+      "target": "ubuntu-22.04",
+      "image": "ghcr.io/huzz-open/aster-team-ci-ubuntu-22.04@sha256:f4ebd87537dd0f3e699024491be15d7851ae8d72b15eb645e4a1320bee34b132",
+      "base": "ubuntu@sha256:b8b6ee6aa931ecd9d0d952abc34dc0e5f7c6a30c6bb71b079fe399fde0329c02",
+      "recipe": "bf9237b74ee72e21cafcd0b7ff6d414d82c70bbf38f996c7d35aa24fa65e89a3",
+      "image_id": "sha256:f4ebd87537dd0f3e699024491be15d7851ae8d72b15eb645e4a1320bee34b132"
+    },
+    {
+      "target": "ubuntu-24.04",
+      "image": "ghcr.io/huzz-open/aster-team-ci-ubuntu-24.04@sha256:108cac996f0761c86c9785f882c55c4e7489ced680715bca72b1d724a5525987",
+      "base": "ubuntu@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3",
+      "recipe": "c42cbf7bf78ce9f70c18aa8e5d63e26e34209b3ccf5ba9198898a3d3b66255bc",
+      "image_id": "sha256:108cac996f0761c86c9785f882c55c4e7489ced680715bca72b1d724a5525987"
+    },
+    {
+      "target": "debian-12",
+      "image": "ghcr.io/huzz-open/aster-team-ci-debian-12@sha256:f9f3b427d338f1b684c6e3caa95d0f45a4735e775c4492723fad2d04d1739440",
+      "base": "debian@sha256:f37a335e82bca302e955fa39f9dfe28f1be618f016f8a2b56318e5a5111afc26",
+      "recipe": "449590cdc40a43d70932d3dad51b670101a0993a88d556343480091980c78150",
+      "image_id": "sha256:f9f3b427d338f1b684c6e3caa95d0f45a4735e775c4492723fad2d04d1739440"
+    },
+    {
+      "target": "debian-13",
+      "image": "ghcr.io/huzz-open/aster-team-ci-debian-13@sha256:6c3bde2834b35086084506d6e910ad0586776f1335dae0dfbe2bd1ccd5c7fd8e",
+      "base": "debian@sha256:9cc080028c43b27d2074d63a5f9caf7166d731494965616c1a6d2827a004585c",
+      "recipe": "b9e799311c88b6eb60218d7325272e961f85a8186e9f69b077e0c8ea9b3ac098",
+      "image_id": "sha256:6c3bde2834b35086084506d6e910ad0586776f1335dae0dfbe2bd1ccd5c7fd8e"
+    },
+    {
+      "target": "rocky-linux-9",
+      "image": "ghcr.io/huzz-open/aster-team-ci-rocky-linux-9@sha256:ab6cdb0f337942799ef4ba83f0d972108c473bf0175eddeb4f7e20235fbb784a",
+      "base": "rockylinux@sha256:d7be1c094cc5845ee815d4632fe377514ee6ebcf8efaed6892889657e5ddaaa6",
+      "recipe": "43f95e3f4ab600a4470772445cca5bf1e171f2271e49b4fb485ec54654bbd925",
+      "image_id": "sha256:ab6cdb0f337942799ef4ba83f0d972108c473bf0175eddeb4f7e20235fbb784a"
+    },
+    {
+      "target": "linux-builder",
+      "image": "ghcr.io/huzz-open/aster-team-ci-linux-builder@sha256:9cd16bcc508523aa4bfe18a244973396f8d7873538e05ef318b6e21a16f15c54",
+      "base": "rust@sha256:d7482085ff5b415f84dba5647ae71606650bdef00db7aeb69f4b3d170c3e4082",
+      "recipe": "e7b0353d4c41b2716e225a8a03ef5f20a12e3506b815d59eac0e629b38054207",
+      "image_id": "sha256:9cd16bcc508523aa4bfe18a244973396f8d7873538e05ef318b6e21a16f15c54"
+    }
+  ]
+}

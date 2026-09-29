@@ -1,0 +1,331 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/commercial.v1.schema.json
+title: Aster immutable commercial plan and order snapshots
+description: Wire structure only. Canonical content hashes, exact dates,
+  selected terms, amount calculation, source approval and management permissions
+  require application validation. No production plan is implied.
+$ref: "#/$defs/plan"
+$defs:
+  id:
+    type: string
+    pattern: ^[A-Za-z0-9._:@+/-]{1,128}$
+  resource_id:
+    type: string
+    pattern: ^[A-Za-z0-9._:@+/-]{1,128}$
+    maxLength: 64
+  digest:
+    type: string
+    pattern: ^[0-9a-f]{64}$
+  exact_time:
+    type: string
+    pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-5][0-9]\.[0-9]{3}Z$
+  term:
+    type: object
+    additionalProperties: false
+    required:
+      - years
+      - discount_basis_points
+    properties:
+      years:
+        type: integer
+        minimum: 1
+        maximum: 5
+      discount_basis_points:
+        type: integer
+        minimum: 1
+        maximum: 10000
+  expiry:
+    oneOf:
+      - type: object
+        additionalProperties: false
+        required:
+          - mode
+        properties:
+          mode:
+            const: none
+      - type: object
+        additionalProperties: false
+        required:
+          - mode
+          - expires_at
+        properties:
+          mode:
+            const: fixed
+          expires_at:
+            $ref: "#/$defs/exact_time"
+  offer:
+    oneOf:
+      - type: object
+        additionalProperties: false
+        required:
+          - kind
+          - expiry
+        properties:
+          kind:
+            const: free
+          expiry:
+            $ref: "#/$defs/expiry"
+      - type: object
+        additionalProperties: false
+        required:
+          - kind
+        properties:
+          kind:
+            const: contact
+      - type: object
+        additionalProperties: false
+        required:
+          - kind
+          - currency
+          - annual_amount_minor
+          - tax_mode
+          - terms
+          - term_rule
+          - term_timezone
+        properties:
+          kind:
+            const: annual
+          currency:
+            type: string
+            pattern: ^[A-Z]{3}$
+          annual_amount_minor:
+            type: integer
+            minimum: 1
+            maximum: 9000000000000
+          tax_mode:
+            enum:
+              - inclusive
+              - none
+          terms:
+            type: array
+            minItems: 1
+            maxItems: 5
+            uniqueItems: true
+            items:
+              $ref: "#/$defs/term"
+          term_rule:
+            const: calendar_years_clamp_day
+          term_timezone:
+            enum:
+              - UTC
+              - Asia/Shanghai
+  definition:
+    type: object
+    additionalProperties: false
+    required:
+      - product
+      - code
+      - name
+      - description
+      - edition
+      - entitlements
+      - quota_policy_version
+      - minimum_version
+      - transfer_limit
+      - support_terms_version
+      - offer
+    properties:
+      product:
+        const: aster-team
+      code:
+        $ref: "#/$defs/id"
+      name:
+        type: string
+        minLength: 1
+        maxLength: 160
+      description:
+        type: string
+        maxLength: 4000
+      edition:
+        $ref: "#/$defs/id"
+      entitlements:
+        $ref: ./entitlements.v1.schema.yaml#/$defs/entitlement_payload
+      quota_policy_version:
+        const: 1
+      minimum_version:
+        type: string
+        minLength: 1
+        maxLength: 64
+      transfer_limit:
+        type: integer
+        minimum: 0
+        maximum: 10000
+      support_terms_version:
+        $ref: "#/$defs/id"
+      offer:
+        $ref: "#/$defs/offer"
+    allOf:
+      - if:
+          required:
+            - offer
+          properties:
+            offer:
+              type: object
+              required:
+                - kind
+              properties:
+                kind:
+                  const: free
+        then:
+          properties:
+            entitlements:
+              type: object
+              properties:
+                feature_sets:
+                  type: array
+                  maxItems: 0
+  plan:
+    type: object
+    additionalProperties: false
+    required:
+      - schema
+      - plan_id
+      - version
+      - definition
+    properties:
+      schema:
+        const: aster.plan-snapshot.v1
+      plan_id:
+        $ref: "#/$defs/resource_id"
+      version:
+        type: integer
+        minimum: 1
+        maximum: 4294967295
+      definition:
+        $ref: "#/$defs/definition"
+  order:
+    oneOf:
+      - $ref: "#/$defs/order_v1"
+      - $ref: "#/$defs/order_v2"
+  order_v1:
+    type: object
+    additionalProperties: false
+    required:
+      - schema
+      - order_id
+      - customer_id
+      - plan
+      - plan_sha256
+      - years
+      - discount_basis_points
+      - amount_minor
+      - currency
+      - tax_mode
+      - starts_at
+      - ends_at
+    properties:
+      schema:
+        const: aster.order-snapshot.v1
+      order_id:
+        $ref: "#/$defs/resource_id"
+      customer_id:
+        $ref: "#/$defs/resource_id"
+      plan:
+        $ref: "#/$defs/plan"
+      plan_sha256:
+        $ref: "#/$defs/digest"
+      years:
+        type: integer
+        minimum: 1
+        maximum: 5
+      discount_basis_points:
+        type: integer
+        minimum: 1
+        maximum: 10000
+      amount_minor:
+        type: integer
+        minimum: 1
+        maximum: 9000000000000
+      currency:
+        type: string
+        pattern: ^[A-Z]{3}$
+      tax_mode:
+        enum:
+          - inclusive
+          - none
+      starts_at:
+        $ref: "#/$defs/exact_time"
+      ends_at:
+        $ref: "#/$defs/exact_time"
+  order_v2:
+    type: object
+    additionalProperties: false
+    required:
+      - schema
+      - order_id
+      - customer_id
+      - plan
+      - plan_sha256
+      - years
+      - discount_basis_points
+      - amount_minor
+      - currency
+      - tax_mode
+      - starts_at
+      - ends_at
+      - source
+    properties:
+      schema:
+        const: aster.order-snapshot.v2
+      order_id:
+        $ref: "#/$defs/resource_id"
+      customer_id:
+        $ref: "#/$defs/resource_id"
+      plan:
+        $ref: "#/$defs/plan"
+      plan_sha256:
+        $ref: "#/$defs/digest"
+      years:
+        type: integer
+        minimum: 1
+        maximum: 5
+      discount_basis_points:
+        type: integer
+        minimum: 1
+        maximum: 10000
+      amount_minor:
+        type: integer
+        minimum: 1
+        maximum: 9000000000000
+      currency:
+        type: string
+        pattern: ^[A-Z]{3}$
+      tax_mode:
+        enum:
+          - inclusive
+          - none
+      starts_at:
+        $ref: "#/$defs/exact_time"
+      ends_at:
+        $ref: "#/$defs/exact_time"
+      source:
+        $ref: "#/$defs/quotation_source"
+  quotation_source:
+    type: object
+    additionalProperties: false
+    required:
+      [
+        kind,
+        publication_id,
+        publication_sha256,
+        environment,
+        catalog_revision,
+        catalog_sha256,
+        build_sha256,
+        origin,
+        accepted_at,
+        accept_until,
+        ordered_at
+      ]
+    properties:
+      kind: { const: publication }
+      publication_id: { $ref: "#/$defs/resource_id" }
+      publication_sha256: { $ref: "#/$defs/digest" }
+      environment: { enum: [ local, production ] }
+      catalog_revision: { type: string, pattern: '^catalog_[0-9a-f]{48}$' }
+      catalog_sha256: { $ref: "#/$defs/digest" }
+      build_sha256: { $ref: "#/$defs/digest" }
+      origin: { type: string, minLength: 1, maxLength: 2048 }
+      accepted_at: { $ref: "#/$defs/exact_time" }
+      accept_until: { $ref: "#/$defs/exact_time" }
+      ordered_at: { $ref: "#/$defs/exact_time" }

@@ -1,0 +1,379 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "revision",
+    "product",
+    "environment",
+    "plans"
+  ],
+  "properties": {
+    "schema": {
+      "const": "aster.public-plans.v1"
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^catalog_[a-f0-9]{48}$"
+    },
+    "product": {
+      "const": "aster-team"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "local",
+        "production"
+      ]
+    },
+    "plans": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plan_id",
+          "version",
+          "name",
+          "description",
+          "edition",
+          "entitlements",
+          "quota_policy_version",
+          "minimum_version",
+          "support_terms_version",
+          "offer"
+        ],
+        "properties": {
+          "plan_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:@+/-]{1,128}$",
+            "maxLength": 64
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4294967295
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "edition": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:@+/-]{1,128}$"
+          },
+          "entitlements": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "catalog_version",
+              "features",
+              "quotas"
+            ],
+            "properties": {
+              "catalog_version": {
+                "const": 1
+              },
+              "feature_sets": {
+                "type": "array",
+                "uniqueItems": true,
+                "maxItems": 1,
+                "items": {
+                  "enum": [
+                    "standard"
+                  ]
+                }
+              },
+              "features": {
+                "type": "array",
+                "uniqueItems": true,
+                "maxItems": 3,
+                "items": {
+                  "enum": [
+                    "gateway",
+                    "member",
+                    "runner"
+                  ]
+                }
+              },
+              "quotas": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "id",
+                    "limit"
+                  ],
+                  "properties": {
+                    "id": {
+                      "enum": [
+                        "member_seats",
+                        "runners",
+                        "upstream_accounts",
+                        "api_keys_per_member"
+                      ]
+                    },
+                    "limit": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "mode",
+                            "value"
+                          ],
+                          "properties": {
+                            "mode": {
+                              "const": "limited"
+                            },
+                            "value": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 4294967295
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "mode"
+                          ],
+                          "properties": {
+                            "mode": {
+                              "const": "unlimited"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "allOf": [
+                  {
+                    "contains": {
+                      "type": "object",
+                      "required": [
+                        "id"
+                      ],
+                      "properties": {
+                        "id": {
+                          "const": "member_seats"
+                        }
+                      }
+                    },
+                    "minContains": 1,
+                    "maxContains": 1
+                  },
+                  {
+                    "contains": {
+                      "type": "object",
+                      "required": [
+                        "id"
+                      ],
+                      "properties": {
+                        "id": {
+                          "const": "runners"
+                        }
+                      }
+                    },
+                    "minContains": 1,
+                    "maxContains": 1
+                  },
+                  {
+                    "contains": {
+                      "type": "object",
+                      "required": [
+                        "id"
+                      ],
+                      "properties": {
+                        "id": {
+                          "const": "upstream_accounts"
+                        }
+                      }
+                    },
+                    "minContains": 1,
+                    "maxContains": 1
+                  },
+                  {
+                    "contains": {
+                      "type": "object",
+                      "required": [
+                        "id"
+                      ],
+                      "properties": {
+                        "id": {
+                          "const": "api_keys_per_member"
+                        }
+                      }
+                    },
+                    "minContains": 1,
+                    "maxContains": 1
+                  }
+                ]
+              }
+            },
+            "title": "Aster explicit entitlement payload",
+            "description": "Generated from product-capabilities.yaml; describes rights but does not authenticate or grant them."
+          },
+          "quota_policy_version": {
+            "const": 1
+          },
+          "minimum_version": {
+            "type": "string"
+          },
+          "support_terms_version": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:@+/-]{1,128}$"
+          },
+          "offer": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "currency",
+                  "annual_amount_minor",
+                  "tax_mode",
+                  "terms",
+                  "term_rule",
+                  "term_timezone"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "fixed_price"
+                  },
+                  "currency": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{3}$"
+                  },
+                  "annual_amount_minor": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9000000000000
+                  },
+                  "tax_mode": {
+                    "enum": [
+                      "inclusive",
+                      "none"
+                    ]
+                  },
+                  "terms": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "years",
+                        "discount_basis_points",
+                        "total_amount_minor"
+                      ],
+                      "properties": {
+                        "years": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 5
+                        },
+                        "discount_basis_points": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 10000
+                        },
+                        "total_amount_minor": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 9000000000000
+                        }
+                      }
+                    }
+                  },
+                  "term_rule": {
+                    "const": "calendar_years_clamp_day"
+                  },
+                  "term_timezone": {
+                    "enum": [
+                      "UTC",
+                      "Asia/Shanghai"
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "expiry"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "free"
+                  },
+                  "expiry": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "mode"
+                        ],
+                        "properties": {
+                          "mode": {
+                            "const": "none"
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "mode",
+                          "expires_at"
+                        ],
+                        "properties": {
+                          "mode": {
+                            "const": "fixed"
+                          },
+                          "expires_at": {
+                            "type": "string",
+                            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-5][0-9]\\.[0-9]{3}Z$"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "contact"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "title": "Aster public catalog and internal approval wire contracts",
+  "description": "Public projection is a strict whitelist. Approval and export do not prove deployment or authorize orders. Digests, source identity, selected version membership, amount calculation and permissions require application checks."
+}

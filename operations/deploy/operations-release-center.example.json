@@ -1,0 +1,15 @@
+{
+  "schema": "aster.operations-release-center.v1",
+  "repository": "huzz-open/aster-team",
+  "publish_repository": "huzz-open/aster-team",
+  "build_app": {
+    "app_id": 123456,
+    "installation_id": 78901234,
+    "private_key_file": "github-build-app.private-key.pem"
+  },
+  "publish_app": {
+    "app_id": 234567,
+    "installation_id": 89012345,
+    "private_key_file": "github-publish-app.private-key.pem"
+  }
+}

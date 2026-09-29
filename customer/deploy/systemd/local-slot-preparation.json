@@ -1,0 +1,6 @@
+{
+  "schema": "aster.local-slot-preparation.v1",
+  "runner_protocol": 3,
+  "runner_identity_schema": "aster.local-runner-slot.v1",
+  "control_runtime_schema": "aster.control-runtime.v1"
+}

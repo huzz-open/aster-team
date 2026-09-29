@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aster.huzz.top/sitemap.xml
+Sitemap: https://aster.huzz.top/docs/sitemap.xml

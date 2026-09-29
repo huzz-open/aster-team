@@ -1,0 +1,41 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://aster-team.local/contracts/product-inquiry.v1.schema.json
+title: Aster website product inquiry
+description: An unverified visitor reference is a lead only, never an approved quote, order or authorization.
+$ref: '#/$defs/request'
+$defs:
+  reference:
+    type: object
+    additionalProperties: false
+    required: [catalog_revision, plan_id, plan_version]
+    properties:
+      catalog_revision: { $ref: public-catalog.v1.schema.yaml#/$defs/revision }
+      plan_id: { $ref: commercial.v1.schema.yaml#/$defs/resource_id }
+      plan_version: { type: integer, minimum: 1, maximum: 4294967295 }
+      years: { type: integer, minimum: 1, maximum: 5 }
+  request:
+    type: object
+    additionalProperties: false
+    required: [request_id, contact, message, locale, turnstile_token, website]
+    properties:
+      request_id: { type: string, pattern: '^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$' }
+      contact: { type: string, minLength: 2, maxLength: 200 }
+      message: { type: string, minLength: 2, maxLength: 4000 }
+      locale: { enum: [zh, en] }
+      turnstile_token: { type: string, minLength: 1, maxLength: 2048 }
+      website: { type: string, maxLength: 200 }
+      reference: { $ref: '#/$defs/reference' }
+  response:
+    oneOf:
+      - type: object
+        additionalProperties: false
+        required: [ok, id]
+        properties:
+          ok: { const: true }
+          id: { type: string, minLength: 1, maxLength: 80 }
+      - type: object
+        additionalProperties: false
+        required: [ok, error]
+        properties:
+          ok: { const: false }
+          error: { enum: [invalid_request, origin_not_allowed, rate_limited, verification_failed, request_conflict, server_error] }
